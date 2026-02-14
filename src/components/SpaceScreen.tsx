@@ -17,21 +17,11 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const [showHarvestToast, setShowHarvestToast] = useState(false);
 
-    // Edit Mode / Drag Mode Visualization
+    // Drag Mode Visualization
     const [isDragging, setIsDragging] = useState(false);
     const [dragPosition, setDragPosition] = useState<{ x: number, y: number, w: number, h: number, isValid: boolean } | null>(null);
 
-    // Prevent scrolling when touching the canvas
-    useEffect(() => {
-        const handleTouchMove = (e: TouchEvent) => {
-            if (canvasRef.current && canvasRef.current.contains(e.target as Node)) {
-                e.preventDefault();
-            }
-        };
-        document.addEventListener('touchmove', handleTouchMove, { passive: false });
-        // Clean up
-        return () => document.removeEventListener('touchmove', handleTouchMove);
-    }, []);
+    // Removed unconditional touchmove listener (lines 25-34) to allow map panning when not dragging items.
 
     if (!currentUser) return null;
 
@@ -80,11 +70,16 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         setIsDragging(true);
     };
 
-    const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    const handleDragMove = (e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent) => {
         if (!draggingId || !canvasRef.current) return;
 
-        const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
-        const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+        // Critical: Prevent scrolling while dragging an item
+        if (e.cancelable) {
+            e.preventDefault();
+        }
+
+        const clientX = 'touches' in e ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX;
+        const clientY = 'touches' in e ? (e as TouchEvent).touches[0].clientY : (e as MouseEvent).clientY;
         const rect = canvasRef.current.getBoundingClientRect();
 
         // Find the item definition to know its size
@@ -142,12 +137,13 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     // Global mouse/touch listeners
     useEffect(() => {
         if (draggingId) {
-            const handleMove = (e: MouseEvent | TouchEvent) => handleDragMove(e as any);
+            const handleMove = (e: MouseEvent | TouchEvent) => handleDragMove(e);
             const handleUp = () => handleDragEnd();
 
             window.addEventListener('mousemove', handleMove);
             window.addEventListener('mouseup', handleUp);
-            window.addEventListener('touchmove', handleMove);
+            // Use passive: false to allow preventDefault()
+            window.addEventListener('touchmove', handleMove, { passive: false });
             window.addEventListener('touchend', handleUp);
 
             return () => {
