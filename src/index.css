@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@keyframes sway {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(5deg);
+    }
+
+    75% {
+        transform: rotate(-5deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes bounce-gentle {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes wander {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(10px, -5px);
+    }
+
+    50% {
+        transform: translate(-5px, 10px);
+    }
+
+    75% {
+        transform: translate(-10px, -5px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.animate-sway {
+    animation: sway 3s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+.animate-bounce-gentle {
+    animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+.animate-wander {
+    animation: wander 10s ease-in-out infinite;
+}
