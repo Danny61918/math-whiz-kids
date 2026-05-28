@@ -232,24 +232,24 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     }, [landLevel]);
 
     return (
-        <div className="min-h-screen bg-slate-50 flex font-sans overflow-hidden">
+        <div className="min-h-screen bg-neutral-950 flex font-sans overflow-hidden">
             {/* Sidebar Inventory */}
-            <div className="w-64 bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 shrink-0">
-                <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-purple-600 text-white">
-                    <button onClick={onBack} className="text-xl hover:scale-110 transition">🏠</button>
+            <div className="w-64 bg-neutral-900 border-r border-neutral-800 flex flex-col shadow-xl z-20 shrink-0">
+                <div className="p-4 border-b border-neutral-800 flex justify-between items-center bg-neutral-950 text-neutral-100">
+                    <button onClick={onBack} className="text-xl hover:scale-110 transition opacity-80 hover:opacity-100">🏠</button>
                     <div className="flex flex-col items-center">
                         <h2 className="font-bold text-lg">{t('name', language)}'s Farm</h2>
-                        <span className="text-xs bg-purple-700 px-2 py-0.5 rounded-full">Lv.{landLevel} ({gridCols}x{gridRows})</span>
+                        <span className="text-xs bg-neutral-800 px-2 py-0.5 rounded-full text-neutral-400 border border-neutral-700">Lv.{landLevel} ({gridCols}x{gridRows})</span>
                     </div>
                 </div>
 
                 {/* Inventory List */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    <h3 className="font-bold text-slate-500 text-sm uppercase tracking-wider flex justify-between items-center">
+                    <h3 className="font-bold text-neutral-500 text-sm uppercase tracking-wider flex justify-between items-center">
                         {t('shop' as any, language).split(' ')[0]} {/* Reuse shop label or add inventory label */}
                         <button
                             onClick={handleClearAll}
-                            className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200"
+                            className="text-xs bg-neutral-800 text-neutral-400 px-2 py-1 rounded hover:bg-neutral-700 transition"
                         >
                             {t('clearAll' as any, language)}
                         </button>
@@ -264,15 +264,15 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                 <button
                                     key={item.id}
                                     onClick={() => handlePlaceFromInventory(item.id)}
-                                    className="flex flex-col items-center p-2 rounded-xl border-2 border-slate-100 hover:border-purple-300 hover:bg-purple-50 transition active:scale-95"
+                                    className="flex flex-col items-center p-2 rounded-xl border border-neutral-800 bg-neutral-800/50 hover:border-neutral-500 hover:bg-neutral-800 transition active:scale-95 group"
                                 >
-                                    <div className="w-10 h-10 mb-1 pointer-events-none">
+                                    <div className="w-10 h-10 mb-1 pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
                                         <ItemIcon itemId={item.id} type={item.type} />
                                     </div>
-                                    <span className="text-xs font-bold text-slate-600 text-center">{t(item.nameKey as any, language)}</span>
+                                    <span className="text-xs font-bold text-neutral-400 text-center">{t(item.nameKey as any, language)}</span>
                                     {/* Show dimension hint */}
-                                    <span className="text-[10px] text-slate-400">{(item.width || 1)}x{(item.height || 1)}</span>
-                                    <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full mt-1">x{count}</span>
+                                    <span className="text-[10px] text-neutral-600">{(item.width || 1)}x{(item.height || 1)}</span>
+                                    <span className="bg-neutral-700 text-neutral-300 text-xs font-bold px-2 py-0.5 rounded-full mt-1 border border-neutral-600">x{count}</span>
                                 </button>
                             );
                         })}
@@ -281,32 +281,30 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             </div>
 
             {/* Farm Canvas Scroll Area */}
-            <div className="flex-1 relative overflow-auto bg-green-800 flex items-center justify-center p-10 cursor-move"
-                style={{
-                    backgroundImage: 'radial-gradient(#4ade80 2px, transparent 2px)',
-                    backgroundSize: '30px 30px',
-                    opacity: 1
-                }}
+            <div className="flex-1 relative overflow-auto flex items-center justify-center p-10 cursor-move bg-gradient-to-b from-sky-400 via-sky-200 to-green-500"
             >
+                {/* Ambient Animations */}
+                <div className="absolute top-10 left-[10%] text-white/80 text-8xl animate-pulse pointer-events-none">☁️</div>
+                <div className="absolute top-24 right-[20%] text-white/60 text-6xl animate-pulse pointer-events-none" style={{ animationDelay: '1.5s' }}>☁️</div>
+                <div className="absolute top-8 right-10 text-yellow-300 text-7xl animate-spin-slow pointer-events-none" style={{ animationDuration: '20s' }}>☀️</div>
                 {/* Scalable Canvas Container */}
                 <div
-                    className="relative bg-green-100 shadow-2xl transition-all duration-500 ease-out"
+                    className="relative bg-green-400 shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out border-8 border-green-700/50 rounded-2xl overflow-hidden"
                     ref={canvasRef}
                     onClick={() => setSelectedItem(null)}
                     style={{
                         width: canvasWidthPx,
                         height: canvasHeightPx,
                         flexShrink: 0,
-                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                     }}
                 >
                     {/* Grid Lines */}
                     <div
                         className="absolute inset-0 pointer-events-none transition-opacity duration-300"
                         style={{
-                            backgroundImage: 'linear-gradient(#000000 1px, transparent 1px), linear-gradient(90deg, #000000 1px, transparent 1px)',
+                            backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)',
                             backgroundSize: `${GRID_CELL_SIZE}px ${GRID_CELL_SIZE}px`,
-                            opacity: isDragging ? 0.3 : 0.08
+                            opacity: isDragging ? 0.8 : 0.4
                         }}
                     />
 
@@ -347,6 +345,9 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                     zIndex: zIndex,
                                     cursor: canHarvest ? 'pointer' : 'grab',
                                     transition: 'transform 0.1s',
+                                    touchAction: 'none', // Crucial for mobile drag
+                                    userSelect: 'none',
+                                    WebkitUserSelect: 'none',
                                 }}
                                 className={`group hover:brightness-110 relative
                                     ${isPlant ? 'animate-sway' : ''} 
@@ -359,14 +360,14 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
                                     {/* Info Bubble */}
                                     {selectedItem === placed.id && (
-                                        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1.5 rounded-lg shadow-xl text-sm font-bold z-50 pointer-events-none whitespace-nowrap text-slate-700 border border-slate-100 flex flex-col items-center">
+                                        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-neutral-800 px-3 py-1.5 rounded-lg shadow-xl text-sm font-bold z-50 pointer-events-none whitespace-nowrap text-neutral-200 border border-neutral-600 flex flex-col items-center">
                                             {canHarvest ? (
-                                                <span className="text-yellow-600 animate-pulse">✨ {t('harvest', language)}! ✨</span>
+                                                <span className="text-yellow-500 animate-pulse">✨ {t('harvest', language)}! ✨</span>
                                             ) : (
                                                 <>
                                                     <span>{t(itemDef.nameKey as any, language)}</span>
-                                                    {isPlot && <div className="w-full bg-slate-200 h-1.5 mt-1 rounded-full overflow-hidden">
-                                                        <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${Math.min(100, placed.experience || 0)}%` }} />
+                                                    {isPlot && <div className="w-full bg-neutral-700 h-2 mt-1 rounded-full overflow-hidden border border-neutral-900">
+                                                        <div className="h-full bg-gradient-to-r from-green-400 to-green-300 transition-all duration-500" style={{ width: `${Math.min(100, placed.experience || 0)}%` }} />
                                                     </div>}
                                                 </>
                                             )}
@@ -400,11 +401,11 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                 }}
                             >
                                 {!dragPosition.isValid ? (
-                                    <div className="absolute inset-0 bg-red-400/60 border-4 border-red-500 rounded-lg animate-pulse z-10 flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-red-900/40 border-4 border-red-500/80 rounded-lg animate-pulse z-10 flex items-center justify-center">
                                         <span className="text-white font-bold text-2xl drop-shadow-md">❌</span>
                                     </div>
                                 ) : (
-                                    <div className="absolute inset-0 bg-green-400/30 border-4 border-green-500 rounded-lg z-10 box-border" />
+                                    <div className="absolute inset-0 bg-neutral-500/20 border-4 border-neutral-400/80 rounded-lg z-10 box-border" />
                                 )}
                                 <ItemIcon itemId={item.itemId} type={itemDef.type} experience={item.experience} />
                             </div>
@@ -415,8 +416,8 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
             {/* Harvest Toast */}
             {showHarvestToast && (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-300 text-yellow-900 px-8 py-6 rounded-3xl shadow-2xl border-4 border-white animate-bounce-gentle z-50 flex flex-col items-center pointer-events-none scale-125">
-                    <span className="text-6xl mb-2">💰</span>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-neutral-800 text-yellow-500 px-8 py-6 rounded-3xl shadow-2xl border border-neutral-700 animate-bounce-gentle z-50 flex flex-col items-center pointer-events-none scale-125">
+                    <span className="text-6xl mb-2">🪙</span>
                     <span className="font-black text-3xl whitespace-nowrap drop-shadow-sm">+500 Coins!</span>
                 </div>
             )}
