@@ -313,7 +313,8 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         const itemDef = shopItems.find(i => i.id === placed.itemId);
                         if (!itemDef) return null;
 
-                        const zIndex = Math.floor(placed.y);
+                        const itemH = (itemDef.height || 1) * GRID_CELL_SIZE;
+                        const zIndex = Math.floor(placed.y + itemH);
 
                         // Dimensions
                         const w = (itemDef.width || 1) * GRID_CELL_SIZE;
@@ -399,6 +400,7 @@ export const SpaceScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                     pointerEvents: 'none',
                                     opacity: 0.9,
                                 }}
+                                className="scale-110 drop-shadow-2xl transition-transform duration-75"
                             >
                                 {!dragPosition.isValid ? (
                                     <div className="absolute inset-0 bg-red-900/40 border-4 border-red-500/80 rounded-lg animate-pulse z-10 flex items-center justify-center">

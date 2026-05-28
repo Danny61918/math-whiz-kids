@@ -69,6 +69,8 @@ export const translations = {
         cat_animal: '動物',
         clearAll: '全部收回',
         clearAllConfirm: '確定要收回所有物品嗎？',
+        quotient: '商',
+        remainder: '餘數',
     },
     'en': {
         appTitle: 'Math Whiz Kids',
@@ -138,6 +140,8 @@ export const translations = {
         cat_animal: 'Animals',
         clearAll: 'Clear All',
         clearAllConfirm: 'Remove all items?',
+        quotient: 'Quotient',
+        remainder: 'Remainder',
     },
 
 

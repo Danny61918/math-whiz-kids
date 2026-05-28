@@ -29,30 +29,33 @@ export const ShopScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const categories = ['building', 'plant', 'animal'] as const;
 
     return (
-        <div className="min-h-screen bg-green-50 flex flex-col items-center p-4 font-sans">
-            <div className="w-full max-w-5xl">
+        <div className="min-h-screen bg-wood flex flex-col items-center p-4 font-sans relative overflow-hidden">
+            {/* Subtle light overlay */}
+            <div className="absolute inset-0 bg-amber-900/10 pointer-events-none"></div>
+
+            <div className="w-full max-w-5xl z-10 relative">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6 px-4">
                     <button
                         onClick={onBack}
-                        className="bg-white hover:bg-gray-100 text-gray-600 font-bold py-2 px-6 rounded-full shadow-md transition"
+                        className="bg-[#fefae0] hover:bg-white text-amber-800 font-bold py-2 px-6 rounded-full shadow-md transition border-2 border-[#bc8a5f]"
                     >
                         {t('backHome', language)}
                     </button>
-                    <h1 className="text-4xl font-black text-green-700 tracking-wider">
-                        {t('shop', language)} 🛍️
+                    <h1 className="text-5xl font-black text-white tracking-wider drop-shadow-md">
+                        {t('shop', language)} 🛒
                     </h1>
-                    <div className="bg-white py-2 px-6 rounded-full shadow-md border-2 border-yellow-300">
-                        <span className="text-gray-600 font-bold mr-2">{t('myCoins', language)}</span>
-                        <span className="text-2xl font-black text-yellow-500">{currentUser.coins} 🪙</span>
+                    <div className="bg-white py-2 px-6 rounded-full shadow-md border-2 border-[#bc8a5f] flex items-center gap-2">
+                        <span className="text-amber-700 font-bold mr-2">{t('myCoins', language)}</span>
+                        <span className="text-2xl font-black text-amber-600">{currentUser.coins} 🪙</span>
                     </div>
                 </div>
 
                 {/* Items Grid by Category */}
                 <div className="space-y-8 pb-10">
                     {categories.map(cat => (
-                        <div key={cat}>
-                            <h2 className="text-2xl font-bold text-green-800 mb-4 px-4 capitalize flex items-center gap-2">
+                        <div key={cat} className="bg-white/40 p-6 rounded-3xl border-2 border-[#bc8a5f]/30 shadow-sm">
+                            <h2 className="text-2xl font-black text-amber-900 mb-6 px-4 capitalize flex items-center gap-2 drop-shadow-sm">
                                 {cat === 'building' ? '🏠' : cat === 'plant' ? '🌱' : '🐶'} {t(`cat_${cat}` as any, language)}
                             </h2>
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -64,28 +67,28 @@ export const ShopScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                     return (
                                         <div
                                             key={item.id}
-                                            className="bg-white rounded-3xl p-4 flex flex-col items-center justify-between shadow-lg border-b-4 border-green-200 transition-transform hover:scale-105"
+                                            className="bg-[#fefae0] rounded-3xl p-4 flex flex-col items-center justify-between shadow-md border-[4px] border-[#e6ccb2] transition-transform hover:-translate-y-1 hover:shadow-lg"
                                         >
                                             <div className="w-20 h-20 mb-2 mt-1 relative">
                                                 <ItemIcon itemId={item.id} type={item.type} />
                                             </div>
-                                            <h3 className="text-lg font-bold text-gray-700 mb-1 text-center">{name}</h3>
-                                            <div className="mb-3 font-black text-yellow-500 text-lg">
+                                            <h3 className="text-lg font-bold text-amber-900 mb-1 text-center">{name}</h3>
+                                            <div className="mb-3 font-black text-amber-600 text-xl">
                                                 {item.price} 🪙
                                             </div>
 
                                             <button
                                                 onClick={() => handleBuy(item.id, item.price)}
                                                 disabled={!canAfford}
-                                                className={`w-full font-bold py-2 rounded-xl transition shadow-sm active:scale-95 mb-2 ${canAfford
-                                                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                                className={`w-full font-bold py-2 rounded-xl transition shadow-sm active:translate-y-1 active:border-b-0 mb-2 border-b-4 ${canAfford
+                                                    ? 'bg-green-500 hover:bg-green-400 text-white border-green-700'
+                                                    : 'bg-neutral-200 text-neutral-400 border-neutral-300 cursor-not-allowed'
                                                     }`}
                                             >
                                                 {canAfford ? t('buy', language) : t('insufficientFunds', language)}
                                             </button>
 
-                                            <div className="text-sm font-bold text-gray-500">
+                                            <div className="text-sm font-bold text-amber-700/70 bg-amber-100/50 px-3 py-1 rounded-full">
                                                 {t('owned', language)}: {count}
                                             </div>
                                         </div>
