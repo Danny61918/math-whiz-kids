@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { skills } from '../data/skills';
-import { checkAnswer, countBorrows, countCarries, generateQuestion, generateSession, type Question, type Rng } from './mathEngine';
+import { skillSpecs, checkAnswer, countBorrows, countCarries, generateQuestion, generateSession, type Question, type Rng } from './mathEngine';
 
 function mulberry32(seed: number): Rng {
     let a = seed;
@@ -14,9 +14,14 @@ function mulberry32(seed: number): Rng {
 
 const digits = (n: number | null) => String(n).length;
 
+const SEEDS = [12345, 777, 2024];
+
+/** 300 questions for each of several seeds. */
 function sample(skillId: string, count = 300): Question[] {
-    const rng = mulberry32(12345);
-    return Array.from({ length: count }, () => generateQuestion(skillId, rng));
+    return SEEDS.flatMap((seed) => {
+        const rng = mulberry32(seed);
+        return Array.from({ length: count }, () => generateQuestion(skillId, rng));
+    });
 }
 
 function expectBasics(q: Question, skillId: string) {
@@ -114,7 +119,12 @@ describe('grade4 add/sub', () => {
             expect([5, 6]).toContain(digits(q.left));
             expect([5, 6]).toContain(digits(q.right));
             expect(countCarries(q.left ?? 0, q.right ?? 0)).toBeGreaterThanOrEqual(2);
+            expect(q.answer).toBe((q.left ?? 0) + (q.right ?? 0));
         }
+    });
+    it('g_add_6 uses both 5 and 6 digit left operands', () => {
+        const lefts = new Set(sample('g_add_6').map((q) => digits(q.left)));
+        expect(lefts).toEqual(new Set([5, 6]));
     });
     it('g_sub_6', () => {
         for (const q of sample('g_sub_6')) {
@@ -123,6 +133,7 @@ describe('grade4 add/sub', () => {
             expect([5, 6]).toContain(digits(q.right));
             expect(countBorrows(q.left ?? 0, q.right ?? 0)).toBeGreaterThanOrEqual(2);
             expect(q.answer).toBeGreaterThan(0);
+            expect(q.answer).toBe((q.left ?? 0) - (q.right ?? 0));
         }
     });
 });
@@ -209,5 +220,15 @@ describe('checkAnswer', () => {
         const add = generateQuestion('k_add_10', mulberry32(1));
         expect(checkAnswer(add, { answer: add.answer })).toBe(true);
         expect(checkAnswer(add, { answer: add.answer + 1 })).toBe(false);
+    });
+});
+
+describe('fallbacks', () => {
+    it.each(Object.keys(skillSpecs))('%s fallback satisfies accept', (id) => {
+        const spec = skillSpecs[id];
+        for (const seed of SEEDS) {
+            const rng = mulberry32(seed);
+            for (let i = 0; i < 100; i++) expect(spec.accept(spec.fallback(rng))).toBe(true);
+        }
     });
 });

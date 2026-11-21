@@ -13,7 +13,7 @@ export type Rng = () => number;
 
 type Draft = Omit<Question, 'skillId' | 'key'>;
 
-interface SkillSpec {
+export interface SkillSpec {
     make: (rng: Rng) => Draft;
     accept: (d: Draft) => boolean;
     fallback: (rng: Rng) => Draft;
@@ -165,15 +165,16 @@ const makeTen: SkillSpec = {
     fallback: () => ({ operator: '+', left: 4, right: null, result: 10, answer: 6 }),
 };
 
-function gradeAdd(aDigits: number, bDigitChoices: number[], carries: number): SkillSpec {
+function gradeAdd(aDigitChoices: number[], bDigitChoices: number[], carries: number): SkillSpec {
     return {
-        make: (rng) => add(interestingInt(rng, aDigits), interestingInt(rng, pick(rng, bDigitChoices))),
+        make: (rng) =>
+            add(interestingInt(rng, pick(rng, aDigitChoices)), interestingInt(rng, pick(rng, bDigitChoices))),
         accept: (d) =>
-            digitCount(d.left ?? 0) === aDigits &&
+            aDigitChoices.includes(digitCount(d.left ?? 0)) &&
             bDigitChoices.includes(digitCount(d.right ?? 0)) &&
             countCarries(d.left ?? 0, d.right ?? 0) >= carries,
         fallback: (rng) =>
-            add(numWithLowDigits(rng, aDigits, carries, 5, 9), numWithLowDigits(rng, bDigitChoices[0], carries, 5, 9)),
+            add(numWithLowDigits(rng, aDigitChoices[0], carries, 5, 9), numWithLowDigits(rng, bDigitChoices[0], carries, 5, 9)),
     };
 }
 
@@ -229,7 +230,7 @@ function gradeDiv(dividendDigits: number, divisorDigits: number, fallbackDraft: 
     };
 }
 
-const specs: Record<string, SkillSpec> = {
+export const skillSpecs: Record<string, SkillSpec> = {
     k_add_5: kinderAdd(5),
     k_sub_5: kinderSub(5, 0),
     k_add_10: kinderAdd(10),
@@ -237,9 +238,9 @@ const specs: Record<string, SkillSpec> = {
     k_make10: makeTen,
     k_add_20: kinderAdd(20),
     k_sub_20: kinderSub(20, 0.6),
-    g_add_4: gradeAdd(4, [3, 4], 1),
+    g_add_4: gradeAdd([4], [3, 4], 1),
     g_sub_4: gradeSub([4], [3, 4], 1),
-    g_add_6: gradeAdd(5, [5, 6], 2),
+    g_add_6: gradeAdd([5, 6], [5, 6], 2),
     g_sub_6: gradeSub([5, 6], [5, 6], 2),
     g_mul_21: gradeMul(2, 1, mul(47, 6)),
     g_mul_32: gradeMul(3, 2, mul(364, 27)),
@@ -256,7 +257,7 @@ const specs: Record<string, SkillSpec> = {
  * are a programming error and throw; constraint failures never do (fallback).
  */
 export function generateQuestion(skillId: string, rng: Rng = Math.random, recentKeys: string[] = []): Question {
-    const spec = specs[skillId];
+    const spec = skillSpecs[skillId];
     if (!spec) throw new Error(`Unknown skill: ${skillId}`);
 
     let chosen: Draft | null = null;
