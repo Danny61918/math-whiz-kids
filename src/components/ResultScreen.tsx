@@ -93,6 +93,16 @@ export const ResultScreen: React.FC<Props> = ({
                     {summary?.milestoneTicket && (
                         <div className="bg-sky-100 rounded-xl px-3 py-2">{t('milestoneTicketEarned', lang)}</div>
                     )}
+                    {summary !== null && summary.newMasteredFacts > 0 && (
+                        <div className="bg-blue-100 rounded-xl px-3 py-2" data-testid="new-squares">
+                            {tp('newSquares', lang, { n: summary.newMasteredFacts })}
+                        </div>
+                    )}
+                    {summary !== null && summary.chartTickets > 0 && (
+                        <div className="bg-sky-100 rounded-xl px-3 py-2" data-testid="chart-tickets">
+                            {tp('chartTicketsEarned', lang, { n: summary.chartTickets })}
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex flex-col gap-3">
