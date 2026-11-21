@@ -51,6 +51,18 @@ describe('migrateV2ToV3', () => {
         expect(out.users.b).toMatchObject({ skills: {}, stars: {}, cards: {}, tickets: 0, dailyBonusDay: null, mode: 'grade4' });
     });
 
+    it('drops invalid and future days', () => {
+        const mk = (lastDay: string, dailyBonusDay: string) => ({
+            users: { a: { ...v2.users.a, streak: { count: 4, best: 4, lastDay }, dailyBonusDay } },
+        });
+        const bad = migrateV2ToV3(mk('2026-13-45', '2099-01-01'), '2026-05-05').users.a;
+        expect(bad.streak).toMatchObject({ count: 4, lastDay: null });
+        expect(bad.dailyBonusDay).toBeNull();
+        const ok = migrateV2ToV3(mk('2026-05-04', '2026-05-05'), '2026-05-05').users.a;
+        expect(ok.streak.lastDay).toBe('2026-05-04');
+        expect(ok.dailyBonusDay).toBe('2026-05-05');
+    });
+
     it('chains from a v1 save', () => {
         const v1 = { users: { a: { id: 'a', name: 'Amy', avatar: '🦊', coins: 120, inventory: {}, placedItems: [] } }, currentUserId: 'a', language: 'en' };
         const out = migrateV2ToV3(migrateV1ToV2(v1));

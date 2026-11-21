@@ -57,6 +57,16 @@ describe('completeSession', () => {
         expect(user().tickets).toBe(4);
     });
 
+    it('never penalizes a clock that was set to the future and then restored', () => {
+        const { completeSession } = useGameStore.getState();
+        completeSession({ skillId: 'k_add_5', correct: 5, total: 5, now: day(1) });
+        completeSession({ skillId: 'k_add_5', correct: 5, total: 5, now: new Date(2099, 0, 1, 12) });
+        const back = completeSession({ skillId: 'k_add_5', correct: 5, total: 5, now: day(2) });
+        expect(back).toMatchObject({ dailyTicket: true, streakIncreased: false, milestoneTicket: false });
+        expect(user().streak).toMatchObject({ lastDay: '2026-05-02' });
+        expect(user().streak.count).toBeGreaterThanOrEqual(1);
+    });
+
     it('is a no-op without a user', () => {
         useGameStore.setState({ currentUserId: null });
         expect(useGameStore.getState().completeSession({ skillId: 'k_add_5', correct: 5, total: 5 })).toBeNull();

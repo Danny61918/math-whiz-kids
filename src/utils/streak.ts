@@ -20,9 +20,21 @@ function previousDay(key: string): string {
     return `${prev.getUTCFullYear()}-${pad(prev.getUTCMonth() + 1)}-${pad(prev.getUTCDate())}`;
 }
 
-/** Same day -> unchanged; yesterday -> +1; otherwise restart at 1. A clock that went backwards never lowers anything. */
+/** True for a real calendar date written as 'YYYY-MM-DD'. */
+export function isValidDayKey(value: unknown): value is string {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const [y, m, d] = value.split('-').map(Number);
+    const date = new Date(Date.UTC(y, m - 1, d));
+    return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+}
+
+/**
+ * Same day -> unchanged; yesterday -> +1; otherwise restart at 1.
+ * If the stored day is in the future (clock was wrong), keep the count and just move lastDay back to today.
+ */
 export function updateStreak(s: StreakState, today: string): StreakState {
-    if (s.lastDay !== null && today <= s.lastDay) return s;
+    if (s.lastDay === today) return s;
+    if (s.lastDay !== null && today < s.lastDay) return { ...s, lastDay: today };
     const count = s.lastDay !== null && previousDay(today) === s.lastDay ? s.count + 1 : 1;
     return { count, best: Math.max(s.best, count), lastDay: today };
 }

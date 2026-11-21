@@ -166,8 +166,8 @@ export const useGameStore = create<GameState>()(
                     const earned = calcStars(result.correct, result.total);
                     const previousBest = user.stars[result.skillId] ?? 0;
                     const streak = updateStreak(user.streak, today);
-                    const streakIncreased = streak !== user.streak;
-                    const dailyTicket = user.dailyBonusDay === null || today > user.dailyBonusDay;
+                    const streakIncreased = user.streak.lastDay === null || today > user.streak.lastDay;
+                    const dailyTicket = user.dailyBonusDay !== today;
                     const milestoneTicket = streakIncreased && isMilestone(streak.count);
                     summary = {
                         stars: earned,

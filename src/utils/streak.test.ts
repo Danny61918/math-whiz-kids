@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dayKey, isMilestone, STREAK_MILESTONES, updateStreak } from './streak';
+import { dayKey, isMilestone, isValidDayKey, STREAK_MILESTONES, updateStreak } from './streak';
 
 const fresh = { count: 0, best: 0, lastDay: null };
 
@@ -37,9 +37,11 @@ describe('updateStreak', () => {
         expect(updateStreak({ count: 2, best: 2, lastDay: '2026-10-24' }, '2026-10-25').count).toBe(3);
         expect(updateStreak({ count: 2, best: 2, lastDay: '2026-10-25' }, '2026-10-26').count).toBe(3);
     });
-    it('clock going backwards never decreases or changes anything', () => {
-        const s = { count: 5, best: 5, lastDay: '2026-03-10' };
-        expect(updateStreak(s, '2026-03-01')).toBe(s);
+    it('a stored day in the future keeps the count and resets lastDay to today', () => {
+        const s = { count: 5, best: 5, lastDay: '2099-03-10' };
+        const back = updateStreak(s, '2026-03-01');
+        expect(back).toEqual({ count: 5, best: 5, lastDay: '2026-03-01' });
+        expect(updateStreak(back, '2026-03-02').count).toBe(6);
     });
 });
 
@@ -48,5 +50,15 @@ describe('milestones', () => {
         expect(STREAK_MILESTONES).toEqual([3, 7, 14, 30]);
         expect(isMilestone(7)).toBe(true);
         expect(isMilestone(8)).toBe(false);
+    });
+});
+
+describe('isValidDayKey', () => {
+    it('accepts real dates only', () => {
+        expect(isValidDayKey('2024-02-29')).toBe(true);
+        expect(isValidDayKey('2025-02-29')).toBe(false);
+        expect(isValidDayKey('2026-13-45')).toBe(false);
+        expect(isValidDayKey('2026-1-5')).toBe(false);
+        expect(isValidDayKey(20260101)).toBe(false);
     });
 });

@@ -1,5 +1,6 @@
 import type { Language, SkillStats, UserProfile } from './useGameStore';
 import type { Stars } from '../utils/stars';
+import { dayKey, isValidDayKey } from '../utils/streak';
 
 type V3Keys = 'stars' | 'cards' | 'tickets' | 'pity' | 'streak' | 'dailyBonusDay' | 'totalSessions';
 type UserProfileV2 = Omit<UserProfile, V3Keys>;
@@ -63,8 +64,9 @@ function nonNegInt(value: unknown): number {
     return Math.max(0, Math.floor(num(value)));
 }
 
-function dayOrNull(value: unknown): string | null {
-    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
+/** A real calendar date that is not in the future, else null. */
+function dayOrNull(value: unknown, today: string): string | null {
+    return isValidDayKey(value) && value <= today ? value : null;
 }
 
 function cleanSkills(raw: unknown): Record<string, SkillStats> {
@@ -88,7 +90,7 @@ function cleanSkills(raw: unknown): Record<string, SkillStats> {
  * Skills that already have attempts get 1 star so existing progress stays unlocked.
  * Repairs bad fields and never throws; running it on v3 data keeps valid values.
  */
-export function migrateV2ToV3(persisted: unknown): MigratedStateV3 {
+export function migrateV2ToV3(persisted: unknown, today: string = dayKey(new Date())): MigratedStateV3 {
     const old = isRecord(persisted) ? persisted : {};
     const users: Record<string, UserProfile> = {};
 
@@ -130,8 +132,8 @@ export function migrateV2ToV3(persisted: unknown): MigratedStateV3 {
                 cards,
                 tickets: nonNegInt(raw.tickets),
                 pity: nonNegInt(raw.pity),
-                streak: { count, best: Math.max(count, nonNegInt(streakRaw.best)), lastDay: dayOrNull(streakRaw.lastDay) },
-                dailyBonusDay: dayOrNull(raw.dailyBonusDay),
+                streak: { count, best: Math.max(count, nonNegInt(streakRaw.best)), lastDay: dayOrNull(streakRaw.lastDay, today) },
+                dailyBonusDay: dayOrNull(raw.dailyBonusDay, today),
                 totalSessions: nonNegInt(raw.totalSessions),
             };
         }
