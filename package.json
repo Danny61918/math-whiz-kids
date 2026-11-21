@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "cards:prompts": "node --experimental-strip-types scripts/export-card-prompts.mjs",
+    "cards:check": "node --experimental-strip-types scripts/check-card-art.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",

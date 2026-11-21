@@ -1,0 +1,2002 @@
+[
+  {
+    "id": "dino_tyrannosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Tyrannosaurus",
+    "nameZh": "暴龍",
+    "output_filename": "dino_tyrannosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Tyrannosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_triceratops",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Triceratops",
+    "nameZh": "三角龍",
+    "output_filename": "dino_triceratops.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Triceratops dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_stegosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Stegosaurus",
+    "nameZh": "劍龍",
+    "output_filename": "dino_stegosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Stegosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_brachiosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Brachiosaurus",
+    "nameZh": "腕龍",
+    "output_filename": "dino_brachiosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Brachiosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_velociraptor",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Velociraptor",
+    "nameZh": "迅猛龍",
+    "output_filename": "dino_velociraptor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Velociraptor dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_ankylosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Ankylosaurus",
+    "nameZh": "甲龍",
+    "output_filename": "dino_ankylosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Ankylosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_pteranodon",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Pteranodon",
+    "nameZh": "無齒翼龍",
+    "output_filename": "dino_pteranodon.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Pteranodon dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_diplodocus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Diplodocus",
+    "nameZh": "梁龍",
+    "output_filename": "dino_diplodocus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Diplodocus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_parasaurolophus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Parasaurolophus",
+    "nameZh": "副櫛龍",
+    "output_filename": "dino_parasaurolophus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Parasaurolophus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_spinosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Spinosaurus",
+    "nameZh": "棘龍",
+    "output_filename": "dino_spinosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Spinosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_allosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Allosaurus",
+    "nameZh": "異特龍",
+    "output_filename": "dino_allosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Allosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_iguanodon",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Iguanodon",
+    "nameZh": "禽龍",
+    "output_filename": "dino_iguanodon.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Iguanodon dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_apatosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Apatosaurus",
+    "nameZh": "迷惑龍",
+    "output_filename": "dino_apatosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Apatosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_protoceratops",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Protoceratops",
+    "nameZh": "原角龍",
+    "output_filename": "dino_protoceratops.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Protoceratops dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_maiasaura",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Maiasaura",
+    "nameZh": "慈母龍",
+    "output_filename": "dino_maiasaura.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Maiasaura dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_dilophosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Dilophosaurus",
+    "nameZh": "雙脊龍",
+    "output_filename": "dino_dilophosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Dilophosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_compsognathus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Compsognathus",
+    "nameZh": "美頜龍",
+    "output_filename": "dino_compsognathus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Compsognathus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_gallimimus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Gallimimus",
+    "nameZh": "似雞龍",
+    "output_filename": "dino_gallimimus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Gallimimus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_pachycephalosaurus",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Pachycephalosaurus",
+    "nameZh": "厚頭龍",
+    "output_filename": "dino_pachycephalosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Pachycephalosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_oviraptor",
+    "category": "dino",
+    "rarity": 1,
+    "nameEn": "Oviraptor",
+    "nameZh": "偷蛋龍",
+    "output_filename": "dino_oviraptor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Oviraptor dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_carnotaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Carnotaurus",
+    "nameZh": "食肉牛龍",
+    "output_filename": "dino_carnotaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Carnotaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_therizinosaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Therizinosaurus",
+    "nameZh": "鐮刀龍",
+    "output_filename": "dino_therizinosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Therizinosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_ceratosaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Ceratosaurus",
+    "nameZh": "角鼻龍",
+    "output_filename": "dino_ceratosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Ceratosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_styracosaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Styracosaurus",
+    "nameZh": "戟龍",
+    "output_filename": "dino_styracosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Styracosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_edmontosaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Edmontosaurus",
+    "nameZh": "埃德蒙頓龍",
+    "output_filename": "dino_edmontosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Edmontosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_utahraptor",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Utahraptor",
+    "nameZh": "猶他盜龍",
+    "output_filename": "dino_utahraptor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Utahraptor dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_corythosaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Corythosaurus",
+    "nameZh": "盔龍",
+    "output_filename": "dino_corythosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Corythosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_kentrosaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Kentrosaurus",
+    "nameZh": "釘狀龍",
+    "output_filename": "dino_kentrosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Kentrosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_deinonychus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Deinonychus",
+    "nameZh": "恐爪龍",
+    "output_filename": "dino_deinonychus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Deinonychus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_psittacosaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Psittacosaurus",
+    "nameZh": "鸚鵡嘴龍",
+    "output_filename": "dino_psittacosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Psittacosaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_archaeopteryx",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Archaeopteryx",
+    "nameZh": "始祖鳥",
+    "output_filename": "dino_archaeopteryx.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Archaeopteryx dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_camarasaurus",
+    "category": "dino",
+    "rarity": 2,
+    "nameEn": "Camarasaurus",
+    "nameZh": "圓頂龍",
+    "output_filename": "dino_camarasaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Camarasaurus dinosaur",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_quetzalcoatlus",
+    "category": "dino",
+    "rarity": 3,
+    "nameEn": "Quetzalcoatlus",
+    "nameZh": "風神翼龍",
+    "output_filename": "dino_quetzalcoatlus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Quetzalcoatlus dinosaur, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_pentaceratops",
+    "category": "dino",
+    "rarity": 3,
+    "nameEn": "Pentaceratops",
+    "nameZh": "五角龍",
+    "output_filename": "dino_pentaceratops.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Pentaceratops dinosaur, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_baryonyx",
+    "category": "dino",
+    "rarity": 3,
+    "nameEn": "Baryonyx",
+    "nameZh": "重爪龍",
+    "output_filename": "dino_baryonyx.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Baryonyx dinosaur, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_mamenchisaurus",
+    "category": "dino",
+    "rarity": 3,
+    "nameEn": "Mamenchisaurus",
+    "nameZh": "馬門溪龍",
+    "output_filename": "dino_mamenchisaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Mamenchisaurus dinosaur, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_tarbosaurus",
+    "category": "dino",
+    "rarity": 3,
+    "nameEn": "Tarbosaurus",
+    "nameZh": "特暴龍",
+    "output_filename": "dino_tarbosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Tarbosaurus dinosaur, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_microraptor",
+    "category": "dino",
+    "rarity": 3,
+    "nameEn": "Microraptor",
+    "nameZh": "小盜龍",
+    "output_filename": "dino_microraptor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Microraptor dinosaur, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_giganotosaurus",
+    "category": "dino",
+    "rarity": 4,
+    "nameEn": "Giganotosaurus",
+    "nameZh": "南方巨獸龍",
+    "output_filename": "dino_giganotosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Giganotosaurus dinosaur, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "dino_argentinosaurus",
+    "category": "dino",
+    "rarity": 4,
+    "nameEn": "Argentinosaurus",
+    "nameZh": "阿根廷龍",
+    "output_filename": "dino_argentinosaurus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a friendly cartoon Argentinosaurus dinosaur, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_sedan",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Car",
+    "nameZh": "轎車",
+    "output_filename": "car_sedan.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Car",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_taxi",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Taxi",
+    "nameZh": "計程車",
+    "output_filename": "car_taxi.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Taxi",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_bus",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Bus",
+    "nameZh": "公車",
+    "output_filename": "car_bus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Bus",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_school_bus",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "School Bus",
+    "nameZh": "校車",
+    "output_filename": "car_school_bus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon School Bus",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_truck",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Truck",
+    "nameZh": "卡車",
+    "output_filename": "car_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_dump_truck",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Dump Truck",
+    "nameZh": "砂石車",
+    "output_filename": "car_dump_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Dump Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_excavator",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Excavator",
+    "nameZh": "挖土機",
+    "output_filename": "car_excavator.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Excavator",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_bulldozer",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Bulldozer",
+    "nameZh": "推土機",
+    "output_filename": "car_bulldozer.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Bulldozer",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_cement_mixer",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Cement Mixer",
+    "nameZh": "水泥車",
+    "output_filename": "car_cement_mixer.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Cement Mixer",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_tractor",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Tractor",
+    "nameZh": "拖拉機",
+    "output_filename": "car_tractor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tractor",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_pickup_truck",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Pickup Truck",
+    "nameZh": "小貨車",
+    "output_filename": "car_pickup_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Pickup Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_motorcycle",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Motorcycle",
+    "nameZh": "機車",
+    "output_filename": "car_motorcycle.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Motorcycle",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_bicycle",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Bicycle",
+    "nameZh": "腳踏車",
+    "output_filename": "car_bicycle.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Bicycle",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_tricycle",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Tricycle",
+    "nameZh": "三輪車",
+    "output_filename": "car_tricycle.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tricycle",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_van",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Van",
+    "nameZh": "廂型車",
+    "output_filename": "car_van.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Van",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_tow_truck",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Tow Truck",
+    "nameZh": "拖吊車",
+    "output_filename": "car_tow_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tow Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_garbage_truck",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Garbage Truck",
+    "nameZh": "垃圾車",
+    "output_filename": "car_garbage_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Garbage Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_forklift",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Forklift",
+    "nameZh": "堆高機",
+    "output_filename": "car_forklift.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Forklift",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_ice_cream_truck",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Ice Cream Truck",
+    "nameZh": "冰淇淋車",
+    "output_filename": "car_ice_cream_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Ice Cream Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_jeep",
+    "category": "car",
+    "rarity": 1,
+    "nameEn": "Jeep",
+    "nameZh": "吉普車",
+    "output_filename": "car_jeep.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Jeep",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_suv",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "SUV",
+    "nameZh": "休旅車",
+    "output_filename": "car_suv.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon SUV",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_crane_truck",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Crane Truck",
+    "nameZh": "吊車",
+    "output_filename": "car_crane_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Crane Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_road_roller",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Road Roller",
+    "nameZh": "壓路機",
+    "output_filename": "car_road_roller.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Road Roller",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_food_truck",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Food Truck",
+    "nameZh": "餐車",
+    "output_filename": "car_food_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Food Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_double_decker_bus",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Double-decker Bus",
+    "nameZh": "雙層巴士",
+    "output_filename": "car_double_decker_bus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Double-decker Bus",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_racing_car",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Racing Car",
+    "nameZh": "賽車",
+    "output_filename": "car_racing_car.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Racing Car",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_convertible",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Convertible",
+    "nameZh": "敞篷車",
+    "output_filename": "car_convertible.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Convertible",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_electric_car",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Electric Car",
+    "nameZh": "電動車",
+    "output_filename": "car_electric_car.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Electric Car",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_go_kart",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Go-kart",
+    "nameZh": "卡丁車",
+    "output_filename": "car_go_kart.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Go-kart",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_tank_truck",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Tank Truck",
+    "nameZh": "油罐車",
+    "output_filename": "car_tank_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tank Truck",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_camper_van",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Camper Van",
+    "nameZh": "露營車",
+    "output_filename": "car_camper_van.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Camper Van",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_rickshaw",
+    "category": "car",
+    "rarity": 2,
+    "nameEn": "Rickshaw",
+    "nameZh": "人力車",
+    "output_filename": "car_rickshaw.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rickshaw",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_monster_truck",
+    "category": "car",
+    "rarity": 3,
+    "nameEn": "Monster Truck",
+    "nameZh": "怪獸卡車",
+    "output_filename": "car_monster_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Monster Truck, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_limousine",
+    "category": "car",
+    "rarity": 3,
+    "nameEn": "Limousine",
+    "nameZh": "加長禮車",
+    "output_filename": "car_limousine.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Limousine, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_snowmobile",
+    "category": "car",
+    "rarity": 3,
+    "nameEn": "Snowmobile",
+    "nameZh": "雪地摩托車",
+    "output_filename": "car_snowmobile.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Snowmobile, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_atv",
+    "category": "car",
+    "rarity": 3,
+    "nameEn": "ATV",
+    "nameZh": "沙灘車",
+    "output_filename": "car_atv.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon ATV, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_tuk_tuk",
+    "category": "car",
+    "rarity": 3,
+    "nameEn": "Tuk-tuk",
+    "nameZh": "嘟嘟車",
+    "output_filename": "car_tuk_tuk.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tuk-tuk, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_golf_cart",
+    "category": "car",
+    "rarity": 3,
+    "nameEn": "Golf Cart",
+    "nameZh": "高爾夫球車",
+    "output_filename": "car_golf_cart.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Golf Cart, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_formula_one_car",
+    "category": "car",
+    "rarity": 4,
+    "nameEn": "Formula 1 Car",
+    "nameZh": "一級方程式賽車",
+    "output_filename": "car_formula_one_car.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Formula 1 Car, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "car_mining_dump_truck",
+    "category": "car",
+    "rarity": 4,
+    "nameEn": "Mining Dump Truck",
+    "nameZh": "超大型礦用卡車",
+    "output_filename": "car_mining_dump_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Mining Dump Truck, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_airplane",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Airplane",
+    "nameZh": "飛機",
+    "output_filename": "plane_airplane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Airplane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_jet_plane",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Jet Plane",
+    "nameZh": "噴射機",
+    "output_filename": "plane_jet_plane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Jet Plane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_helicopter",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Helicopter",
+    "nameZh": "直升機",
+    "output_filename": "plane_helicopter.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Helicopter",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_propeller_plane",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Propeller Plane",
+    "nameZh": "螺旋槳飛機",
+    "output_filename": "plane_propeller_plane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Propeller Plane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_seaplane",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Seaplane",
+    "nameZh": "水上飛機",
+    "output_filename": "plane_seaplane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Seaplane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_glider",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Glider",
+    "nameZh": "滑翔機",
+    "output_filename": "plane_glider.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Glider",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_hot_air_balloon",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Hot Air Balloon",
+    "nameZh": "熱氣球",
+    "output_filename": "plane_hot_air_balloon.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Hot Air Balloon",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_airliner",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Airliner",
+    "nameZh": "客機",
+    "output_filename": "plane_airliner.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Airliner",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_cargo_plane",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Cargo Plane",
+    "nameZh": "貨機",
+    "output_filename": "plane_cargo_plane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Cargo Plane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_biplane",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Biplane",
+    "nameZh": "雙翼飛機",
+    "output_filename": "plane_biplane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Biplane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_blimp",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Blimp",
+    "nameZh": "飛艇",
+    "output_filename": "plane_blimp.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Blimp",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_paraglider",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Paraglider",
+    "nameZh": "滑翔傘",
+    "output_filename": "plane_paraglider.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Paraglider",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_drone",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Drone",
+    "nameZh": "無人機",
+    "output_filename": "plane_drone.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Drone",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_fighter_jet",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Fighter Jet",
+    "nameZh": "戰鬥機",
+    "output_filename": "plane_fighter_jet.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fighter Jet",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_parachute",
+    "category": "plane",
+    "rarity": 1,
+    "nameEn": "Parachute",
+    "nameZh": "降落傘",
+    "output_filename": "plane_parachute.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Parachute",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_jumbo_jet",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Jumbo Jet",
+    "nameZh": "大型客機",
+    "output_filename": "plane_jumbo_jet.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Jumbo Jet",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_private_jet",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Private Jet",
+    "nameZh": "私人飛機",
+    "output_filename": "plane_private_jet.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Private Jet",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_tiltrotor",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Tilt-rotor Aircraft",
+    "nameZh": "傾轉旋翼機",
+    "output_filename": "plane_tiltrotor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tilt-rotor Aircraft",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_stunt_plane",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Stunt Plane",
+    "nameZh": "特技飛機",
+    "output_filename": "plane_stunt_plane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Stunt Plane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_hang_glider",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Hang Glider",
+    "nameZh": "滑翔翼",
+    "output_filename": "plane_hang_glider.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Hang Glider",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_gyrocopter",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Gyrocopter",
+    "nameZh": "旋翼機",
+    "output_filename": "plane_gyrocopter.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Gyrocopter",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_light_aircraft",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Light Aircraft",
+    "nameZh": "輕型飛機",
+    "output_filename": "plane_light_aircraft.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Light Aircraft",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_twin_engine_plane",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Twin-engine Plane",
+    "nameZh": "雙引擎飛機",
+    "output_filename": "plane_twin_engine_plane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Twin-engine Plane",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_ultralight",
+    "category": "plane",
+    "rarity": 2,
+    "nameEn": "Ultralight Aircraft",
+    "nameZh": "超輕型飛機",
+    "output_filename": "plane_ultralight.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Ultralight Aircraft",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_concorde",
+    "category": "plane",
+    "rarity": 3,
+    "nameEn": "Concorde",
+    "nameZh": "協和號客機",
+    "output_filename": "plane_concorde.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Concorde, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_supersonic_jet",
+    "category": "plane",
+    "rarity": 3,
+    "nameEn": "Supersonic Jet",
+    "nameZh": "超音速噴射機",
+    "output_filename": "plane_supersonic_jet.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Supersonic Jet, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_wright_flyer",
+    "category": "plane",
+    "rarity": 3,
+    "nameEn": "Wright Flyer",
+    "nameZh": "萊特飛行者號",
+    "output_filename": "plane_wright_flyer.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Wright Flyer, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_solar_plane",
+    "category": "plane",
+    "rarity": 3,
+    "nameEn": "Solar Plane",
+    "nameZh": "太陽能飛機",
+    "output_filename": "plane_solar_plane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Solar Plane, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_airbus_a380",
+    "category": "plane",
+    "rarity": 4,
+    "nameEn": "Airbus A380",
+    "nameZh": "空中巴士 A380",
+    "output_filename": "plane_airbus_a380.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Airbus A380, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "plane_boeing_747",
+    "category": "plane",
+    "rarity": 4,
+    "nameEn": "Boeing 747",
+    "nameZh": "波音 747",
+    "output_filename": "plane_boeing_747.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Boeing 747, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_sailboat",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Sailboat",
+    "nameZh": "帆船",
+    "output_filename": "ship_train_sailboat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Sailboat",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_ferry",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Ferry",
+    "nameZh": "渡輪",
+    "output_filename": "ship_train_ferry.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Ferry",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_cruise_ship",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Cruise Ship",
+    "nameZh": "郵輪",
+    "output_filename": "ship_train_cruise_ship.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Cruise Ship",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_tugboat",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Tugboat",
+    "nameZh": "拖船",
+    "output_filename": "ship_train_tugboat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tugboat",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_fishing_boat",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Fishing Boat",
+    "nameZh": "漁船",
+    "output_filename": "ship_train_fishing_boat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fishing Boat",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_rowboat",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Rowboat",
+    "nameZh": "划艇",
+    "output_filename": "ship_train_rowboat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rowboat",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_speedboat",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Speedboat",
+    "nameZh": "快艇",
+    "output_filename": "ship_train_speedboat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Speedboat",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_canoe",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Canoe",
+    "nameZh": "獨木舟",
+    "output_filename": "ship_train_canoe.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Canoe",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_submarine",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Submarine",
+    "nameZh": "潛水艇",
+    "output_filename": "ship_train_submarine.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Submarine",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_cargo_ship",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Cargo Ship",
+    "nameZh": "貨輪",
+    "output_filename": "ship_train_cargo_ship.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Cargo Ship",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_train",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Train",
+    "nameZh": "火車",
+    "output_filename": "ship_train_train.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Train",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_steam_train",
+    "category": "ship_train",
+    "rarity": 1,
+    "nameEn": "Steam Train",
+    "nameZh": "蒸汽火車",
+    "output_filename": "ship_train_steam_train.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Steam Train",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_high_speed_train",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "High-speed Train",
+    "nameZh": "高鐵",
+    "output_filename": "ship_train_high_speed_train.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon High-speed Train",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_subway",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "Subway",
+    "nameZh": "捷運",
+    "output_filename": "ship_train_subway.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Subway",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_tram",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "Tram",
+    "nameZh": "電車",
+    "output_filename": "ship_train_tram.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Tram",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_monorail",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "Monorail",
+    "nameZh": "單軌電車",
+    "output_filename": "ship_train_monorail.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Monorail",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_cable_car",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "Cable Car",
+    "nameZh": "纜車",
+    "output_filename": "ship_train_cable_car.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Cable Car",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_freight_train",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "Freight Train",
+    "nameZh": "貨運列車",
+    "output_filename": "ship_train_freight_train.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Freight Train",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_raft",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "Raft",
+    "nameZh": "木筏",
+    "output_filename": "ship_train_raft.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Raft",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_jet_ski",
+    "category": "ship_train",
+    "rarity": 2,
+    "nameEn": "Jet Ski",
+    "nameZh": "水上摩托車",
+    "output_filename": "ship_train_jet_ski.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Jet Ski",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_pirate_ship",
+    "category": "ship_train",
+    "rarity": 3,
+    "nameEn": "Pirate Ship",
+    "nameZh": "海盜船",
+    "output_filename": "ship_train_pirate_ship.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Pirate Ship, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_aircraft_carrier",
+    "category": "ship_train",
+    "rarity": 3,
+    "nameEn": "Aircraft Carrier",
+    "nameZh": "航空母艦",
+    "output_filename": "ship_train_aircraft_carrier.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Aircraft Carrier, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_icebreaker",
+    "category": "ship_train",
+    "rarity": 3,
+    "nameEn": "Icebreaker",
+    "nameZh": "破冰船",
+    "output_filename": "ship_train_icebreaker.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Icebreaker, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_hovercraft",
+    "category": "ship_train",
+    "rarity": 3,
+    "nameEn": "Hovercraft",
+    "nameZh": "氣墊船",
+    "output_filename": "ship_train_hovercraft.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Hovercraft, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "ship_train_maglev_train",
+    "category": "ship_train",
+    "rarity": 4,
+    "nameEn": "Maglev Train",
+    "nameZh": "磁浮列車",
+    "output_filename": "ship_train_maglev_train.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Maglev Train, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_rocket",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Rocket",
+    "nameZh": "火箭",
+    "output_filename": "space_rocket.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rocket, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_space_shuttle",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Space Shuttle",
+    "nameZh": "太空梭",
+    "output_filename": "space_space_shuttle.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Space Shuttle, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_satellite",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Satellite",
+    "nameZh": "人造衛星",
+    "output_filename": "space_satellite.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Satellite, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_astronaut",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Astronaut",
+    "nameZh": "太空人",
+    "output_filename": "space_astronaut.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Astronaut, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_moon",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Moon",
+    "nameZh": "月球",
+    "output_filename": "space_moon.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Moon, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_sun",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Sun",
+    "nameZh": "太陽",
+    "output_filename": "space_sun.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Sun, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_earth",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Earth",
+    "nameZh": "地球",
+    "output_filename": "space_earth.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Earth, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_star",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Star",
+    "nameZh": "星星",
+    "output_filename": "space_star.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Star, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_space_station",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Space Station",
+    "nameZh": "太空站",
+    "output_filename": "space_space_station.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Space Station, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_telescope",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Telescope",
+    "nameZh": "望遠鏡",
+    "output_filename": "space_telescope.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Telescope, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_comet",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Comet",
+    "nameZh": "彗星",
+    "output_filename": "space_comet.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Comet, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_meteor",
+    "category": "space",
+    "rarity": 1,
+    "nameEn": "Meteor",
+    "nameZh": "流星",
+    "output_filename": "space_meteor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Meteor, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_mars",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Mars",
+    "nameZh": "火星",
+    "output_filename": "space_mars.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Mars, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_jupiter",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Jupiter",
+    "nameZh": "木星",
+    "output_filename": "space_jupiter.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Jupiter, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_saturn",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Saturn",
+    "nameZh": "土星",
+    "output_filename": "space_saturn.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Saturn, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_venus",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Venus",
+    "nameZh": "金星",
+    "output_filename": "space_venus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Venus, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_mercury",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Mercury",
+    "nameZh": "水星",
+    "output_filename": "space_mercury.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Mercury, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_mars_rover",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Mars Rover",
+    "nameZh": "火星探測車",
+    "output_filename": "space_mars_rover.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Mars Rover, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_lunar_module",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Lunar Module",
+    "nameZh": "登月艙",
+    "output_filename": "space_lunar_module.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Lunar Module, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_space_capsule",
+    "category": "space",
+    "rarity": 2,
+    "nameEn": "Space Capsule",
+    "nameZh": "太空艙",
+    "output_filename": "space_space_capsule.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Space Capsule, outer space theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_neptune",
+    "category": "space",
+    "rarity": 3,
+    "nameEn": "Neptune",
+    "nameZh": "海王星",
+    "output_filename": "space_neptune.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Neptune, outer space theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_uranus",
+    "category": "space",
+    "rarity": 3,
+    "nameEn": "Uranus",
+    "nameZh": "天王星",
+    "output_filename": "space_uranus.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Uranus, outer space theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_black_hole",
+    "category": "space",
+    "rarity": 3,
+    "nameEn": "Black Hole",
+    "nameZh": "黑洞",
+    "output_filename": "space_black_hole.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Black Hole, outer space theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_milky_way",
+    "category": "space",
+    "rarity": 4,
+    "nameEn": "Milky Way",
+    "nameZh": "銀河",
+    "output_filename": "space_milky_way.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Milky Way, outer space theme, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "space_hubble_telescope",
+    "category": "space",
+    "rarity": 4,
+    "nameEn": "Hubble Space Telescope",
+    "nameZh": "哈伯太空望遠鏡",
+    "output_filename": "space_hubble_telescope.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Hubble Space Telescope, outer space theme, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_fire_truck",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Fire Truck",
+    "nameZh": "消防車",
+    "output_filename": "rescue_fire_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fire Truck, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_police_car",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Police Car",
+    "nameZh": "警車",
+    "output_filename": "rescue_police_car.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Police Car, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_ambulance",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Ambulance",
+    "nameZh": "救護車",
+    "output_filename": "rescue_ambulance.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Ambulance, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_firefighter",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Firefighter",
+    "nameZh": "消防員",
+    "output_filename": "rescue_firefighter.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Firefighter, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_police_officer",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Police Officer",
+    "nameZh": "警察",
+    "output_filename": "rescue_police_officer.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Police Officer, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_paramedic",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Paramedic",
+    "nameZh": "救護員",
+    "output_filename": "rescue_paramedic.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Paramedic, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_doctor",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Doctor",
+    "nameZh": "醫生",
+    "output_filename": "rescue_doctor.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Doctor, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_nurse",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Nurse",
+    "nameZh": "護理師",
+    "output_filename": "rescue_nurse.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Nurse, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_fire_hydrant",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Fire Hydrant",
+    "nameZh": "消防栓",
+    "output_filename": "rescue_fire_hydrant.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fire Hydrant, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_fire_extinguisher",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Fire Extinguisher",
+    "nameZh": "滅火器",
+    "output_filename": "rescue_fire_extinguisher.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fire Extinguisher, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_fire_hose",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Fire Hose",
+    "nameZh": "消防水帶",
+    "output_filename": "rescue_fire_hose.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fire Hose, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_safety_helmet",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Safety Helmet",
+    "nameZh": "安全帽",
+    "output_filename": "rescue_safety_helmet.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Safety Helmet, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_life_ring",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Life Ring",
+    "nameZh": "救生圈",
+    "output_filename": "rescue_life_ring.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Life Ring, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_life_jacket",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Life Jacket",
+    "nameZh": "救生衣",
+    "output_filename": "rescue_life_jacket.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Life Jacket, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_stretcher",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Stretcher",
+    "nameZh": "擔架",
+    "output_filename": "rescue_stretcher.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Stretcher, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_first_aid_kit",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "First Aid Kit",
+    "nameZh": "急救箱",
+    "output_filename": "rescue_first_aid_kit.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon First Aid Kit, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_police_motorcycle",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Police Motorcycle",
+    "nameZh": "警用機車",
+    "output_filename": "rescue_police_motorcycle.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Police Motorcycle, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_helicopter",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Rescue Helicopter",
+    "nameZh": "救援直升機",
+    "output_filename": "rescue_rescue_helicopter.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Helicopter, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_dog",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Rescue Dog",
+    "nameZh": "搜救犬",
+    "output_filename": "rescue_rescue_dog.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Dog, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_traffic_cone",
+    "category": "rescue",
+    "rarity": 1,
+    "nameEn": "Traffic Cone",
+    "nameZh": "交通錐",
+    "output_filename": "rescue_traffic_cone.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Traffic Cone, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_ladder_truck",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Ladder Truck",
+    "nameZh": "雲梯車",
+    "output_filename": "rescue_ladder_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Ladder Truck, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_fireboat",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Fireboat",
+    "nameZh": "消防船",
+    "output_filename": "rescue_fireboat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fireboat, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_boat",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Rescue Boat",
+    "nameZh": "救生艇",
+    "output_filename": "rescue_rescue_boat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Boat, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_coast_guard_boat",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Coast Guard Boat",
+    "nameZh": "海巡艇",
+    "output_filename": "rescue_coast_guard_boat.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Coast Guard Boat, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_air_ambulance",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Air Ambulance",
+    "nameZh": "空中救護直升機",
+    "output_filename": "rescue_air_ambulance.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Air Ambulance, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_command_vehicle",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Command Vehicle",
+    "nameZh": "指揮車",
+    "output_filename": "rescue_command_vehicle.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Command Vehicle, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_walkie_talkie",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Walkie-talkie",
+    "nameZh": "無線電對講機",
+    "output_filename": "rescue_walkie_talkie.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Walkie-talkie, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_robot",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Rescue Robot",
+    "nameZh": "救難機器人",
+    "output_filename": "rescue_rescue_robot.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Robot, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_lifeguard",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Lifeguard",
+    "nameZh": "救生員",
+    "output_filename": "rescue_lifeguard.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Lifeguard, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_warning_light",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Warning Light",
+    "nameZh": "警示燈",
+    "output_filename": "rescue_warning_light.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Warning Light, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_rope",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Rescue Rope",
+    "nameZh": "救援繩",
+    "output_filename": "rescue_rescue_rope.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Rope, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_siren",
+    "category": "rescue",
+    "rarity": 2,
+    "nameEn": "Siren",
+    "nameZh": "警報器",
+    "output_filename": "rescue_siren.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Siren, rescue and emergency helper theme",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_truck",
+    "category": "rescue",
+    "rarity": 3,
+    "nameEn": "Rescue Truck",
+    "nameZh": "救難車",
+    "output_filename": "rescue_rescue_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Truck, rescue and emergency helper theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_fire_plane",
+    "category": "rescue",
+    "rarity": 3,
+    "nameEn": "Fire-fighting Plane",
+    "nameZh": "滅火飛機",
+    "output_filename": "rescue_fire_plane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Fire-fighting Plane, rescue and emergency helper theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_airport_fire_truck",
+    "category": "rescue",
+    "rarity": 3,
+    "nameEn": "Airport Fire Truck",
+    "nameZh": "機場消防車",
+    "output_filename": "rescue_airport_fire_truck.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Airport Fire Truck, rescue and emergency helper theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_drone",
+    "category": "rescue",
+    "rarity": 3,
+    "nameEn": "Rescue Drone",
+    "nameZh": "搜救無人機",
+    "output_filename": "rescue_rescue_drone.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Drone, rescue and emergency helper theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_snow_rescue_vehicle",
+    "category": "rescue",
+    "rarity": 3,
+    "nameEn": "Snow Rescue Vehicle",
+    "nameZh": "雪地救援車",
+    "output_filename": "rescue_snow_rescue_vehicle.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Snow Rescue Vehicle, rescue and emergency helper theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_heavy_rescue_crane",
+    "category": "rescue",
+    "rarity": 3,
+    "nameEn": "Heavy Rescue Crane",
+    "nameZh": "重型救難吊車",
+    "output_filename": "rescue_heavy_rescue_crane.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Heavy Rescue Crane, rescue and emergency helper theme, a few sparkles",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_rescue_submarine",
+    "category": "rescue",
+    "rarity": 4,
+    "nameEn": "Rescue Submarine",
+    "nameZh": "深海救難潛艇",
+    "output_filename": "rescue_rescue_submarine.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Rescue Submarine, rescue and emergency helper theme, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  },
+  {
+    "id": "rescue_hospital_ship",
+    "category": "rescue",
+    "rarity": 4,
+    "nameEn": "Hospital Ship",
+    "nameZh": "醫療船",
+    "output_filename": "rescue_hospital_ship.webp",
+    "prompt": "cute kid-friendly flat sticker-style illustration, bold clean outlines, bright cheerful colors, plain light background, centered, no text, a cute cartoon Hospital Ship, rescue and emergency helper theme, golden sparkles and a magical glow",
+    "negative_prompt": "text, letters, watermark, logo, photo, realistic, scary, gore, blood, dark, cluttered background, cropped, deformed"
+  }
+]
