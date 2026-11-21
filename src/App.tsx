@@ -1,56 +1,34 @@
 import { useState } from 'react';
 import { SetupScreen } from './components/SetupScreen';
+import { SkillSelectScreen } from './components/SkillSelectScreen';
 import { GamePlayScreen } from './components/GamePlayScreen';
-import { ShopScreen } from './components/ShopScreen';
-import { SpaceScreen } from './components/SpaceScreen';
-import { useGameStore } from './store/useGameStore';
+import { useCurrentUser } from './store/useGameStore';
 import './App.css';
 
+type Screen = 'setup' | 'skills' | 'game';
+
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<'setup' | 'game' | 'shop' | 'space'>('setup');
-  const { currentUserId } = useGameStore();
+  const [screen, setScreen] = useState<Screen>('setup');
+  const [skillId, setSkillId] = useState<string | null>(null);
+  const user = useCurrentUser();
 
-  const handleStartGame = () => {
-    if (currentUserId) {
-      setCurrentScreen('game');
-    } else {
-      alert('請先選擇或建立一個使用者！');
-    }
-  };
-
-  const handleGoToShop = () => {
-    if (currentUserId) {
-      setCurrentScreen('shop');
-    } else {
-      alert('請先選擇或建立一個使用者！');
-    }
-  };
-
-  const handleGoToSpace = () => {
-    if (currentUserId) {
-      setCurrentScreen('space');
-    } else {
-      alert('請先選擇或建立一個使用者！');
-    }
-  };
-
-  const handleBackToSetup = () => {
-    setCurrentScreen('setup');
-  };
+  // Without a current user only the setup screen makes sense.
+  const current: Screen = !user ? 'setup' : screen === 'game' && !skillId ? 'skills' : screen;
 
   return (
     <div className="App">
-      {currentScreen === 'setup' && (
-        <SetupScreen onStart={handleStartGame} onShop={handleGoToShop} onSpace={handleGoToSpace} />
+      {current === 'setup' && <SetupScreen onStart={() => setScreen('skills')} />}
+      {current === 'skills' && (
+        <SkillSelectScreen
+          onBack={() => setScreen('setup')}
+          onSelect={(id) => {
+            setSkillId(id);
+            setScreen('game');
+          }}
+        />
       )}
-      {currentScreen === 'game' && (
-        <GamePlayScreen onBack={handleBackToSetup} />
-      )}
-      {currentScreen === 'shop' && (
-        <ShopScreen onBack={handleBackToSetup} />
-      )}
-      {currentScreen === 'space' && (
-        <SpaceScreen onBack={handleBackToSetup} />
+      {current === 'game' && skillId && (
+        <GamePlayScreen key={skillId} skillId={skillId} onBack={() => setScreen('skills')} />
       )}
     </div>
   );

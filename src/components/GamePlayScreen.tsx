@@ -1,252 +1,305 @@
-import React, { useState, useEffect } from 'react';
-import { useGameStore } from '../store/useGameStore';
-import { generateQuestion, type Question } from '../utils/mathEngine';
+import React, { useEffect, useRef, useState } from 'react';
+import { getSkill } from '../data/skills';
+import { useCurrentUser, useGameStore } from '../store/useGameStore';
 import { audioService } from '../services/audioService';
 import { t } from '../utils/i18n';
+import { checkAnswer, generateSession, type Question } from '../utils/mathEngine';
+import { questionCoins, sessionBonus } from '../utils/rewards';
+import { ObjectAid } from './ObjectAid';
 
-export const GamePlayScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-    const { settings, addCoins, language } = useGameStore();
-    const [questions, setQuestions] = useState<Question[]>([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [currentAnswer, setCurrentAnswer] = useState('');
-    const [currentRemainder, setCurrentRemainder] = useState('');
-    const [activeBox, setActiveBox] = useState<'q' | 'r'>('q');
-    const [feedback, setFeedback] = useState<'none' | 'correct' | 'incorrect'>('none');
-    const [score, setScore] = useState(0);
-    const [isFinished, setIsFinished] = useState(false);
+const QUESTION_COUNT = { kinder: 5, grade4: 10 } as const;
+const MAX_DIGITS = { kinder: 2, grade4: 8 } as const;
+const OBJECT_AID_SKILLS = ['k_add_5', 'k_add_10', 'k_sub_5', 'k_sub_10', 'k_make10'];
+
+interface QueueItem {
+    question: Question;
+    isRetry: boolean;
+}
+
+type Feedback = 'none' | 'correct' | 'incorrect';
+type Box = 'q' | 'r';
+
+function formatQuestion(q: Question): string {
+    return `${q.left ?? '?'} ${q.operator} ${q.right ?? '?'} = ${q.result ?? '?'}`;
+}
+
+interface Props {
+    skillId: string;
+    onBack: () => void;
+}
+
+export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
+    const user = useCurrentUser();
+    const addCoins = useGameStore((s) => s.addCoins);
+    const recordAnswer = useGameStore((s) => s.recordAnswer);
+
+    const mode = user?.mode ?? 'grade4';
+    const lang = user?.language ?? 'zh-TW';
+    const isKinder = mode === 'kinder';
+    const skill = getSkill(skillId);
+    const totalQuestions = QUESTION_COUNT[mode];
+
+    // Generated once on mount; retries (kinder) are appended to the end of the queue.
+    const [queue, setQueue] = useState<QueueItem[]>(() =>
+        generateSession(skillId, totalQuestions).map((question) => ({ question, isRetry: false })),
+    );
+    const [index, setIndex] = useState(0);
+    const [answer, setAnswer] = useState('');
+    const [remainder, setRemainder] = useState('');
+    const [activeBox, setActiveBox] = useState<Box>('q');
+    const [feedback, setFeedback] = useState<Feedback>('none');
+    const [correctCount, setCorrectCount] = useState(0);
     const [earnedCoins, setEarnedCoins] = useState(0);
-    const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
+    const [finished, setFinished] = useState<{ coins: number; perfect: boolean } | null>(null);
+
+    const startTimeRef = useRef(0);
+    const timerRef = useRef<number | undefined>(undefined);
+    const keyHandlerRef = useRef<(e: KeyboardEvent) => void>(() => {});
 
     useEffect(() => {
-        // Generate questions on mount
-        const newQuestions = Array.from({ length: settings.questionCount || 10 }).map(() =>
-            generateQuestion(settings)
-        );
-        setQuestions(newQuestions);
-        setQuestionStartTime(Date.now());
-    }, [settings]);
+        startTimeRef.current = Date.now();
+    }, [index]);
 
-    const handleNumberClick = (num: number) => {
+    useEffect(() => () => window.clearTimeout(timerRef.current), []);
+
+    const current = queue[index]?.question;
+    const isDivision = current?.operator === '÷';
+    const maxDigits = MAX_DIGITS[mode];
+
+    const appendDigit = (digit: number) => {
         if (feedback !== 'none') return;
-        if (activeBox === 'q') {
-            setCurrentAnswer((prev) => (prev + num).slice(0, 4));
-        } else {
-            setCurrentRemainder((prev) => (prev + num).slice(0, 4));
-        }
+        const setter = activeBox === 'q' ? setAnswer : setRemainder;
+        setter((prev) => (prev + digit).slice(0, maxDigits));
     };
 
-    const handleBackspace = () => {
+    const backspace = () => {
         if (feedback !== 'none') return;
-        if (activeBox === 'q') {
-            setCurrentAnswer((prev) => prev.slice(0, -1));
-        } else {
-            setCurrentRemainder((prev) => prev.slice(0, -1));
-        }
+        (activeBox === 'q' ? setAnswer : setRemainder)((prev) => prev.slice(0, -1));
     };
 
-    const handleClear = () => {
-        if (feedback !== 'none') return;
-        setCurrentAnswer('');
-        setCurrentRemainder('');
+    const toggleBox = () => {
+        if (isDivision && feedback === 'none') setActiveBox((b) => (b === 'q' ? 'r' : 'q'));
     };
 
-    const handleSubmit = () => {
-        if (!currentAnswer) return;
-        const currentQ = questions[currentIndex];
-        
-        // For division, both quotient and remainder must be checked
-        const isCorrectQ = parseInt(currentAnswer) === currentQ.correctAnswer;
-        const isCorrectR = currentQ.correctRemainder !== undefined 
-            ? parseInt(currentRemainder || '0') === currentQ.correctRemainder 
-            : true;
-        
-        const isCorrect = isCorrectQ && isCorrectR;
-        const answerTimeSec = (Date.now() - questionStartTime) / 1000;
-
-        let qCoins = 0;
-        if (isCorrect) {
-            setFeedback('correct');
-            audioService.playCorrect();
-            setScore((s) => s + 1);
-
-            let multiplier = 1.0;
-            const { leftDigits, rightDigits, operations } = settings;
-            if (leftDigits >= 2 || rightDigits >= 2) multiplier += 0.2;
-            if (operations.some(op => op === '*' || op === '/')) multiplier += 0.5;
-            if (operations.length > 1) multiplier += 0.3;
-
-            let baseCoin = 10;
-            if (answerTimeSec <= 5) baseCoin = 30;
-            else if (answerTimeSec <= 10) baseCoin = 20;
-
-            qCoins = Math.round(baseCoin * multiplier);
-            setEarnedCoins(prev => prev + qCoins);
-        } else {
-            setFeedback('incorrect');
-            audioService.playIncorrect();
-        }
-
-        setTimeout(() => {
-            if (currentIndex < questions.length - 1) {
-                setCurrentIndex((prev) => prev + 1);
-                setCurrentAnswer('');
-                setCurrentRemainder('');
-                setActiveBox('q');
-                setFeedback('none');
-                setQuestionStartTime(Date.now());
-            } else {
-                finishGame(isCorrect ? score + 1 : score);
-            }
-        }, feedback === 'incorrect' ? 2000 : 1000); // Give more time to see correct answer if incorrect
-    };
-
-    const finishGame = (finalScore: number) => {
-        setIsFinished(true);
-        
-        setEarnedCoins((prevCoins) => {
-            let totalCoins = prevCoins;
-            if (finalScore === (settings.questionCount || 10)) {
-                totalCoins = Math.round(totalCoins * 1.2);
-            }
-            addCoins(totalCoins);
-            return totalCoins;
+    const submit = () => {
+        if (!current || feedback !== 'none' || answer === '') return;
+        const item = queue[index];
+        const timeMs = Date.now() - startTimeRef.current;
+        const ok = checkAnswer(current, {
+            answer: Number(answer),
+            remainder: isDivision ? Number(remainder || 0) : undefined,
         });
 
-        const growthAmount = finalScore;
-        useGameStore.getState().growPlants(growthAmount);
-        audioService.playWin();
+        let nextCorrect = correctCount;
+        let nextEarned = earnedCoins;
+        let nextQueueLength = queue.length;
+
+        // Retries do not count towards stats or coins; only the first attempt does.
+        if (!item.isRetry) {
+            recordAnswer(skillId, ok, timeMs);
+            if (ok) {
+                nextCorrect += 1;
+                nextEarned += skill ? questionCoins(skill, timeMs) : 0;
+            } else if (isKinder) {
+                setQueue((prev) => [...prev, { question: current, isRetry: true }]);
+                nextQueueLength += 1;
+            }
+        }
+
+        setCorrectCount(nextCorrect);
+        setEarnedCoins(nextEarned);
+        setFeedback(ok ? 'correct' : 'incorrect');
+        if (ok) audioService.playCorrect();
+        else audioService.playIncorrect();
+
+        timerRef.current = window.setTimeout(
+            () => {
+                if (index + 1 < nextQueueLength) {
+                    setIndex(index + 1);
+                    setAnswer('');
+                    setRemainder('');
+                    setActiveBox('q');
+                    setFeedback('none');
+                } else {
+                    const coins = sessionBonus(nextEarned, nextCorrect, totalQuestions);
+                    addCoins(coins);
+                    audioService.playWin();
+                    setFinished({ coins, perfect: nextCorrect === totalQuestions });
+                }
+            },
+            ok ? 1000 : 2000,
+        );
     };
 
-    if (questions.length === 0) return <div>Loading...</div>;
+    useEffect(() => {
+        keyHandlerRef.current = (e) => {
+            if (e.key >= '0' && e.key <= '9') appendDigit(Number(e.key));
+            else if (e.key === 'Backspace') backspace();
+            else if (e.key === 'Enter') submit();
+            else if (e.key === 'Tab' && isDivision) {
+                e.preventDefault();
+                toggleBox();
+            }
+        };
+    });
 
-    if (isFinished) {
+    useEffect(() => {
+        const listener = (e: KeyboardEvent) => keyHandlerRef.current(e);
+        window.addEventListener('keydown', listener);
+        return () => window.removeEventListener('keydown', listener);
+    }, []);
+
+    if (!user || !current) return null;
+
+    if (finished) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden">
-                <div className="absolute top-10 left-[10%] text-white/60 text-6xl animate-pulse pointer-events-none">☁️</div>
-                <div className="absolute top-32 right-[15%] text-white/50 text-5xl animate-pulse pointer-events-none" style={{ animationDelay: '1.5s' }}>☁️</div>
-
-                <div className="bg-white/95 p-8 rounded-3xl shadow-2xl shadow-green-900/40 text-center max-w-md w-full border-[6px] border-[#d4a373] relative backdrop-blur-sm">
-                    <h2 className="text-4xl font-bold text-green-800 mb-4 drop-shadow-sm">{t('practiceComplete', language)}</h2>
-                    <p className="text-2xl text-amber-800 mb-2 font-bold">{t('correctCount', language)}: {score} / {questions.length}</p>
-                    <p className="text-3xl font-black text-amber-600 mb-8">+ {earnedCoins} {t('coinsEarned', language)} 🪙</p>
+            <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center p-4 font-sans">
+                <div className="bg-white/95 p-8 rounded-3xl shadow-2xl text-center max-w-md w-full border-[6px] border-[#d4a373]">
+                    <h2 className="text-4xl font-bold text-green-800 mb-4">{t('practiceComplete', lang)}</h2>
+                    <p className="text-2xl text-amber-800 mb-2 font-bold">
+                        {t('correctCount', lang)}: {correctCount} / {totalQuestions}
+                    </p>
+                    <p className="text-3xl font-black text-amber-600 mb-2">
+                        + {finished.coins} {t('coinsEarned', lang)} 🪙
+                    </p>
+                    {finished.perfect && <p className="text-lg font-bold text-green-700 mb-6">{t('perfectBonus', lang)}</p>}
                     <button
                         onClick={onBack}
-                        className="w-full bg-green-500 hover:bg-green-400 text-white text-2xl font-black py-4 rounded-xl shadow-[0_8px_15px_rgba(34,197,94,0.3)] transform transition active:translate-y-2 border-b-8 border-green-700"
+                        className="w-full mt-4 bg-green-500 hover:bg-green-400 text-white text-2xl font-black py-4 rounded-xl border-b-8 border-green-700 transition active:translate-y-2 active:border-b-0"
                     >
-                        {t('backHome', language)}
+                        {t('backToSkills', lang)}
                     </button>
                 </div>
             </div>
         );
     }
 
-    const currentQ = questions[currentIndex];
+    const keyHeight = isKinder ? 'min-h-16 text-4xl' : 'min-h-14 text-3xl';
+    const wrongForKinder = feedback === 'incorrect' && isKinder;
+    const background =
+        feedback === 'correct'
+            ? 'from-green-300 to-green-500'
+            : feedback === 'incorrect' && !isKinder
+              ? 'from-red-200 to-red-400'
+              : wrongForKinder
+                ? 'from-amber-200 to-amber-300'
+                : 'from-sky-300 via-sky-100 to-green-400';
+
+    const boxClass = (box: Box) => {
+        const border =
+            feedback === 'correct'
+                ? 'border-green-400 text-green-300'
+                : feedback === 'incorrect' && !isKinder
+                  ? 'border-red-500 text-red-400'
+                  : wrongForKinder
+                    ? 'border-amber-400 text-amber-200'
+                    : activeBox === box || !isDivision
+                      ? 'border-[#e6ccb2] text-white'
+                      : 'border-[#8b5a2b] text-[#dddddd]';
+        return `h-28 bg-[#2c3e50] rounded-2xl border-8 flex flex-col items-center justify-center text-5xl font-bold shadow-inner ${border}`;
+    };
+
+    const showCorrection = feedback === 'incorrect' && !isKinder;
 
     return (
-        <div className={`min-h-screen flex flex-col p-4 transition-colors duration-500 font-sans relative overflow-hidden ${feedback === 'correct' ? 'bg-gradient-to-b from-green-300 to-green-500' : feedback === 'incorrect' ? 'bg-gradient-to-b from-red-200 to-red-400' : 'bg-gradient-to-b from-sky-300 via-sky-100 to-green-400'
-            }`}>
-            {/* Ambient decorative clouds */}
-            {feedback === 'none' && (
-                <>
-                    <div className="absolute top-10 left-[10%] text-white/60 text-6xl animate-pulse pointer-events-none">☁️</div>
-                    <div className="absolute top-32 right-[15%] text-white/50 text-5xl animate-pulse pointer-events-none" style={{ animationDelay: '1.5s' }}>☁️</div>
-                </>
-            )}
-
-            {/* Header */}
-            <div className="flex justify-between items-center mb-4 z-10">
-                <button onClick={onBack} className="text-amber-900 hover:text-amber-700 transition font-bold text-lg bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm border-2 border-amber-900/10 shadow-sm">{t('exit', language)}</button>
-                <div className="text-xl font-bold text-green-900 bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm border-2 border-green-900/10 shadow-sm">
-                    {t('question', language)} {currentIndex + 1} / {questions.length}
+        <div className={`min-h-screen flex flex-col p-4 transition-colors duration-500 font-sans bg-gradient-to-b ${background}`}>
+            <div className="flex justify-between items-center mb-4">
+                <button
+                    onClick={onBack}
+                    className="min-h-12 text-amber-900 font-bold text-lg bg-white/50 px-4 rounded-xl border-2 border-amber-900/10"
+                >
+                    {t('exit', lang)}
+                </button>
+                <div className="text-xl font-bold text-green-900 bg-white/50 px-4 py-2 rounded-xl border-2 border-green-900/10">
+                    {t('question', lang)} {index + 1} / {queue.length}
                 </div>
             </div>
 
-            {/* Question Display */}
-            <div className="flex-1 flex flex-col items-center justify-center mb-8 z-10">
-                <div className="text-7xl font-black text-amber-900 tracking-wider mb-8 drop-shadow-md bg-white/60 px-8 py-4 rounded-3xl border-4 border-amber-900/20 backdrop-blur-sm shadow-xl">
-                    {currentQ.leftOperand} {currentQ.operator === '*' ? '×' : currentQ.operator === '/' ? '÷' : currentQ.operator} {currentQ.rightOperand} = ?
+            <div className="flex-1 flex flex-col items-center justify-center mb-6">
+                <div className="text-5xl sm:text-7xl font-black text-amber-900 tracking-wider mb-4 bg-white/60 px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl">
+                    {formatQuestion(current)}
                 </div>
-                
-                {/* Dual Box for Division */}
-                {currentQ.operator === '/' ? (
+
+                {isKinder && OBJECT_AID_SKILLS.includes(skillId) && (
+                    <div className="mb-4">
+                        <ObjectAid question={current} />
+                    </div>
+                )}
+
+                {isDivision ? (
                     <div className="flex items-center gap-4">
-                        <div 
-                            onClick={() => feedback === 'none' && setActiveBox('q')}
-                            className={`h-28 w-36 bg-[#2c3e50] rounded-2xl border-8 flex flex-col items-center justify-center text-5xl font-bold shadow-inner ${
-                                feedback === 'incorrect' ? 'border-red-500 text-red-400' :
-                                feedback === 'correct' ? 'border-green-400 text-green-300' :
-                                activeBox === 'q' ? 'border-[#e6ccb2] text-white' : 'border-[#8b5a2b] text-[#dddddd]'
-                            }`}>
-                            <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('quotient', language)}</span>
-                            {feedback === 'incorrect' ? currentQ.correctAnswer : currentAnswer}
+                        <div onClick={() => feedback === 'none' && setActiveBox('q')} className={`${boxClass('q')} w-36`}>
+                            <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('quotient', lang)}</span>
+                            {showCorrection ? current.answer : answer}
                         </div>
-                        <div className="text-5xl font-black text-amber-900 drop-shadow-sm">...</div>
-                        <div 
-                            onClick={() => feedback === 'none' && setActiveBox('r')}
-                            className={`h-28 w-36 bg-[#2c3e50] rounded-2xl border-8 flex flex-col items-center justify-center text-5xl font-bold shadow-inner ${
-                                feedback === 'incorrect' ? 'border-red-500 text-red-400' :
-                                feedback === 'correct' ? 'border-green-400 text-green-300' :
-                                activeBox === 'r' ? 'border-[#e6ccb2] text-white' : 'border-[#8b5a2b] text-[#dddddd]'
-                            }`}>
-                            <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('remainder', language)}</span>
-                            {feedback === 'incorrect' ? (currentQ.correctRemainder ?? 0) : currentRemainder}
+                        <div className="text-5xl font-black text-amber-900">...</div>
+                        <div onClick={() => feedback === 'none' && setActiveBox('r')} className={`${boxClass('r')} w-36`}>
+                            <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('remainder', lang)}</span>
+                            {showCorrection ? (current.remainder ?? 0) : remainder}
                         </div>
                     </div>
                 ) : (
-                    <div className={`h-28 w-full max-w-xs bg-[#2c3e50] rounded-2xl border-8 flex items-center justify-center text-6xl font-bold shadow-inner ${
-                        feedback === 'correct' ? 'border-green-400 text-green-300' :
-                        feedback === 'incorrect' ? 'border-red-500 text-red-400' : 'border-[#8b5a2b] text-white'
-                        }`}>
-                        {feedback === 'incorrect' ? currentQ.correctAnswer : currentAnswer}
-                    </div>
+                    <div className={`${boxClass('q')} w-full max-w-xs`}>{showCorrection ? current.answer : answer}</div>
                 )}
 
-                {/* Feedback Message */}
                 {feedback === 'correct' && (
-                    <div className="mt-6 text-5xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] animate-bounce">{t('correct', language)}</div>
+                    <div className="mt-4 text-4xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] animate-bounce">
+                        {t('correct', lang)}
+                    </div>
                 )}
                 {feedback === 'incorrect' && (
-                    <div className="mt-6 text-5xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] animate-shake">{t('incorrect', language)}</div>
+                    <div className="mt-4 text-center text-3xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+                        <div>{t('incorrect', lang)}</div>
+                        {isKinder && <div className="text-xl mt-1">{t('tryAgainLater', lang)}</div>}
+                    </div>
                 )}
             </div>
 
-            {/* Numpad */}
-            <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto w-full z-10">
+            <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto w-full">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                     <button
                         key={num}
-                        onClick={() => handleNumberClick(num)}
-                        className="bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] text-4xl font-black py-4 rounded-2xl shadow-md active:translate-y-1 active:border-b-0 transition"
+                        onClick={() => appendDigit(num)}
+                        className={`${keyHeight} bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] font-black rounded-2xl shadow-md active:translate-y-1 active:border-b-0 transition`}
                     >
                         {num}
                     </button>
                 ))}
-                
-                {currentQ.operator === '/' ? (
-                    <button 
-                        onClick={() => setActiveBox(activeBox === 'q' ? 'r' : 'q')}
-                        className={`border-b-[6px] text-2xl font-black py-4 rounded-2xl shadow-md transition active:translate-y-1 active:border-b-0 ${
-                            activeBox === 'q' ? 'bg-[#e6ccb2] border-[#d4a373] text-amber-900' : 'bg-[#bc8a5f] border-[#9c6644] text-white'
+                {isDivision ? (
+                    <button
+                        onClick={toggleBox}
+                        className={`${keyHeight} text-2xl border-b-[6px] font-black rounded-2xl shadow-md transition active:translate-y-1 active:border-b-0 ${
+                            activeBox === 'q'
+                                ? 'bg-[#e6ccb2] border-[#d4a373] text-amber-900'
+                                : 'bg-[#bc8a5f] border-[#9c6644] text-white'
                         }`}
                     >
-                        {t('remainder', language).charAt(0)}
+                        {activeBox === 'q' ? t('remainder', lang) : t('quotient', lang)}
                     </button>
                 ) : (
-                    <button onClick={handleClear} className="bg-red-400 text-white border-b-[6px] border-red-600 text-2xl font-black py-4 rounded-2xl shadow-md transition active:translate-y-1 active:border-b-0">C</button>
+                    <div />
                 )}
-                
-                <button onClick={() => handleNumberClick(0)} className="bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] text-4xl font-black py-4 rounded-2xl shadow-md active:translate-y-1 active:border-b-0 transition">0</button>
-                <button onClick={handleBackspace} className="bg-[#e6ccb2] text-amber-900 border-b-[6px] border-[#d4a373] text-3xl font-black py-4 rounded-2xl shadow-md transition active:translate-y-1 active:border-b-0">⌫</button>
+                <button
+                    onClick={() => appendDigit(0)}
+                    className={`${keyHeight} bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] font-black rounded-2xl shadow-md active:translate-y-1 active:border-b-0 transition`}
+                >
+                    0
+                </button>
+                <button
+                    onClick={backspace}
+                    className={`${keyHeight} bg-[#e6ccb2] text-amber-900 border-b-[6px] border-[#d4a373] font-black rounded-2xl shadow-md transition active:translate-y-1 active:border-b-0`}
+                >
+                    ⌫
+                </button>
             </div>
 
-            {/* Submit Button */}
-            <div className="max-w-sm mx-auto w-full mt-6 z-10">
+            <div className="max-w-sm mx-auto w-full mt-4">
                 <button
-                    onClick={handleSubmit}
-                    disabled={!currentAnswer || feedback !== 'none'}
-                    className="w-full bg-green-500 disabled:bg-green-200 disabled:border-green-300 text-white border-b-[8px] border-green-700 text-4xl font-black py-4 rounded-2xl shadow-[0_8px_15px_rgba(34,197,94,0.3)] disabled:shadow-none transform transition active:translate-y-2 active:border-b-0"
+                    onClick={submit}
+                    disabled={answer === '' || feedback !== 'none'}
+                    className="w-full min-h-16 bg-green-500 disabled:bg-green-200 disabled:border-green-300 text-white border-b-[8px] border-green-700 text-3xl font-black rounded-2xl transition active:translate-y-2 active:border-b-0"
                 >
-                    ✅
+                    {t('submit', lang)} ✅
                 </button>
             </div>
         </div>

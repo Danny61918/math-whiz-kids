@@ -1,231 +1,170 @@
 import React, { useState } from 'react';
-import { useGameStore, type GameSettings } from '../store/useGameStore';
+import { useGameStore, useCurrentUser, useLanguage, type Language, type UserMode } from '../store/useGameStore';
 import { t } from '../utils/i18n';
 
-export const SetupScreen: React.FC<{ onStart: () => void; onShop: () => void; onSpace: () => void }> = ({ onStart, onShop, onSpace }) => {
-    const { users, currentUserId, settings, createUser, switchUser, updateSettings, language, setLanguage } = useGameStore();
-    const [newUserName, setNewUserName] = useState('');
-    const [isCreatingUser, setIsCreatingUser] = useState(false);
+const AVATARS = ['🦊', '🐱', '🐶', '🐼', '🦁', '🐸', '🐰', '🐯'];
 
-    const handleCreateUser = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (newUserName.trim()) {
-            createUser(newUserName, 'default-avatar');
-            setNewUserName('');
-            setIsCreatingUser(false);
-        }
+const defaultLanguage = (mode: UserMode): Language => (mode === 'kinder' ? 'en' : 'zh-TW');
+
+interface Props {
+    onStart: () => void;
+}
+
+export const SetupScreen: React.FC<Props> = ({ onStart }) => {
+    const users = useGameStore((s) => s.users);
+    const createUser = useGameStore((s) => s.createUser);
+    const switchUser = useGameStore((s) => s.switchUser);
+    const setUserLanguage = useGameStore((s) => s.setUserLanguage);
+    const currentUser = useCurrentUser();
+    const language = useLanguage();
+
+    const [isCreating, setIsCreating] = useState(false);
+    const [name, setName] = useState('');
+    const [avatar, setAvatar] = useState(AVATARS[0]);
+    const [mode, setMode] = useState<UserMode>('kinder');
+    const [languageChoice, setLanguageChoice] = useState<Language | null>(null);
+    const newLanguage = languageChoice ?? defaultLanguage(mode);
+
+    const handleCreate = () => {
+        const trimmed = name.trim();
+        if (!trimmed) return;
+        createUser(trimmed, avatar, mode, newLanguage);
+        setName('');
+        setLanguageChoice(null);
+        setIsCreating(false);
     };
 
-    const handleOperationToggle = (op: GameSettings['operations'][number]) => {
-        const currentOps = settings.operations;
-        let newOps: GameSettings['operations'];
-        if (currentOps.includes(op)) {
-            newOps = currentOps.filter((o) => o !== op);
-        } else {
-            newOps = [...currentOps, op];
-        }
-        if (newOps.length === 0) return;
-        updateSettings({ operations: newOps });
-    };
+    const choiceClass = (selected: boolean) =>
+        `flex-1 min-h-16 rounded-2xl text-xl font-black border-b-4 transition active:translate-y-1 ${
+            selected ? 'bg-green-500 text-white border-green-700' : 'bg-white text-amber-900 border-amber-300'
+        }`;
 
-    const startButtonText = settings.operations.length > 1 ? t('startMixedPractice', language) : t('startPractice', language);
+    const userList = Object.values(users);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden">
-            {/* Ambient decorative clouds */}
-            <div className="absolute top-10 left-[10%] text-white/60 text-6xl animate-pulse pointer-events-none">☁️</div>
-            <div className="absolute top-32 right-[15%] text-white/50 text-5xl animate-pulse pointer-events-none" style={{ animationDelay: '1.5s' }}>☁️</div>
+        <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center p-4 font-sans">
+            <div className="bg-white/95 p-6 rounded-3xl shadow-2xl text-center max-w-md w-full border-[6px] border-[#d4a373] mt-6">
+                <h1 className="text-4xl font-black text-green-800 mb-6">{t('appTitle', language)}</h1>
 
-            <div className="bg-white/95 rounded-3xl shadow-2xl shadow-green-900/40 w-full max-w-lg border-[6px] border-[#d4a373] overflow-hidden relative backdrop-blur-sm">
-
-                {/* Header & Language Switch */}
-                <div className="bg-[#fefae0] p-6 flex flex-col gap-4 border-b-[6px] border-[#d4a373]">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-3xl font-black text-green-800 tracking-wide drop-shadow-sm">
-                            {t('appTitle', language)}
-                        </h1>
+                <h2 className="text-xl font-bold text-amber-800 mb-3">{t('whoIsPlaying', language)}</h2>
+                <div className="flex flex-col gap-3 mb-4">
+                    {userList.map((u) => (
                         <button
-                            onClick={() => setLanguage(language === 'zh-TW' ? 'en' : 'zh-TW')}
-                            className="bg-green-100 hover:bg-green-200 text-green-800 font-bold py-1 px-3 rounded-full text-xs transition border border-green-300 shadow-sm"
+                            key={u.id}
+                            onClick={() => switchUser(u.id)}
+                            className={`flex items-center gap-3 min-h-16 px-4 rounded-2xl border-4 text-left transition ${
+                                currentUser?.id === u.id
+                                    ? 'bg-green-100 border-green-500'
+                                    : 'bg-amber-50 border-amber-200 hover:border-amber-400'
+                            }`}
                         >
-                            {language === 'zh-TW' ? 'English' : '中文'}
+                            <span className="text-4xl">{u.avatar}</span>
+                            <span className="flex-1">
+                                <span className="block text-xl font-black text-amber-900">{u.name}</span>
+                                <span className="block text-sm font-bold text-green-700">
+                                    {t(u.mode === 'kinder' ? 'modeKinder' : 'modeGrade4', language)}
+                                </span>
+                            </span>
+                            <span className="text-lg font-black text-amber-600">🪙 {u.coins}</span>
                         </button>
-                    </div>
-
-                    {/* Stats Bar */}
-                    {currentUserId && users[currentUserId] && (
-                        <div className="flex gap-2 justify-between bg-green-50 p-2 rounded-xl border border-green-200">
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={onSpace}
-                                    className="bg-[#d4a373] hover:brightness-110 text-white font-bold py-2 px-4 rounded-lg text-sm transition shadow-sm border-2 border-[#bc8a5f] flex items-center gap-2 transform active:scale-95"
-                                >
-                                    <span>🚜</span>
-                                    <span>{language === 'zh-TW' ? '我的農場' : 'My Farm'}</span>
-                                </button>
-                                <button
-                                    onClick={onShop}
-                                    className="bg-[#d4a373] hover:brightness-110 text-white font-bold py-2 px-4 rounded-lg text-sm transition shadow-sm border-2 border-[#bc8a5f] flex items-center gap-2 transform active:scale-95"
-                                >
-                                    <span>🏪</span>
-                                    <span>{language === 'zh-TW' ? '商店' : 'Shop'}</span>
-                                </button>
-                            </div>
-                            <div className="bg-white px-3 py-1 rounded-lg flex items-center gap-2 text-green-800 font-mono font-bold border-2 border-green-200 shadow-sm">
-                                <span>🪙</span>
-                                <span className="text-xl">{users[currentUserId].coins}</span>
-                            </div>
-                        </div>
-                    )}
+                    ))}
                 </div>
 
-                <div className="p-6 space-y-8">
-
-                    {/* User Selection */}
-                    <div className="space-y-3">
-                        <label className="block text-lg font-bold text-amber-900">{t('whoIsPlaying', language)}</label>
-                        <div className="flex flex-wrap gap-3">
-                            {Object.values(users).map((user) => (
+                {isCreating ? (
+                    <div className="flex flex-col gap-3 bg-amber-50 p-4 rounded-2xl border-2 border-amber-200 mb-4">
+                        <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder={t('name', language)}
+                            maxLength={12}
+                            className="w-full min-h-14 px-4 rounded-xl border-2 border-amber-300 text-xl text-amber-900"
+                        />
+                        <div className="flex flex-wrap justify-center gap-2">
+                            {AVATARS.map((a) => (
                                 <button
-                                    key={user.id}
-                                    onClick={() => switchUser(user.id)}
-                                     className={`px-4 py-2 rounded-xl text-lg font-bold transition-all transform active:scale-95 ${currentUserId === user.id
-                                        ? 'bg-green-500 text-white border-b-4 border-green-700 shadow-md'
-                                        : 'bg-green-100 text-green-800 border-b-4 border-green-200 hover:bg-green-200 hover:border-green-300'
-                                        }`}
+                                    key={a}
+                                    onClick={() => setAvatar(a)}
+                                    className={`text-3xl w-14 h-14 rounded-xl border-4 ${
+                                        avatar === a ? 'border-green-500 bg-green-100' : 'border-transparent'
+                                    }`}
                                 >
-                                    {user.name} <span className="text-green-700/70 ml-1 text-sm">🪙 {user.coins}</span>
+                                    {a}
                                 </button>
                             ))}
+                        </div>
+                        <div>
+                            <div className="text-sm font-bold text-amber-800 mb-1">{t('mode', language)}</div>
+                            <div className="flex gap-2">
+                                <button onClick={() => setMode('kinder')} className={choiceClass(mode === 'kinder')}>
+                                    {t('modeKinder', language)}
+                                </button>
+                                <button onClick={() => setMode('grade4')} className={choiceClass(mode === 'grade4')}>
+                                    {t('modeGrade4', language)}
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-sm font-bold text-amber-800 mb-1">{t('language', language)}</div>
+                            <div className="flex gap-2">
+                                <button onClick={() => setLanguageChoice('zh-TW')} className={choiceClass(newLanguage === 'zh-TW')}>
+                                    {t('langZhTW', language)}
+                                </button>
+                                <button onClick={() => setLanguageChoice('en')} className={choiceClass(newLanguage === 'en')}>
+                                    {t('langEn', language)}
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex gap-2">
                             <button
-                                onClick={() => setIsCreatingUser(true)}
-                                className="px-4 py-2 rounded-xl text-lg font-bold bg-[#fefae0] text-amber-700 border-2 border-dashed border-amber-300 hover:bg-amber-50 transition"
+                                onClick={() => setIsCreating(false)}
+                                className="flex-1 min-h-14 rounded-xl bg-neutral-200 text-neutral-700 text-lg font-bold"
                             >
-                                {t('addNewPlayer', language)}
+                                {t('cancel', language)}
+                            </button>
+                            <button
+                                onClick={handleCreate}
+                                disabled={!name.trim()}
+                                className="flex-1 min-h-14 rounded-xl bg-green-500 disabled:bg-green-200 text-white text-lg font-black"
+                            >
+                                {t('add', language)}
                             </button>
                         </div>
-                        {isCreatingUser && (
-                            <form onSubmit={handleCreateUser} className="flex gap-2 mt-2">
-                                <input
-                                    type="text"
-                                    value={newUserName}
-                                    onChange={(e) => setNewUserName(e.target.value)}
-                                    placeholder={t('name', language)}
-                                    className="flex-1 px-4 py-2 bg-white border-2 border-green-300 text-green-900 placeholder-green-300 rounded-xl focus:outline-none focus:border-green-500 text-lg shadow-inner"
-                                    autoFocus
-                                />
-                                <button
-                                    type="submit"
-                                    className="bg-green-500 text-white px-6 py-2 rounded-xl font-bold border-b-4 border-green-700 hover:bg-green-400 hover:border-green-600 transition active:border-b-0 active:translate-y-1"
-                                >
-                                    {t('add', language)}
-                                </button>
-                            </form>
-                        )}
                     </div>
-
-                    {/* Operation Settings */}
-                    <div className="space-y-3">
-                        <label className="block text-lg font-bold text-amber-900">{t('operations', language)}</label>
-                        <div className="grid grid-cols-4 gap-3">
-                            {(['+', '-', '*', '/'] as const).map((op) => (
-                                <button
-                                    key={op}
-                                    onClick={() => handleOperationToggle(op)}
-                                    className={`h-16 rounded-2xl text-4xl font-black transition-all active:scale-95 ${settings.operations.includes(op)
-                                        ? 'bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] transform -translate-y-1 shadow-md'
-                                        : 'bg-[#fefae0] text-amber-700/50 border-b-4 border-amber-200 hover:bg-amber-100 hover:text-amber-700/80'
-                                        }`}
-                                >
-                                    {op === '*' ? '×' : op === '/' ? '÷' : op}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Digit Settings - Vertical Stack */}
-                    <div className="space-y-4">
-                        <div className="bg-green-50/50 p-4 rounded-2xl border-2 border-green-100">
-                            <label className="block text-md font-bold text-green-700 mb-2 uppercase tracking-wider">{t('leftDigits', language)}</label>
-                            <div className="flex gap-2">
-                                {[1, 2, 3].map((d) => (
-                                    <button
-                                        key={d}
-                                        onClick={() => updateSettings({ leftDigits: d })}
-                                        className={`flex-1 py-3 rounded-xl font-bold text-lg transition-all ${settings.leftDigits === d
-                                            ? 'bg-green-500 text-white border-b-4 border-green-700 shadow-md'
-                                            : 'bg-white text-green-600 border-b-4 border-green-200 hover:bg-green-50'
-                                            }`}
-                                    >
-                                        {d === 1 ? t('digits1', language) : d === 2 ? t('digits2', language) : t('digits3', language)}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="bg-green-50/50 p-4 rounded-2xl border-2 border-green-100">
-                            <label className="block text-md font-bold text-green-700 mb-2 uppercase tracking-wider">{t('rightDigits', language)}</label>
-                            <div className="flex gap-2">
-                                {[1, 2, 3].map((d) => (
-                                    <button
-                                        key={d}
-                                        onClick={() => updateSettings({ rightDigits: d })}
-                                        className={`flex-1 py-3 rounded-xl font-bold text-lg transition-all ${settings.rightDigits === d
-                                            ? 'bg-green-500 text-white border-b-4 border-green-700 shadow-md'
-                                            : 'bg-white text-green-600 border-b-4 border-green-200 hover:bg-green-50'
-                                            }`}
-                                    >
-                                        {d === 1 ? t('digits1', language) : d === 2 ? t('digits2', language) : t('digits3', language)}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Question Count Settings */}
-                    <div className="space-y-3">
-                        <label className="block text-lg font-bold text-amber-900">{t('questionCount', language)}</label>
-                        <div className="flex gap-3 items-stretch">
-                            {[10, 20].map((count) => (
-                                <button
-                                    key={count}
-                                    onClick={() => updateSettings({ questionCount: count })}
-                                    className={`flex-1 py-2 rounded-xl font-bold text-lg transition-all ${(settings.questionCount || 10) === count
-                                        ? 'bg-green-500 text-white border-b-4 border-green-700 shadow-md'
-                                        : 'bg-white text-green-600 border-b-4 border-green-200 hover:bg-green-50'
-                                        }`}
-                                >
-                                    {count} {t('questions', language)}
-                                </button>
-                            ))}
-                            <div className={`flex-1 flex items-center rounded-xl overflow-hidden transition-all border-b-4 ${(![10, 20].includes(settings.questionCount || 10)) 
-                                ? 'bg-green-500 text-white border-green-700 shadow-md' 
-                                : 'bg-white border-green-200 focus-within:border-green-400'}`}>
-                                <input 
-                                    type="number" 
-                                    min="1" 
-                                    max="999"
-                                    value={(![10, 20].includes(settings.questionCount || 10)) ? settings.questionCount : ''}
-                                    onChange={(e) => {
-                                        const val = parseInt(e.target.value);
-                                        if (!isNaN(val) && val > 0) updateSettings({ questionCount: val });
-                                    }}
-                                    placeholder={language === 'zh-TW' ? '自訂...' : 'Custom'}
-                                    className={`w-full bg-transparent text-center font-bold text-lg py-2 outline-none ${(![10, 20].includes(settings.questionCount || 10)) ? 'text-white placeholder-green-200' : 'text-green-800 placeholder-green-300'}`}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Start Button */}
+                ) : (
                     <button
-                        className="w-full bg-green-500 hover:bg-green-400 text-white text-2xl font-black py-5 rounded-2xl shadow-[0_10px_20px_rgba(34,197,94,0.3)] transform transition active:translate-y-2 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed mt-4 border-b-8 border-green-700"
-                        disabled={!currentUserId}
-                        onClick={onStart}
+                        onClick={() => setIsCreating(true)}
+                        className="w-full min-h-14 mb-4 rounded-2xl border-4 border-dashed border-amber-300 text-amber-700 text-lg font-bold hover:bg-amber-50"
                     >
-                        {startButtonText}
+                        {t('addNewPlayer', language)}
                     </button>
-                </div>
+                )}
+
+                {currentUser && (
+                    <div className="mb-4">
+                        <div className="text-sm font-bold text-amber-800 mb-1">{t('language', language)}</div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setUserLanguage('zh-TW')}
+                                className={choiceClass(currentUser.language === 'zh-TW')}
+                            >
+                                {t('langZhTW', language)}
+                            </button>
+                            <button onClick={() => setUserLanguage('en')} className={choiceClass(currentUser.language === 'en')}>
+                                {t('langEn', language)}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                <button
+                    onClick={onStart}
+                    disabled={!currentUser}
+                    className="w-full bg-green-500 disabled:bg-green-200 text-white border-b-8 border-green-700 disabled:border-green-300 text-3xl font-black py-4 rounded-2xl transition active:translate-y-2 active:border-b-0"
+                >
+                    {t('startPractice', language)}
+                </button>
+                {!currentUser && <p className="mt-3 text-amber-700 font-bold">{t('selectPlayerHint', language)}</p>}
             </div>
         </div>
     );
