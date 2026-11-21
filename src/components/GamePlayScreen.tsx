@@ -227,7 +227,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
             </div>
 
             <div className="flex-1 flex flex-col items-center justify-center mb-6">
-                <div className={`font-black text-amber-900 tracking-wider mb-4 whitespace-nowrap ${isKinder ? 'text-5xl sm:text-7xl' : 'text-3xl sm:text-5xl'}  bg-white/60 px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl`}>
+                <div className={`font-black text-amber-900 tracking-wider mb-4 whitespace-nowrap ${isKinder ? 'text-5xl sm:text-7xl' : 'text-2xl min-[420px]:text-3xl sm:text-5xl'} bg-white/60 px-4 sm:px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl`}>
                     {formatQuestion(current)}
                 </div>
 

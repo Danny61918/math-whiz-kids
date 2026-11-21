@@ -47,4 +47,14 @@ describe('migrateV1ToV2', () => {
         expect(out.users.k).toMatchObject({ id: 'k', name: '', coins: 0, mode: 'grade4', skills: {} });
         expect(out.currentUserId).toBeNull();
     });
+    it("replaces the v1 literal 'default-avatar' with an emoji and keeps emoji avatars", () => {
+        const out = migrateV1ToV2({
+            users: {
+                a: { id: 'a', name: 'A', avatar: 'default-avatar', coins: 1 },
+                b: { id: 'b', name: 'B', avatar: '🐱', coins: 1 },
+            },
+        });
+        expect(out.users.a.avatar).toBe('🦊');
+        expect(out.users.b.avatar).toBe('🐱');
+    });
 });

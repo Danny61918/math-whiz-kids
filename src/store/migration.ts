@@ -13,6 +13,11 @@ function toLanguage(value: unknown): Language {
     return value === 'en' || value === 'zh-TW' ? value : 'zh-TW';
 }
 
+/** v1 stored the literal string 'default-avatar'; v2 expects an emoji. Keep emoji-like values, otherwise use a default. */
+function toAvatar(value: unknown): string {
+    return typeof value === 'string' && value.length > 0 && [...value].length <= 4 && [...value].every((ch) => (ch.codePointAt(0) ?? 0) > 127) ? value : '🦊';
+}
+
 /** Pure migration of a v1 (farm era) save to the v2 shape. Never throws. */
 export function migrateV1ToV2(persisted: unknown): MigratedState {
     const old = isRecord(persisted) ? persisted : {};
@@ -27,7 +32,7 @@ export function migrateV1ToV2(persisted: unknown): MigratedState {
             users[id] = {
                 id,
                 name: typeof raw.name === 'string' ? raw.name : '',
-                avatar: typeof raw.avatar === 'string' && raw.avatar ? raw.avatar : '🙂',
+                avatar: toAvatar(raw.avatar),
                 mode: 'grade4',
                 language,
                 coins,
