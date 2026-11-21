@@ -1,9 +1,13 @@
 import type { Language, SkillStats, UserProfile } from './useGameStore';
 import type { Stars } from '../utils/stars';
 import { dayKey, isValidDayKey } from '../utils/streak';
+import { parseFactKey } from '../data/facts';
+import type { FactStats } from '../utils/factProgress';
 
+type V4Keys = 'facts' | 'chartClaims' | 'blitzBest' | 'blitzBestDay';
+type UserProfileV3 = Omit<UserProfile, V4Keys>;
 type V3Keys = 'stars' | 'cards' | 'tickets' | 'pity' | 'streak' | 'dailyBonusDay' | 'totalSessions';
-type UserProfileV2 = Omit<UserProfile, V3Keys>;
+type UserProfileV2 = Omit<UserProfileV3, V3Keys>;
 
 interface MigratedState {
     users: Record<string, UserProfileV2>;
@@ -11,6 +15,11 @@ interface MigratedState {
 }
 
 interface MigratedStateV3 {
+    users: Record<string, UserProfileV3>;
+    currentUserId: string | null;
+}
+
+interface MigratedStateV4 {
     users: Record<string, UserProfile>;
     currentUserId: string | null;
 }
@@ -92,7 +101,7 @@ function cleanSkills(raw: unknown): Record<string, SkillStats> {
  */
 export function migrateV2ToV3(persisted: unknown, today: string = dayKey(new Date())): MigratedStateV3 {
     const old = isRecord(persisted) ? persisted : {};
-    const users: Record<string, UserProfile> = {};
+    const users: Record<string, UserProfileV3> = {};
 
     if (isRecord(old.users)) {
         for (const [key, raw] of Object.entries(old.users)) {
@@ -142,4 +151,68 @@ export function migrateV2ToV3(persisted: unknown, today: string = dayKey(new Dat
     const currentUserId =
         typeof old.currentUserId === 'string' && old.currentUserId in users ? old.currentUserId : null;
     return { users, currentUserId };
+}
+
+function cleanFacts(raw: unknown, today: string): Record<string, FactStats> {
+    const out: Record<string, FactStats> = {};
+    if (!isRecord(raw)) return out;
+    for (const [key, value] of Object.entries(raw)) {
+        if (!parseFactKey(key) || !isRecord(value)) continue;
+        const box = Math.min(5, nonNegInt(value.box)) as FactStats['box'];
+        const bestMs = typeof value.bestMs === 'number' && Number.isFinite(value.bestMs) && value.bestMs > 0 ? value.bestMs : null;
+        const stats: FactStats = {
+            box,
+            attempts: nonNegInt(value.attempts),
+            correct: nonNegInt(value.correct),
+            lastSeenDay: dayOrNull(value.lastSeenDay, today),
+            lastUpDay: dayOrNull(value.lastUpDay, today),
+            bestMs,
+        };
+        if (value.lastWrong === true) stats.lastWrong = true;
+        if (value.paid5 === true) stats.paid5 = true;
+        out[key] = stats;
+    }
+    return out;
+}
+
+/** Old kinder skill ids that were renamed when the ladder was rebuilt. */
+const RENAMED_SKILLS: Record<string, string> = { k_add_20: 'k_add_11_18', k_sub_20: 'k_sub_11_18' };
+
+function renameStars(stars: Record<string, Stars>): Record<string, Stars> {
+    const out: Record<string, Stars> = { ...stars };
+    for (const [oldId, newId] of Object.entries(RENAMED_SKILLS)) {
+        if (!(oldId in out)) continue;
+        out[newId] = Math.max(out[newId] ?? 0, out[oldId]) as Stars;
+        delete out[oldId];
+    }
+    return out;
+}
+
+/**
+ * Pure migration of a v3 save to v4: adds facts/chartClaims/blitzBest/blitzBestDay and renames the
+ * stars of k_add_20/k_sub_20 to k_add_11_18/k_sub_11_18 (keeping the larger). Repairs bad fields,
+ * never throws, and keeps valid v4 values when run again.
+ */
+export function migrateV3ToV4(persisted: unknown, today: string = dayKey(new Date())): MigratedStateV4 {
+    const base = migrateV2ToV3(persisted, today);
+    const old = isRecord(persisted) ? persisted : {};
+    const users: Record<string, UserProfile> = {};
+
+    for (const [key, v3] of Object.entries(base.users)) {
+        const rawUsers = isRecord(old.users) ? old.users : {};
+        const found = Object.entries(rawUsers).find(([k, r]) => isRecord(r) && (typeof r.id === 'string' && r.id ? r.id : k) === key);
+        const raw = found && isRecord(found[1]) ? found[1] : {};
+        const claims = Array.isArray(raw.chartClaims)
+            ? [...new Set(raw.chartClaims.filter((c): c is string => typeof c === 'string'))]
+            : [];
+        users[key] = {
+            ...v3,
+            stars: renameStars(v3.stars),
+            facts: cleanFacts(raw.facts, today),
+            chartClaims: claims,
+            blitzBest: nonNegInt(raw.blitzBest),
+            blitzBestDay: dayOrNull(raw.blitzBestDay, today),
+        };
+    }
+    return { users, currentUserId: base.currentUserId };
 }

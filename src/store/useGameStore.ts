@@ -3,13 +3,18 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { storageService } from '../services/storageService';
 import type { Language } from '../utils/i18n';
 import type { UserMode } from '../data/skills';
-import { migrateV1ToV2, migrateV2ToV3 } from './migration';
+import { migrateV1ToV2, migrateV2ToV3, migrateV3ToV4 } from './migration';
+import { parseFactKey, type FactKey } from '../data/facts';
+import { updateFact, type FactStats } from '../utils/factProgress';
+import { newlyMastered, pendingMilestones } from '../utils/chart';
+import { evaluateBlitz } from '../utils/blitz';
+import { FACT_MASTERY_BONUS } from '../utils/rewards';
 import { DUPLICATE_REFUND, PACK_PRICE, drawCard } from '../utils/packs';
 import { calcStars, type Stars } from '../utils/stars';
 import { dayKey, isMilestone, updateStreak, type StreakState } from '../utils/streak';
 import type { Rng } from '../utils/mathEngine';
 
-export type { Language, UserMode, StreakState };
+export type { Language, UserMode, StreakState, FactStats };
 
 export interface SkillStats {
     attempts: number;
@@ -34,6 +39,10 @@ export interface UserProfile {
     streak: StreakState;
     dailyBonusDay: string | null;
     totalSessions: number;
+    facts: Record<FactKey, FactStats>; // per-fact progress (kinder), global across skills
+    chartClaims: string[]; // claimed number-chart milestones, e.g. 'add25'
+    blitzBest: number;
+    blitzBestDay: string | null; // day the last blitz record was set
 }
 
 export interface SessionResult {
@@ -41,6 +50,21 @@ export interface SessionResult {
     correct: number; // first-try correct answers
     total: number;
     now?: Date;
+    /** Facts as they were when the session started; used to count newly mastered facts. */
+    factsBefore?: Record<FactKey, FactStats>;
+}
+
+export interface FactRecordResult {
+    boxBefore: number;
+    boxAfter: number;
+    /** One-time coins for a fact reaching box 5 (added to the session total by the caller). */
+    bonusCoins: number;
+}
+
+export interface BlitzRecordResult {
+    best: number;
+    newRecord: boolean;
+    ticket: boolean;
 }
 
 export interface SessionSummary {
@@ -50,6 +74,8 @@ export interface SessionSummary {
     streakIncreased: boolean;
     dailyTicket: boolean;
     milestoneTicket: boolean;
+    newMasteredFacts: number;
+    chartTickets: number;
 }
 
 export interface PackResult {
@@ -69,6 +95,9 @@ interface GameState {
     setUserMode: (mode: UserMode) => void;
     addCoins: (amount: number) => void;
     recordAnswer: (skillId: string, correct: boolean, timeMs: number) => void;
+    recordFact: (factKey: FactKey, correct: boolean, retrievalMs: number, helped: boolean, now?: Date) => FactRecordResult | null;
+    claimChartMilestones: () => number;
+    recordBlitz: (score: number, now?: Date) => BlitzRecordResult | null;
     completeSession: (result: SessionResult) => SessionSummary | null;
     openPack: (rng?: Rng) => PackResult | false;
 }
@@ -84,7 +113,14 @@ const EMPTY_PROGRESS = {
     streak: { count: 0, best: 0, lastDay: null },
     dailyBonusDay: null,
     totalSessions: 0,
-} satisfies Pick<UserProfile, 'skills' | 'stars' | 'cards' | 'tickets' | 'pity' | 'streak' | 'dailyBonusDay' | 'totalSessions'>;
+    facts: {},
+    chartClaims: [],
+    blitzBest: 0,
+    blitzBestDay: null,
+} satisfies Pick<
+    UserProfile,
+    'skills' | 'stars' | 'cards' | 'tickets' | 'pity' | 'streak' | 'dailyBonusDay' | 'totalSessions' | 'facts' | 'chartClaims' | 'blitzBest' | 'blitzBestDay'
+>;
 
 const RECENT_LIMIT = 10;
 const EMA_ALPHA = 0.2;
@@ -159,6 +195,46 @@ export const useGameStore = create<GameState>()(
                 });
             },
 
+            recordFact: (factKey, correct, retrievalMs, helped, now = new Date()) => {
+                if (!parseFactKey(factKey)) return null;
+                let outcome: FactRecordResult | null = null;
+                updateCurrentUser(set, (user) => {
+                    const prev = user.facts[factKey];
+                    const next = updateFact(prev, { correct, retrievalMs, helped }, dayKey(now));
+                    const reachedTop = next.box === 5 && (prev?.box ?? 0) < 5 && !prev?.paid5;
+                    const stored: FactStats = reachedTop ? { ...next, paid5: true } : next;
+                    outcome = { boxBefore: prev?.box ?? 0, boxAfter: next.box, bonusCoins: reachedTop ? FACT_MASTERY_BONUS : 0 };
+                    return { ...user, facts: { ...user.facts, [factKey]: stored } };
+                });
+                return outcome;
+            },
+
+            claimChartMilestones: () => {
+                let granted = 0;
+                updateCurrentUser(set, (user) => {
+                    const pending = pendingMilestones(user.facts, user.chartClaims);
+                    if (pending.length === 0) return user;
+                    granted = pending.reduce((sum, m) => sum + m.tickets, 0);
+                    return {
+                        ...user,
+                        tickets: user.tickets + granted,
+                        chartClaims: [...user.chartClaims, ...pending.map((m) => m.id)],
+                    };
+                });
+                return granted;
+            },
+
+            recordBlitz: (score, now = new Date()) => {
+                let outcome: BlitzRecordResult | null = null;
+                updateCurrentUser(set, (user) => {
+                    const r = evaluateBlitz(score, user.blitzBest, user.blitzBestDay, dayKey(now));
+                    outcome = { best: r.best, newRecord: r.newRecord, ticket: r.ticket };
+                    if (!r.newRecord) return user;
+                    return { ...user, blitzBest: r.best, blitzBestDay: r.bestDay, tickets: user.tickets + (r.ticket ? 1 : 0) };
+                });
+                return outcome;
+            },
+
             completeSession: (result) => {
                 let summary: SessionSummary | null = null;
                 updateCurrentUser(set, (user) => {
@@ -169,6 +245,9 @@ export const useGameStore = create<GameState>()(
                     const streakIncreased = user.streak.lastDay === null || today > user.streak.lastDay;
                     const dailyTicket = user.dailyBonusDay !== today;
                     const milestoneTicket = streakIncreased && isMilestone(streak.count);
+                    const newMasteredFacts = result.factsBefore ? newlyMastered(result.factsBefore, user.facts) : 0;
+                    const pending = pendingMilestones(user.facts, user.chartClaims);
+                    const chartTickets = pending.reduce((sum, m) => sum + m.tickets, 0);
                     summary = {
                         stars: earned,
                         isNewBest: earned > previousBest,
@@ -176,13 +255,16 @@ export const useGameStore = create<GameState>()(
                         streakIncreased,
                         dailyTicket,
                         milestoneTicket,
+                        newMasteredFacts,
+                        chartTickets,
                     };
                     return {
                         ...user,
                         stars: { ...user.stars, [result.skillId]: Math.max(previousBest, earned) as Stars },
                         streak,
                         dailyBonusDay: dailyTicket ? today : user.dailyBonusDay,
-                        tickets: user.tickets + (dailyTicket ? 1 : 0) + (milestoneTicket ? 1 : 0),
+                        tickets: user.tickets + (dailyTicket ? 1 : 0) + (milestoneTicket ? 1 : 0) + chartTickets,
+                        chartClaims: pending.length > 0 ? [...user.chartClaims, ...pending.map((m) => m.id)] : user.chartClaims,
                         totalSessions: user.totalSessions + 1,
                     };
                 });
@@ -211,12 +293,13 @@ export const useGameStore = create<GameState>()(
         }),
         {
             name: 'math-whiz-kids-storage',
-            version: 3,
+            version: 4,
             storage: createJSONStorage(() => storageAdapter),
             migrate: (persisted, version) => {
                 let state: unknown = persisted;
                 if (version < 2) state = migrateV1ToV2(state);
                 if (version < 3) state = migrateV2ToV3(state);
+                if (version < 4) state = migrateV3ToV4(state);
                 return state as PersistedState;
             },
         },
