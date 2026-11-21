@@ -23,9 +23,23 @@ describe('useGameStore', () => {
     };
 
     it('setUserMode and setUserLanguage change only the current user', () => {
+        const firstId = useGameStore.getState().currentUserId ?? '';
+        useGameStore.getState().addCoins(40);
+        useGameStore.getState().recordAnswer('g_add_4', true, 1000);
+        const firstBefore = useGameStore.getState().users[firstId];
+
+        useGameStore.getState().createUser('Other', '🐱', 'grade4', 'zh-TW');
+        const otherId = useGameStore.getState().currentUserId ?? '';
+        useGameStore.getState().switchUser(firstId);
+
         useGameStore.getState().setUserMode('kinder');
         useGameStore.getState().setUserLanguage('en');
-        expect(current()).toMatchObject({ mode: 'kinder', language: 'en' });
+
+        const first = useGameStore.getState().users[firstId];
+        expect(first).toMatchObject({ mode: 'kinder', language: 'en' });
+        expect(first.coins).toBe(firstBefore.coins);
+        expect(first.skills).toEqual(firstBefore.skills);
+        expect(useGameStore.getState().users[otherId]).toMatchObject({ mode: 'grade4', language: 'zh-TW' });
     });
 
     it('recordAnswer tracks stats', () => {
@@ -44,6 +58,8 @@ describe('useGameStore', () => {
 
     it('addCoins is a no-op without a user', () => {
         useGameStore.setState({ currentUserId: null });
+        const before = structuredClone(useGameStore.getState().users);
         expect(() => useGameStore.getState().addCoins(5)).not.toThrow();
+        expect(useGameStore.getState().users).toEqual(before);
     });
 });
