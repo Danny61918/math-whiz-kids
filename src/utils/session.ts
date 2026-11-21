@@ -1,5 +1,8 @@
 import { sessionBonus } from './rewards';
 
+/** Questions per session (not counting kinder retries). */
+export const QUESTION_COUNT = { kinder: 8, grade4: 10 } as const;
+
 export interface SubmitInput {
     isRetry: boolean;
     ok: boolean;

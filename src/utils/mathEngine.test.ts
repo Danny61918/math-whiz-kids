@@ -47,53 +47,6 @@ describe('countCarries / countBorrows', () => {
     });
 });
 
-describe('kinder skills', () => {
-    const addCases: [string, number][] = [['k_add_5', 5], ['k_add_10', 10], ['k_add_20', 20]];
-    it.each(addCases)('%s: sum <= max, operands >= 1', (id, max) => {
-        for (const q of sample(id)) {
-            expectBasics(q, id);
-            expect(q.operator).toBe('+');
-            expect(q.left).toBeGreaterThanOrEqual(1);
-            expect(q.right).toBeGreaterThanOrEqual(1);
-            expect(q.answer).toBeLessThanOrEqual(max);
-            expect(q.answer).toBe((q.left ?? 0) + (q.right ?? 0));
-        }
-    });
-
-    const subCases: [string, number][] = [['k_sub_5', 5], ['k_sub_10', 10], ['k_sub_20', 20]];
-    it.each(subCases)('%s: a <= max, positive result', (id, max) => {
-        for (const q of sample(id)) {
-            expectBasics(q, id);
-            expect(q.operator).toBe('-');
-            expect(q.left).toBeLessThanOrEqual(max);
-            expect(q.right).toBeGreaterThanOrEqual(1);
-            expect(q.left).not.toBe(q.right);
-            expect(q.answer).toBe((q.left ?? 0) - (q.right ?? 0));
-        }
-    });
-
-    it('k_sub_20 includes borrow cases', () => {
-        const borrows = sample('k_sub_20').filter((q) => countBorrows(q.left ?? 0, q.right ?? 0) > 0);
-        expect(borrows.length).toBeGreaterThan(30);
-    });
-
-    it('k_add_20 includes carry cases', () => {
-        const carries = sample('k_add_20').filter((q) => countCarries(q.left ?? 0, q.right ?? 0) > 0);
-        expect(carries.length).toBeGreaterThan(30);
-    });
-
-    it('k_make10: a + ? = 10', () => {
-        for (const q of sample('k_make10')) {
-            expect(q.operator).toBe('+');
-            expect(q.right).toBeNull();
-            expect(q.result).toBe(10);
-            expect(q.left).toBeGreaterThanOrEqual(1);
-            expect(q.left).toBeLessThanOrEqual(9);
-            expect((q.left ?? 0) + q.answer).toBe(10);
-        }
-    });
-});
-
 describe('grade4 add/sub', () => {
     it('g_add_4', () => {
         for (const q of sample('g_add_4')) {
@@ -176,9 +129,9 @@ describe('grade4 div', () => {
 });
 
 describe('generateSession', () => {
-    it.each(skills.map((s) => s.id))('%s: no duplicate keys', (id) => {
+    it.each(skills.filter((s) => s.mode === 'grade4').map((s) => s.id))('%s: no duplicate keys', (id) => {
         for (const seed of [1, 2, 3]) {
-            const count = id.startsWith('k_') ? 5 : 10; // per-mode session sizes
+            const count = 10;
             const session = generateSession(id, count, mulberry32(seed));
             expect(session).toHaveLength(count);
             expect(new Set(session.map((q) => q.key)).size).toBe(count);
@@ -187,10 +140,6 @@ describe('generateSession', () => {
 
     it('is deterministic for a seed', () => {
         expect(generateSession('g_div_32', 10, mulberry32(7))).toEqual(generateSession('g_div_32', 10, mulberry32(7)));
-    });
-
-    it('does not hang or throw when the pool is smaller than the count', () => {
-        expect(generateSession('k_make10', 20, mulberry32(9))).toHaveLength(20);
     });
 
     it('throws on unknown skills', () => {
@@ -217,7 +166,7 @@ describe('checkAnswer', () => {
     });
 
     it('checks plain answers', () => {
-        const add = generateQuestion('k_add_10', mulberry32(1));
+        const add = generateQuestion('g_add_4', mulberry32(1));
         expect(checkAnswer(add, { answer: add.answer })).toBe(true);
         expect(checkAnswer(add, { answer: add.answer + 1 })).toBe(false);
     });

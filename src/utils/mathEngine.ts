@@ -7,6 +7,9 @@ export interface Question {
     answer: number;
     remainder?: number; // division only
     key: string;
+    /** Kinder fact questions only: the underlying fact (the addition fact for `a + ? = c`). */
+    factKey?: string;
+    kind?: 'sum' | 'diff' | 'missing';
 }
 
 export type Rng = () => number;
@@ -126,44 +129,7 @@ function div(dividend: number, divisor: number): Draft {
     };
 }
 
-// ---------- skill specs ----------
-
-function kinderAdd(max: number): SkillSpec {
-    return {
-        make: (rng) => {
-            const a = randInt(rng, 1, max - 1);
-            return add(a, randInt(rng, 1, max - a));
-        },
-        accept: (d) => (d.left ?? 0) >= 1 && (d.right ?? 0) >= 1 && d.answer <= max,
-        fallback: () => add(1, 2),
-    };
-}
-
-/** Subtraction with a <= max and a positive result. `borrowRatio` biases towards borrow cases (a > 10). */
-function kinderSub(max: number, borrowRatio: number): SkillSpec {
-    return {
-        make: (rng) => {
-            if (rng() < borrowRatio) {
-                const a = randInt(rng, 11, max);
-                const minB = (a % 10) + 1;
-                if (minB <= 9) return sub(a, randInt(rng, minB, 9));
-            }
-            const a = randInt(rng, 2, max);
-            return sub(a, randInt(rng, 1, a - 1));
-        },
-        accept: (d) => (d.left ?? 0) <= max && (d.right ?? 0) >= 1 && d.answer >= 1,
-        fallback: () => sub(max, 1),
-    };
-}
-
-const makeTen: SkillSpec = {
-    make: (rng) => {
-        const a = randInt(rng, 1, 9);
-        return { operator: '+', left: a, right: null, result: 10, answer: 10 - a };
-    },
-    accept: (d) => d.left !== null && d.left >= 1 && d.left <= 9 && d.answer === 10 - d.left,
-    fallback: () => ({ operator: '+', left: 4, right: null, result: 10, answer: 6 }),
-};
+// ---------- skill specs (grade4 only; kinder uses buildKinderSession) ----------
 
 function gradeAdd(aDigitChoices: number[], bDigitChoices: number[], carries: number): SkillSpec {
     return {
@@ -231,13 +197,6 @@ function gradeDiv(dividendDigits: number, divisorDigits: number, fallbackDraft: 
 }
 
 export const skillSpecs: Record<string, SkillSpec> = {
-    k_add_5: kinderAdd(5),
-    k_sub_5: kinderSub(5, 0),
-    k_add_10: kinderAdd(10),
-    k_sub_10: kinderSub(10, 0),
-    k_make10: makeTen,
-    k_add_20: kinderAdd(20),
-    k_sub_20: kinderSub(20, 0.6),
     g_add_4: gradeAdd([4], [3, 4], 1),
     g_sub_4: gradeSub([4], [3, 4], 1),
     g_add_6: gradeAdd([5, 6], [5, 6], 2),
@@ -289,3 +248,5 @@ export function generateSession(skillId: string, count: number, rng: Rng = Math.
 export function checkAnswer(q: Question, input: { answer: number; remainder?: number }): boolean {
     return input.answer === q.answer && (input.remainder ?? 0) === (q.remainder ?? 0);
 }
+
+export { buildKinderSession, buildBlitzQuestions } from './selection';

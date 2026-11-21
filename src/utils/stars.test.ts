@@ -3,8 +3,8 @@ import { skillsForMode } from '../data/skills';
 import { calcStars, isSkillUnlocked } from './stars';
 
 describe('calcStars', () => {
-    it('kinder (5 questions)', () => {
-        expect([0, 1, 2, 3, 4, 5].map((c) => calcStars(c, 5))).toEqual([1, 1, 1, 1, 2, 3]);
+    it('kinder (8 questions): 3 = all, 2 = at least 7 of 8', () => {
+        expect([0, 4, 5, 6, 7, 8].map((c) => calcStars(c, 8))).toEqual([1, 1, 1, 1, 2, 3]);
     });
     it('grade4 (10 questions)', () => {
         expect([0, 5, 7, 8, 9, 10].map((c) => calcStars(c, 10))).toEqual([1, 1, 1, 2, 2, 3]);

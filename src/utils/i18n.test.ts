@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { skills } from '../data/skills';
+import { skills, specialSkills } from '../data/skills';
 import { t, translations } from './i18n';
 
 describe('i18n', () => {
@@ -12,7 +12,7 @@ describe('i18n', () => {
         }
     });
     it('has a name for every skill', () => {
-        for (const s of skills) {
+        for (const s of [...skills, ...specialSkills]) {
             expect(t(s.nameKey, 'en')).not.toBe(s.nameKey);
             expect(t(s.nameKey, 'zh-TW')).not.toBe(s.nameKey);
         }
