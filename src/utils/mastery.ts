@@ -2,7 +2,7 @@ import type { SkillStats } from '../store/useGameStore';
 
 export type Mastery = 'new' | 'learning' | 'mastered';
 
-export const DEFAULT_MASTERY_TIME_MS = 20000;
+const DEFAULT_MASTERY_TIME_MS = 20000;
 
 export function getMastery(stats?: SkillStats, maxAvgTimeMs: number = DEFAULT_MASTERY_TIME_MS): Mastery {
     if (!stats || stats.attempts < 5) return 'new';
