@@ -6,8 +6,6 @@ import React from 'react';
  * On wide landscape screens the shell switches to two columns (question left, keypad right).
  */
 
-const WIDE = 'min-[900px]:landscape:';
-
 interface ShellProps {
     /** Tailwind gradient stops, e.g. "from-sky-300 via-sky-100 to-green-400". */
     background: string;
@@ -21,9 +19,9 @@ interface ShellProps {
 export const PracticeShell: React.FC<ShellProps> = ({ background, top, upper, lower }) => (
     <div className={`flex h-dvh flex-col overflow-y-auto overflow-x-hidden bg-gradient-to-b px-3 py-2 font-sans transition-colors duration-500 ${background}`}>
         <div
-            className={`mx-auto flex min-h-0 w-full max-w-[520px] flex-1 flex-col gap-[clamp(4px,1dvh,10px)] ${WIDE}grid ${WIDE}max-w-[980px] ${WIDE}grid-cols-2 ${WIDE}grid-rows-[auto_1fr] ${WIDE}gap-x-10`}
+            className={`mx-auto flex min-h-0 w-full max-w-[520px] flex-1 flex-col gap-[clamp(4px,1dvh,10px)] min-[900px]:landscape:grid min-[900px]:landscape:max-w-[980px] min-[900px]:landscape:grid-cols-2 min-[900px]:landscape:grid-rows-[auto_1fr] min-[900px]:landscape:gap-x-10`}
         >
-            <div className={`${WIDE}col-span-2`}>{top}</div>
+            <div className="min-[900px]:landscape:col-span-2">{top}</div>
             <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-[clamp(4px,1dvh,10px)]">{upper}</div>
             <div className="flex shrink-0 flex-col justify-center gap-[clamp(4px,1dvh,10px)]">{lower}</div>
         </div>
