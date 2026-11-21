@@ -4,7 +4,8 @@ import { useCurrentUser, useGameStore } from '../store/useGameStore';
 import { audioService } from '../services/audioService';
 import { t } from '../utils/i18n';
 import { checkAnswer, generateSession, type Question } from '../utils/mathEngine';
-import { questionCoins, sessionBonus } from '../utils/rewards';
+import { questionCoins } from '../utils/rewards';
+import { resolveSubmit } from '../utils/session';
 import { ObjectAid } from './ObjectAid';
 
 const QUESTION_COUNT = { kinder: 5, grade4: 10 } as const;
@@ -93,21 +94,21 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
             remainder: isDivision ? Number(remainder || 0) : undefined,
         });
 
-        let nextCorrect = correctCount;
-        let nextEarned = earnedCoins;
-        let nextQueueLength = queue.length;
-
         // Retries do not count towards stats or coins; only the first attempt does.
-        if (!item.isRetry) {
-            recordAnswer(skillId, ok, timeMs);
-            if (ok) {
-                nextCorrect += 1;
-                nextEarned += skill ? questionCoins(skill, timeMs) : 0;
-            } else if (isKinder) {
-                setQueue((prev) => [...prev, { question: current, isRetry: true }]);
-                nextQueueLength += 1;
-            }
-        }
+        const outcome = resolveSubmit({
+            isRetry: item.isRetry,
+            ok,
+            isKinder,
+            index,
+            queueLength: queue.length,
+            earned: earnedCoins,
+            correct: correctCount,
+            total: totalQuestions,
+            questionCoins: skill ? questionCoins(skill, timeMs) : 0,
+        });
+        const { nextCorrect, nextEarned, isLast, finalCoins } = outcome;
+        if (outcome.countsForStats) recordAnswer(skillId, ok, timeMs);
+        if (outcome.appendRetry) setQueue((prev) => [...prev, { question: current, isRetry: true }]);
 
         setCorrectCount(nextCorrect);
         setEarnedCoins(nextEarned);
@@ -117,8 +118,6 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
         else audioService.playIncorrect();
 
         // Award immediately on the final question so leaving during the feedback delay cannot lose coins.
-        const isLast = index + 1 >= nextQueueLength;
-        const finalCoins = isLast ? sessionBonus(nextEarned, nextCorrect, totalQuestions) : 0;
         if (isLast) addCoins(finalCoins);
 
         timerRef.current = window.setTimeout(
@@ -214,6 +213,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
             <div className="flex justify-between items-center mb-4">
                 <button
                     onClick={onBack}
+                    aria-label={t('exit', lang)}
                     className="min-h-12 text-amber-900 font-bold text-lg bg-white/50 px-4 rounded-xl border-2 border-amber-900/10"
                 >
                     {isKinder ? '🏠' : t('exit', lang)}
@@ -227,7 +227,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
             </div>
 
             <div className="flex-1 flex flex-col items-center justify-center mb-6">
-                <div className={`font-black text-amber-900 tracking-wider mb-4 whitespace-nowrap ${isKinder ? 'text-5xl sm:text-7xl' : 'text-2xl min-[420px]:text-3xl sm:text-5xl'} bg-white/60 px-4 sm:px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl`}>
+                <div className={`font-black text-amber-900 tracking-wider mb-4 max-w-full overflow-x-auto whitespace-nowrap ${isKinder ? 'text-5xl sm:text-7xl' : 'text-2xl min-[420px]:text-3xl sm:text-5xl'} bg-white/60 px-4 sm:px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl`}>
                     {formatQuestion(current)}
                 </div>
 
@@ -247,16 +247,16 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
                     <div className="flex items-center gap-4">
                         <div onClick={() => feedback === 'none' && setActiveBox('q')} className={`${boxClass('q')} w-36`}>
                             <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('quotient', lang)}</span>
-                            {showCorrection ? current.answer : answer}
+                            {showCorrection ? fmt(current.answer) : answer}
                         </div>
                         <div className="text-5xl font-black text-amber-900">...</div>
                         <div onClick={() => feedback === 'none' && setActiveBox('r')} className={`${boxClass('r')} w-36`}>
                             <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('remainder', lang)}</span>
-                            {showCorrection ? (current.remainder ?? 0) : remainder}
+                            {showCorrection ? fmt(current.remainder ?? 0) : remainder}
                         </div>
                     </div>
                 ) : (
-                    <div className={`${boxClass('q')} w-full max-w-xs`}>{showCorrection ? current.answer : answer}</div>
+                    <div className={`${boxClass('q')} w-full max-w-xs`}>{showCorrection ? fmt(current.answer) : answer}</div>
                 )}
 
                 {feedback === 'correct' && (
@@ -270,8 +270,8 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
                         {isKinder && !currentItem.isRetry && <div className="text-xl mt-1">{t('tryAgainLater', lang)}</div>}
                         {!isKinder && (
                             <div className="text-xl mt-1">
-                                {t('yourAnswer', lang)} {answer}
-                                {isDivision && remainder !== '' ? ` ... ${remainder}` : ''}
+                                {t('yourAnswer', lang)} {fmt(Number(answer))}
+                                {isDivision && remainder !== '' ? ` ... ${fmt(Number(remainder))}` : ''}
                             </div>
                         )}
                     </div>
