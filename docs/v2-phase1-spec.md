@@ -165,7 +165,7 @@ Screens: `'setup' | 'skills' | 'game'`. No `alert()` — if no user, `SetupScree
 ### `SetupScreen` (user select / create)
 - List users (name, mode badge, coins). Select = `switchUser`.
 - Create user: name, mode (kinder/grade4 two big buttons), language (zh-TW/English; default en for kinder, zh-TW for grade4 — pre-selected but changeable).
-- Language toggle for current user (`setUserLanguage`).
+- Language toggle for current user (`setUserLanguage`). The current user's mode can also be switched here (`setUserMode`).
 - "Start" → skills screen.
 
 ### `SkillSelectScreen` (new)

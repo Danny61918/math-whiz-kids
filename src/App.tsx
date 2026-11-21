@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SetupScreen } from './components/SetupScreen';
 import { SkillSelectScreen } from './components/SkillSelectScreen';
 import { GamePlayScreen } from './components/GamePlayScreen';
-import { useCurrentUser } from './store/useGameStore';
+import { useCurrentUser, useLanguage } from './store/useGameStore';
 
 type Screen = 'setup' | 'skills' | 'game';
 
@@ -10,6 +10,11 @@ function App() {
   const [screen, setScreen] = useState<Screen>('setup');
   const [skillId, setSkillId] = useState<string | null>(null);
   const user = useCurrentUser();
+  const language = useLanguage();
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   // Without a current user only the setup screen makes sense.
   const current: Screen = !user ? 'setup' : screen === 'game' && !skillId ? 'skills' : screen;
