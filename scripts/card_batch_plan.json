@@ -1,0 +1,1404 @@
+{
+ "cards": [
+  {
+   "key": "dino_tyrannosaurus",
+   "name": "Tyrannosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Tyrannosaurus dinosaur"
+  },
+  {
+   "key": "dino_triceratops",
+   "name": "Triceratops",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Triceratops dinosaur"
+  },
+  {
+   "key": "dino_stegosaurus",
+   "name": "Stegosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Stegosaurus dinosaur"
+  },
+  {
+   "key": "dino_brachiosaurus",
+   "name": "Brachiosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Brachiosaurus dinosaur"
+  },
+  {
+   "key": "dino_velociraptor",
+   "name": "Velociraptor",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Velociraptor dinosaur"
+  },
+  {
+   "key": "dino_ankylosaurus",
+   "name": "Ankylosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Ankylosaurus dinosaur"
+  },
+  {
+   "key": "dino_pteranodon",
+   "name": "Pteranodon",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "Pteranodon pterosaur with wings spread"
+  },
+  {
+   "key": "dino_diplodocus",
+   "name": "Diplodocus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Diplodocus dinosaur"
+  },
+  {
+   "key": "dino_parasaurolophus",
+   "name": "Parasaurolophus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Parasaurolophus dinosaur"
+  },
+  {
+   "key": "dino_spinosaurus",
+   "name": "Spinosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Spinosaurus dinosaur"
+  },
+  {
+   "key": "dino_allosaurus",
+   "name": "Allosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Allosaurus dinosaur"
+  },
+  {
+   "key": "dino_iguanodon",
+   "name": "Iguanodon",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Iguanodon dinosaur"
+  },
+  {
+   "key": "dino_apatosaurus",
+   "name": "Apatosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Apatosaurus dinosaur"
+  },
+  {
+   "key": "dino_protoceratops",
+   "name": "Protoceratops",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Protoceratops dinosaur"
+  },
+  {
+   "key": "dino_maiasaura",
+   "name": "Maiasaura",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Maiasaura dinosaur"
+  },
+  {
+   "key": "dino_dilophosaurus",
+   "name": "Dilophosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Dilophosaurus dinosaur"
+  },
+  {
+   "key": "dino_compsognathus",
+   "name": "Compsognathus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Compsognathus dinosaur"
+  },
+  {
+   "key": "dino_gallimimus",
+   "name": "Gallimimus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Gallimimus dinosaur"
+  },
+  {
+   "key": "dino_pachycephalosaurus",
+   "name": "Pachycephalosaurus",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Pachycephalosaurus dinosaur"
+  },
+  {
+   "key": "dino_oviraptor",
+   "name": "Oviraptor",
+   "category": "dino",
+   "rarity": 1,
+   "prompt": "friendly Oviraptor dinosaur"
+  },
+  {
+   "key": "dino_carnotaurus",
+   "name": "Carnotaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Carnotaurus dinosaur"
+  },
+  {
+   "key": "dino_therizinosaurus",
+   "name": "Therizinosaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Therizinosaurus dinosaur"
+  },
+  {
+   "key": "dino_ceratosaurus",
+   "name": "Ceratosaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Ceratosaurus dinosaur"
+  },
+  {
+   "key": "dino_styracosaurus",
+   "name": "Styracosaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Styracosaurus dinosaur"
+  },
+  {
+   "key": "dino_edmontosaurus",
+   "name": "Edmontosaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Edmontosaurus dinosaur"
+  },
+  {
+   "key": "dino_utahraptor",
+   "name": "Utahraptor",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Utahraptor dinosaur"
+  },
+  {
+   "key": "dino_corythosaurus",
+   "name": "Corythosaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Corythosaurus dinosaur"
+  },
+  {
+   "key": "dino_kentrosaurus",
+   "name": "Kentrosaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Kentrosaurus dinosaur"
+  },
+  {
+   "key": "dino_deinonychus",
+   "name": "Deinonychus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Deinonychus dinosaur"
+  },
+  {
+   "key": "dino_psittacosaurus",
+   "name": "Psittacosaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Psittacosaurus dinosaur"
+  },
+  {
+   "key": "dino_archaeopteryx",
+   "name": "Archaeopteryx",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "Archaeopteryx feathered bird-dinosaur"
+  },
+  {
+   "key": "dino_camarasaurus",
+   "name": "Camarasaurus",
+   "category": "dino",
+   "rarity": 2,
+   "prompt": "friendly Camarasaurus dinosaur"
+  },
+  {
+   "key": "dino_quetzalcoatlus",
+   "name": "Quetzalcoatlus",
+   "category": "dino",
+   "rarity": 3,
+   "prompt": "giant Quetzalcoatlus pterosaur with wings spread"
+  },
+  {
+   "key": "dino_pentaceratops",
+   "name": "Pentaceratops",
+   "category": "dino",
+   "rarity": 3,
+   "prompt": "friendly Pentaceratops dinosaur"
+  },
+  {
+   "key": "dino_baryonyx",
+   "name": "Baryonyx",
+   "category": "dino",
+   "rarity": 3,
+   "prompt": "friendly Baryonyx dinosaur"
+  },
+  {
+   "key": "dino_mamenchisaurus",
+   "name": "Mamenchisaurus",
+   "category": "dino",
+   "rarity": 3,
+   "prompt": "friendly Mamenchisaurus dinosaur"
+  },
+  {
+   "key": "dino_tarbosaurus",
+   "name": "Tarbosaurus",
+   "category": "dino",
+   "rarity": 3,
+   "prompt": "friendly Tarbosaurus dinosaur"
+  },
+  {
+   "key": "dino_microraptor",
+   "name": "Microraptor",
+   "category": "dino",
+   "rarity": 3,
+   "prompt": "tiny feathered Microraptor dinosaur with four wings"
+  },
+  {
+   "key": "dino_giganotosaurus",
+   "name": "Giganotosaurus",
+   "category": "dino",
+   "rarity": 4,
+   "prompt": "friendly Giganotosaurus dinosaur"
+  },
+  {
+   "key": "dino_argentinosaurus",
+   "name": "Argentinosaurus",
+   "category": "dino",
+   "rarity": 4,
+   "prompt": "friendly Argentinosaurus dinosaur"
+  },
+  {
+   "key": "car_sedan",
+   "name": "Car",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "little round family car"
+  },
+  {
+   "key": "car_taxi",
+   "name": "Taxi",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "taxi"
+  },
+  {
+   "key": "car_bus",
+   "name": "Bus",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "bus"
+  },
+  {
+   "key": "car_school_bus",
+   "name": "School Bus",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "school bus"
+  },
+  {
+   "key": "car_truck",
+   "name": "Truck",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "truck"
+  },
+  {
+   "key": "car_dump_truck",
+   "name": "Dump Truck",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "dump truck with raised bed"
+  },
+  {
+   "key": "car_excavator",
+   "name": "Excavator",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "excavator"
+  },
+  {
+   "key": "car_bulldozer",
+   "name": "Bulldozer",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "bulldozer"
+  },
+  {
+   "key": "car_cement_mixer",
+   "name": "Cement Mixer",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "cement mixer truck with spinning drum"
+  },
+  {
+   "key": "car_tractor",
+   "name": "Tractor",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "tractor"
+  },
+  {
+   "key": "car_pickup_truck",
+   "name": "Pickup Truck",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "pickup truck"
+  },
+  {
+   "key": "car_motorcycle",
+   "name": "Motorcycle",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "motorcycle"
+  },
+  {
+   "key": "car_bicycle",
+   "name": "Bicycle",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "little bicycle"
+  },
+  {
+   "key": "car_tricycle",
+   "name": "Tricycle",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "toddler tricycle"
+  },
+  {
+   "key": "car_van",
+   "name": "Van",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "van"
+  },
+  {
+   "key": "car_tow_truck",
+   "name": "Tow Truck",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "tow truck"
+  },
+  {
+   "key": "car_garbage_truck",
+   "name": "Garbage Truck",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "garbage truck"
+  },
+  {
+   "key": "car_forklift",
+   "name": "Forklift",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "forklift"
+  },
+  {
+   "key": "car_ice_cream_truck",
+   "name": "Ice Cream Truck",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "ice cream truck"
+  },
+  {
+   "key": "car_jeep",
+   "name": "Jeep",
+   "category": "car",
+   "rarity": 1,
+   "prompt": "jeep"
+  },
+  {
+   "key": "car_suv",
+   "name": "SUV",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "chunky SUV car"
+  },
+  {
+   "key": "car_crane_truck",
+   "name": "Crane Truck",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "crane truck"
+  },
+  {
+   "key": "car_road_roller",
+   "name": "Road Roller",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "road roller"
+  },
+  {
+   "key": "car_food_truck",
+   "name": "Food Truck",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "food truck"
+  },
+  {
+   "key": "car_double_decker_bus",
+   "name": "Double-decker Bus",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "double-decker bus"
+  },
+  {
+   "key": "car_racing_car",
+   "name": "Racing Car",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "racing car"
+  },
+  {
+   "key": "car_convertible",
+   "name": "Convertible",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "convertible"
+  },
+  {
+   "key": "car_electric_car",
+   "name": "Electric Car",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "electric car"
+  },
+  {
+   "key": "car_go_kart",
+   "name": "Go-kart",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "go-kart"
+  },
+  {
+   "key": "car_tank_truck",
+   "name": "Tank Truck",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "tank truck"
+  },
+  {
+   "key": "car_camper_van",
+   "name": "Camper Van",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "camper van"
+  },
+  {
+   "key": "car_rickshaw",
+   "name": "Rickshaw",
+   "category": "car",
+   "rarity": 2,
+   "prompt": "rickshaw with two big wheels"
+  },
+  {
+   "key": "car_monster_truck",
+   "name": "Monster Truck",
+   "category": "car",
+   "rarity": 3,
+   "prompt": "monster truck"
+  },
+  {
+   "key": "car_limousine",
+   "name": "Limousine",
+   "category": "car",
+   "rarity": 3,
+   "prompt": "limousine"
+  },
+  {
+   "key": "car_snowmobile",
+   "name": "Snowmobile",
+   "category": "car",
+   "rarity": 3,
+   "prompt": "snowmobile"
+  },
+  {
+   "key": "car_atv",
+   "name": "ATV",
+   "category": "car",
+   "rarity": 3,
+   "prompt": "four-wheel ATV quad bike"
+  },
+  {
+   "key": "car_tuk_tuk",
+   "name": "Tuk-tuk",
+   "category": "car",
+   "rarity": 3,
+   "prompt": "colorful tuk-tuk three-wheel taxi"
+  },
+  {
+   "key": "car_golf_cart",
+   "name": "Golf Cart",
+   "category": "car",
+   "rarity": 3,
+   "prompt": "golf cart"
+  },
+  {
+   "key": "car_formula_one_car",
+   "name": "Formula 1 Car",
+   "category": "car",
+   "rarity": 4,
+   "prompt": "Formula 1 race car"
+  },
+  {
+   "key": "car_mining_dump_truck",
+   "name": "Mining Dump Truck",
+   "category": "car",
+   "rarity": 4,
+   "prompt": "huge yellow mining dump truck with giant wheels"
+  },
+  {
+   "key": "plane_airplane",
+   "name": "Airplane",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "little passenger airplane"
+  },
+  {
+   "key": "plane_jet_plane",
+   "name": "Jet Plane",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "jet plane"
+  },
+  {
+   "key": "plane_helicopter",
+   "name": "Helicopter",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "helicopter"
+  },
+  {
+   "key": "plane_propeller_plane",
+   "name": "Propeller Plane",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "propeller plane"
+  },
+  {
+   "key": "plane_seaplane",
+   "name": "Seaplane",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "seaplane"
+  },
+  {
+   "key": "plane_glider",
+   "name": "Glider",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "glider"
+  },
+  {
+   "key": "plane_hot_air_balloon",
+   "name": "Hot Air Balloon",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "hot air balloon"
+  },
+  {
+   "key": "plane_airliner",
+   "name": "Airliner",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "airliner"
+  },
+  {
+   "key": "plane_cargo_plane",
+   "name": "Cargo Plane",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "cargo plane"
+  },
+  {
+   "key": "plane_biplane",
+   "name": "Biplane",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "biplane"
+  },
+  {
+   "key": "plane_blimp",
+   "name": "Blimp",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "blimp"
+  },
+  {
+   "key": "plane_paraglider",
+   "name": "Paraglider",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "colorful paraglider wing"
+  },
+  {
+   "key": "plane_drone",
+   "name": "Drone",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "drone"
+  },
+  {
+   "key": "plane_fighter_jet",
+   "name": "Fighter Jet",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "fighter jet"
+  },
+  {
+   "key": "plane_parachute",
+   "name": "Parachute",
+   "category": "plane",
+   "rarity": 1,
+   "prompt": "colorful parachute"
+  },
+  {
+   "key": "plane_jumbo_jet",
+   "name": "Jumbo Jet",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "jumbo jet"
+  },
+  {
+   "key": "plane_private_jet",
+   "name": "Private Jet",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "private jet"
+  },
+  {
+   "key": "plane_tiltrotor",
+   "name": "Tilt-rotor Aircraft",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "tiltrotor aircraft with two big rotors"
+  },
+  {
+   "key": "plane_stunt_plane",
+   "name": "Stunt Plane",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "stunt plane"
+  },
+  {
+   "key": "plane_hang_glider",
+   "name": "Hang Glider",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "hang glider with triangle wing"
+  },
+  {
+   "key": "plane_gyrocopter",
+   "name": "Gyrocopter",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "little gyrocopter with a rotor on top"
+  },
+  {
+   "key": "plane_light_aircraft",
+   "name": "Light Aircraft",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "light aircraft"
+  },
+  {
+   "key": "plane_twin_engine_plane",
+   "name": "Twin-engine Plane",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "twin-engine plane"
+  },
+  {
+   "key": "plane_ultralight",
+   "name": "Ultralight Aircraft",
+   "category": "plane",
+   "rarity": 2,
+   "prompt": "tiny ultralight aircraft"
+  },
+  {
+   "key": "plane_concorde",
+   "name": "Concorde",
+   "category": "plane",
+   "rarity": 3,
+   "prompt": "concorde"
+  },
+  {
+   "key": "plane_supersonic_jet",
+   "name": "Supersonic Jet",
+   "category": "plane",
+   "rarity": 3,
+   "prompt": "supersonic jet"
+  },
+  {
+   "key": "plane_wright_flyer",
+   "name": "Wright Flyer",
+   "category": "plane",
+   "rarity": 3,
+   "prompt": "old wooden Wright Flyer biplane"
+  },
+  {
+   "key": "plane_solar_plane",
+   "name": "Solar Plane",
+   "category": "plane",
+   "rarity": 3,
+   "prompt": "solar-powered airplane with long wings"
+  },
+  {
+   "key": "plane_airbus_a380",
+   "name": "Airbus A380",
+   "category": "plane",
+   "rarity": 4,
+   "prompt": "huge double-deck Airbus A380 airliner"
+  },
+  {
+   "key": "plane_boeing_747",
+   "name": "Boeing 747",
+   "category": "plane",
+   "rarity": 4,
+   "prompt": "jumbo Boeing 747 airliner with hump nose"
+  },
+  {
+   "key": "ship_train_sailboat",
+   "name": "Sailboat",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "sailboat"
+  },
+  {
+   "key": "ship_train_ferry",
+   "name": "Ferry",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "ferry"
+  },
+  {
+   "key": "ship_train_cruise_ship",
+   "name": "Cruise Ship",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "cruise ship"
+  },
+  {
+   "key": "ship_train_tugboat",
+   "name": "Tugboat",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "tugboat"
+  },
+  {
+   "key": "ship_train_fishing_boat",
+   "name": "Fishing Boat",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "fishing boat"
+  },
+  {
+   "key": "ship_train_rowboat",
+   "name": "Rowboat",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "rowboat"
+  },
+  {
+   "key": "ship_train_speedboat",
+   "name": "Speedboat",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "speedboat"
+  },
+  {
+   "key": "ship_train_canoe",
+   "name": "Canoe",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "canoe"
+  },
+  {
+   "key": "ship_train_submarine",
+   "name": "Submarine",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "submarine"
+  },
+  {
+   "key": "ship_train_cargo_ship",
+   "name": "Cargo Ship",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "cargo ship"
+  },
+  {
+   "key": "ship_train_train",
+   "name": "Train",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "little passenger train"
+  },
+  {
+   "key": "ship_train_steam_train",
+   "name": "Steam Train",
+   "category": "ship_train",
+   "rarity": 1,
+   "prompt": "steam train"
+  },
+  {
+   "key": "ship_train_high_speed_train",
+   "name": "High-speed Train",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "high-speed train"
+  },
+  {
+   "key": "ship_train_subway",
+   "name": "Subway",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "subway metro train"
+  },
+  {
+   "key": "ship_train_tram",
+   "name": "Tram",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "city tram streetcar"
+  },
+  {
+   "key": "ship_train_monorail",
+   "name": "Monorail",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "monorail train"
+  },
+  {
+   "key": "ship_train_cable_car",
+   "name": "Cable Car",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "mountain cable car gondola"
+  },
+  {
+   "key": "ship_train_freight_train",
+   "name": "Freight Train",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "freight train"
+  },
+  {
+   "key": "ship_train_raft",
+   "name": "Raft",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "simple wooden log raft"
+  },
+  {
+   "key": "ship_train_jet_ski",
+   "name": "Jet Ski",
+   "category": "ship_train",
+   "rarity": 2,
+   "prompt": "jet ski water scooter"
+  },
+  {
+   "key": "ship_train_pirate_ship",
+   "name": "Pirate Ship",
+   "category": "ship_train",
+   "rarity": 3,
+   "prompt": "pirate ship"
+  },
+  {
+   "key": "ship_train_aircraft_carrier",
+   "name": "Aircraft Carrier",
+   "category": "ship_train",
+   "rarity": 3,
+   "prompt": "aircraft carrier"
+  },
+  {
+   "key": "ship_train_icebreaker",
+   "name": "Icebreaker",
+   "category": "ship_train",
+   "rarity": 3,
+   "prompt": "icebreaker"
+  },
+  {
+   "key": "ship_train_hovercraft",
+   "name": "Hovercraft",
+   "category": "ship_train",
+   "rarity": 3,
+   "prompt": "hovercraft with big fan"
+  },
+  {
+   "key": "ship_train_maglev_train",
+   "name": "Maglev Train",
+   "category": "ship_train",
+   "rarity": 4,
+   "prompt": "sleek maglev bullet train"
+  },
+  {
+   "key": "space_rocket",
+   "name": "Rocket",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "rocket"
+  },
+  {
+   "key": "space_space_shuttle",
+   "name": "Space Shuttle",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "space shuttle"
+  },
+  {
+   "key": "space_satellite",
+   "name": "Satellite",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "satellite with solar panels"
+  },
+  {
+   "key": "space_astronaut",
+   "name": "Astronaut",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "bear astronaut in a white spacesuit"
+  },
+  {
+   "key": "space_moon",
+   "name": "Moon",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "smiling crescent moon"
+  },
+  {
+   "key": "space_sun",
+   "name": "Sun",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "smiling sun"
+  },
+  {
+   "key": "space_earth",
+   "name": "Earth",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "planet Earth with blue oceans and green land"
+  },
+  {
+   "key": "space_star",
+   "name": "Star",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "smiling yellow star"
+  },
+  {
+   "key": "space_space_station",
+   "name": "Space Station",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "space station with solar panels"
+  },
+  {
+   "key": "space_telescope",
+   "name": "Telescope",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "big stargazing telescope on a tripod"
+  },
+  {
+   "key": "space_comet",
+   "name": "Comet",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "comet with a long tail"
+  },
+  {
+   "key": "space_meteor",
+   "name": "Meteor",
+   "category": "space",
+   "rarity": 1,
+   "prompt": "meteor shooting star with a fiery tail"
+  },
+  {
+   "key": "space_mars",
+   "name": "Mars",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "red planet Mars"
+  },
+  {
+   "key": "space_jupiter",
+   "name": "Jupiter",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "planet Jupiter with stripes"
+  },
+  {
+   "key": "space_saturn",
+   "name": "Saturn",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "planet Saturn with rings"
+  },
+  {
+   "key": "space_venus",
+   "name": "Venus",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "yellow planet Venus"
+  },
+  {
+   "key": "space_mercury",
+   "name": "Mercury",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "small grey planet Mercury"
+  },
+  {
+   "key": "space_mars_rover",
+   "name": "Mars Rover",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "six-wheeled Mars rover robot"
+  },
+  {
+   "key": "space_lunar_module",
+   "name": "Lunar Module",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "Apollo lunar module lander"
+  },
+  {
+   "key": "space_space_capsule",
+   "name": "Space Capsule",
+   "category": "space",
+   "rarity": 2,
+   "prompt": "round space capsule"
+  },
+  {
+   "key": "space_neptune",
+   "name": "Neptune",
+   "category": "space",
+   "rarity": 3,
+   "prompt": "blue planet Neptune"
+  },
+  {
+   "key": "space_uranus",
+   "name": "Uranus",
+   "category": "space",
+   "rarity": 3,
+   "prompt": "pale cyan planet Uranus"
+  },
+  {
+   "key": "space_black_hole",
+   "name": "Black Hole",
+   "category": "space",
+   "rarity": 3,
+   "prompt": "swirling black hole with a purple ring"
+  },
+  {
+   "key": "space_milky_way",
+   "name": "Milky Way",
+   "category": "space",
+   "rarity": 4,
+   "prompt": "spiral galaxy Milky Way"
+  },
+  {
+   "key": "space_hubble_telescope",
+   "name": "Hubble Space Telescope",
+   "category": "space",
+   "rarity": 4,
+   "prompt": "Hubble space telescope satellite"
+  },
+  {
+   "key": "rescue_fire_truck",
+   "name": "Fire Truck",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "fire truck"
+  },
+  {
+   "key": "rescue_police_car",
+   "name": "Police Car",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "police car"
+  },
+  {
+   "key": "rescue_ambulance",
+   "name": "Ambulance",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "ambulance"
+  },
+  {
+   "key": "rescue_firefighter",
+   "name": "Firefighter",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "dalmatian dog firefighter with a red helmet"
+  },
+  {
+   "key": "rescue_police_officer",
+   "name": "Police Officer",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "puppy police officer with a blue cap"
+  },
+  {
+   "key": "rescue_paramedic",
+   "name": "Paramedic",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "rabbit paramedic with a medical bag"
+  },
+  {
+   "key": "rescue_doctor",
+   "name": "Doctor",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "teddy bear doctor with a stethoscope"
+  },
+  {
+   "key": "rescue_nurse",
+   "name": "Nurse",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "bunny nurse with a nurse cap"
+  },
+  {
+   "key": "rescue_fire_hydrant",
+   "name": "Fire Hydrant",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "red fire hydrant"
+  },
+  {
+   "key": "rescue_fire_extinguisher",
+   "name": "Fire Extinguisher",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "red fire extinguisher"
+  },
+  {
+   "key": "rescue_fire_hose",
+   "name": "Fire Hose",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "coiled fire hose"
+  },
+  {
+   "key": "rescue_safety_helmet",
+   "name": "Safety Helmet",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "yellow safety helmet"
+  },
+  {
+   "key": "rescue_life_ring",
+   "name": "Life Ring",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "red and white life ring buoy"
+  },
+  {
+   "key": "rescue_life_jacket",
+   "name": "Life Jacket",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "orange life jacket"
+  },
+  {
+   "key": "rescue_stretcher",
+   "name": "Stretcher",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "rescue stretcher"
+  },
+  {
+   "key": "rescue_first_aid_kit",
+   "name": "First Aid Kit",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "first aid kit box with red cross"
+  },
+  {
+   "key": "rescue_police_motorcycle",
+   "name": "Police Motorcycle",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "police motorcycle"
+  },
+  {
+   "key": "rescue_rescue_helicopter",
+   "name": "Rescue Helicopter",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "rescue helicopter"
+  },
+  {
+   "key": "rescue_rescue_dog",
+   "name": "Rescue Dog",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "rescue dog wearing a rescue vest"
+  },
+  {
+   "key": "rescue_traffic_cone",
+   "name": "Traffic Cone",
+   "category": "rescue",
+   "rarity": 1,
+   "prompt": "orange traffic cone"
+  },
+  {
+   "key": "rescue_ladder_truck",
+   "name": "Ladder Truck",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "ladder truck"
+  },
+  {
+   "key": "rescue_fireboat",
+   "name": "Fireboat",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "fireboat spraying water"
+  },
+  {
+   "key": "rescue_rescue_boat",
+   "name": "Rescue Boat",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "rescue boat"
+  },
+  {
+   "key": "rescue_coast_guard_boat",
+   "name": "Coast Guard Boat",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "coast guard boat"
+  },
+  {
+   "key": "rescue_air_ambulance",
+   "name": "Air Ambulance",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "air ambulance helicopter"
+  },
+  {
+   "key": "rescue_command_vehicle",
+   "name": "Command Vehicle",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "emergency command vehicle truck"
+  },
+  {
+   "key": "rescue_walkie_talkie",
+   "name": "Walkie-talkie",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "walkie-talkie radio"
+  },
+  {
+   "key": "rescue_rescue_robot",
+   "name": "Rescue Robot",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "friendly rescue robot"
+  },
+  {
+   "key": "rescue_lifeguard",
+   "name": "Lifeguard",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "puppy lifeguard with a red float"
+  },
+  {
+   "key": "rescue_warning_light",
+   "name": "Warning Light",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "flashing red warning light"
+  },
+  {
+   "key": "rescue_rescue_rope",
+   "name": "Rescue Rope",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "coiled rescue rope with a hook"
+  },
+  {
+   "key": "rescue_siren",
+   "name": "Siren",
+   "category": "rescue",
+   "rarity": 2,
+   "prompt": "emergency siren light"
+  },
+  {
+   "key": "rescue_rescue_truck",
+   "name": "Rescue Truck",
+   "category": "rescue",
+   "rarity": 3,
+   "prompt": "rescue truck"
+  },
+  {
+   "key": "rescue_fire_plane",
+   "name": "Fire-fighting Plane",
+   "category": "rescue",
+   "rarity": 3,
+   "prompt": "fire-fighting plane dropping water"
+  },
+  {
+   "key": "rescue_airport_fire_truck",
+   "name": "Airport Fire Truck",
+   "category": "rescue",
+   "rarity": 3,
+   "prompt": "airport fire truck"
+  },
+  {
+   "key": "rescue_rescue_drone",
+   "name": "Rescue Drone",
+   "category": "rescue",
+   "rarity": 3,
+   "prompt": "rescue drone with four propellers"
+  },
+  {
+   "key": "rescue_snow_rescue_vehicle",
+   "name": "Snow Rescue Vehicle",
+   "category": "rescue",
+   "rarity": 3,
+   "prompt": "snow rescue vehicle with tracks"
+  },
+  {
+   "key": "rescue_heavy_rescue_crane",
+   "name": "Heavy Rescue Crane",
+   "category": "rescue",
+   "rarity": 3,
+   "prompt": "heavy rescue crane truck"
+  },
+  {
+   "key": "rescue_rescue_submarine",
+   "name": "Rescue Submarine",
+   "category": "rescue",
+   "rarity": 4,
+   "prompt": "yellow deep-sea rescue submarine"
+  },
+  {
+   "key": "rescue_hospital_ship",
+   "name": "Hospital Ship",
+   "category": "rescue",
+   "rarity": 4,
+   "prompt": "white hospital ship with red cross"
+  }
+ ]
+}
