@@ -3,19 +3,19 @@ import { getSkill, skillsForMode } from '../data/skills';
 import { useCurrentUser, useGameStore, type SessionSummary } from '../store/useGameStore';
 import { audioService } from '../services/audioService';
 import { t, tp, type TranslationKey } from '../utils/i18n';
-import { checkAnswer, generateSession, type Question } from '../utils/mathEngine';
+import { buildKinderSession, checkAnswer, generateSession, type Question } from '../utils/mathEngine';
 import { questionCoins } from '../utils/rewards';
-import { resolveSubmit } from '../utils/session';
-import { ObjectAid } from './ObjectAid';
+import { QUESTION_COUNT, aidModeFor, insertRetry, resolveSubmit, type AidMode } from '../utils/session';
+import { dayKey } from '../utils/streak';
 import { ResultScreen } from './ResultScreen';
+import { TenFrame } from './TenFrame';
 
-const QUESTION_COUNT = { kinder: 5, grade4: 10 } as const;
 const MAX_DIGITS = { kinder: 2, grade4: 8 } as const;
-const OBJECT_AID_SKILLS = ['k_add_5', 'k_add_10', 'k_sub_5', 'k_sub_10', 'k_make10'];
 
 interface QueueItem {
     question: Question;
     isRetry: boolean;
+    aid: AidMode; // ten-frame visibility, decided from the fact's box when the question was built
 }
 
 type Feedback = 'none' | 'correct' | 'incorrect';
@@ -45,6 +45,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const user = useCurrentUser();
     const addCoins = useGameStore((s) => s.addCoins);
     const recordAnswer = useGameStore((s) => s.recordAnswer);
+    const recordFact = useGameStore((s) => s.recordFact);
     const completeSession = useGameStore((s) => s.completeSession);
 
     const mode = user?.mode ?? 'grade4';
@@ -53,10 +54,21 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const skill = getSkill(skillId);
     const totalQuestions = QUESTION_COUNT[mode];
 
-    // Generated once on mount; retries (kinder) are appended to the end of the queue.
-    const [queue, setQueue] = useState<QueueItem[]>(() =>
-        generateSession(skillId, totalQuestions).map((question) => ({ question, isRetry: false })),
-    );
+    // Facts as they were when the session started (to count newly mastered facts at the end).
+    const factsBeforeRef = useRef(user?.facts ?? {});
+
+    // Generated once on mount; a wrong kinder answer is re-asked 3 questions later.
+    const [queue, setQueue] = useState<QueueItem[]>(() => {
+        if (!isKinder) {
+            return generateSession(skillId, totalQuestions).map((question) => ({ question, isRetry: false, aid: 'none' as const }));
+        }
+        const facts = user?.facts ?? {};
+        return buildKinderSession(skillId, facts, dayKey(new Date()), totalQuestions, Math.random).map((question) => ({
+            question,
+            isRetry: false,
+            aid: aidModeFor(skillId, question.factKey ? facts[question.factKey] : undefined),
+        }));
+    });
     const [index, setIndex] = useState(0);
     const [answer, setAnswer] = useState('');
     const [remainder, setRemainder] = useState('');
@@ -66,13 +78,17 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const [earnedCoins, setEarnedCoins] = useState(0);
     const [finished, setFinished] = useState<{ coins: number; perfect: boolean; correct: number; summary: SessionSummary | null } | null>(null);
     const [combo, setCombo] = useState(0);
+    const [aidShown, setAidShown] = useState(false); // Help button pressed for this question
+    const [extraCoins, setExtraCoins] = useState(0); // one-time fact bonuses collected this session
 
     const startTimeRef = useRef(0);
+    const firstDigitAtRef = useRef<number | null>(null); // time of the first digit = retrieval time
     const timerRef = useRef<number | undefined>(undefined);
     const keyHandlerRef = useRef<(e: KeyboardEvent) => void>(() => {});
 
     useEffect(() => {
         startTimeRef.current = Date.now();
+        firstDigitAtRef.current = null;
     }, [index]);
 
     useEffect(() => () => window.clearTimeout(timerRef.current), []);
@@ -84,6 +100,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
 
     const appendDigit = (digit: number) => {
         if (feedback !== 'none') return;
+        firstDigitAtRef.current ??= Date.now();
         const setter = activeBox === 'q' ? setAnswer : setRemainder;
         setter((prev) => (prev + digit).slice(0, maxDigits));
     };
@@ -107,6 +124,12 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         });
 
         // Retries do not count towards stats or coins; only the first attempt does.
+        const helped = aidShown && !item.isRetry;
+        let bonusCoins = 0;
+        if (isKinder && !item.isRetry && current.factKey) {
+            const retrievalMs = (firstDigitAtRef.current ?? Date.now()) - startTimeRef.current;
+            bonusCoins = recordFact(current.factKey, ok, retrievalMs, helped)?.bonusCoins ?? 0;
+        }
         const outcome = resolveSubmit({
             isRetry: item.isRetry,
             ok,
@@ -116,15 +139,20 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
             earned: earnedCoins,
             correct: correctCount,
             total: totalQuestions,
-            questionCoins: skill ? questionCoins(skill, timeMs) : 0,
+            questionCoins: skill ? questionCoins(skill, timeMs, helped) : 0,
+            extra: extraCoins,
+            bonusCoins,
         });
-        const { nextCorrect, nextEarned, isLast, finalCoins } = outcome;
+        const { nextCorrect, nextEarned, nextExtra, isLast, finalCoins } = outcome;
         if (outcome.countsForStats) recordAnswer(skillId, ok, timeMs);
         if (outcome.countsForStats) setCombo(ok ? combo + 1 : 0);
-        if (outcome.appendRetry) setQueue((prev) => [...prev, { question: current, isRetry: true }]);
+        if (outcome.appendRetry) {
+            setQueue((prev) => insertRetry(prev, { question: current, isRetry: true, aid: 'visible' }, outcome.insertAt));
+        }
 
         setCorrectCount(nextCorrect);
         setEarnedCoins(nextEarned);
+        setExtraCoins(nextExtra);
         setFeedback(ok ? 'correct' : 'incorrect');
         if (ok) audioService.playCorrect();
         else if (isKinder) audioService.playGentleIncorrect();
@@ -134,7 +162,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         let summary: SessionSummary | null = null;
         if (isLast) {
             addCoins(finalCoins);
-            summary = completeSession({ skillId, correct: nextCorrect, total: totalQuestions });
+            summary = completeSession({ skillId, correct: nextCorrect, total: totalQuestions, factsBefore: factsBeforeRef.current });
         }
 
         timerRef.current = window.setTimeout(
@@ -144,13 +172,14 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                     setAnswer('');
                     setRemainder('');
                     setActiveBox('q');
+                    setAidShown(false);
                     setFeedback('none');
                 } else {
                     audioService.playWin();
                     setFinished({ coins: finalCoins, perfect: nextCorrect === totalQuestions, correct: nextCorrect, summary });
                 }
             },
-            ok ? 1000 : 2000,
+            ok ? 1000 : isKinder ? 2500 : 2000,
         );
     };
 
@@ -219,8 +248,11 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         return `h-28 bg-[#2c3e50] rounded-2xl border-8 flex flex-col items-center justify-center text-5xl font-bold shadow-inner ${border}`;
     };
 
-    // Grade4 always sees the correction; kinder only after a wrong retry.
-    const showCorrection = feedback === 'incorrect' && (!isKinder || currentItem.isRetry);
+    // A wrong answer immediately shows the correct answer (and, for kinder, the ten-frame).
+    const showCorrection = feedback === 'incorrect';
+    const hasFrame = isKinder && current.factKey !== undefined;
+    const showFrame = hasFrame && (currentItem.aid === 'visible' || (currentItem.aid === 'help' && aidShown) || feedback === 'incorrect');
+    const showHelp = hasFrame && currentItem.aid === 'help' && !aidShown && feedback === 'none';
 
     return (
         <div className={`min-h-screen flex flex-col p-4 transition-colors duration-500 font-sans bg-gradient-to-b ${background}`}>
@@ -251,10 +283,18 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                     {formatQuestion(current)}
                 </div>
 
-                {isKinder && OBJECT_AID_SKILLS.includes(skillId) && (
+                {showFrame && (
                     <div className="mb-4">
-                        <ObjectAid question={current} />
+                        <TenFrame question={current} lang={lang} />
                     </div>
+                )}
+                {showHelp && (
+                    <button
+                        onClick={() => setAidShown(true)}
+                        className="mb-4 min-h-16 min-w-40 rounded-2xl border-b-[6px] border-yellow-600 bg-yellow-300 px-6 text-3xl font-black text-amber-900 transition active:translate-y-1 active:border-b-0"
+                    >
+                        {t('helpButton', lang)}
+                    </button>
                 )}
 
                 {showCorrection && (
