@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import planRaw from '../../scripts/card_batch_plan.json?raw';
 import { CATEGORIES, cards, cardsById, type CardCategory } from './cards';
 
 const EXPECTED: Record<CardCategory, number> = { dino: 40, car: 40, plane: 30, ship_train: 25, space: 25, rescue: 40 };
@@ -52,5 +53,11 @@ describe('cards data', () => {
             const rarities = new Set(cards.filter((c) => c.category === cat).map((c) => c.rarity));
             expect(rarities.size).toBe(4);
         }
+    });
+
+    it('keeps scripts/card_batch_plan.json in sync with the cards (same ids, same order)', () => {
+        const plan = JSON.parse(planRaw) as { cards: { key: string; category: string; rarity: number }[] };
+        expect(plan.cards.map((c) => c.key)).toEqual(cards.map((c) => c.id));
+        expect(plan.cards.map((c) => [c.category, c.rarity])).toEqual(cards.map((c) => [c.category, c.rarity]));
     });
 });

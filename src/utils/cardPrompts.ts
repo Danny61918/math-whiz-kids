@@ -11,9 +11,12 @@ export interface PromptRow {
     negative_prompt: string;
 }
 
+const PTEROSAURS = ['Pteranodon', 'Quetzalcoatlus'];
+
 export function subjectFor(card: Pick<Card, 'category' | 'nameEn'>): string {
     switch (card.category) {
         case 'dino':
+            if (PTEROSAURS.includes(card.nameEn)) return `a friendly cartoon ${card.nameEn} pterosaur`;
             return `a friendly cartoon ${card.nameEn} dinosaur`;
         case 'space':
             return `a cute cartoon ${card.nameEn}, outer space theme`;

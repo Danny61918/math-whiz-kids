@@ -666,11 +666,11 @@
    "prompt": "colorful parachute"
   },
   {
-   "key": "plane_jumbo_jet",
-   "name": "Jumbo Jet",
+   "key": "plane_crop_duster",
+   "name": "Crop Duster",
    "category": "plane",
    "rarity": 2,
-   "prompt": "jumbo jet"
+   "prompt": "yellow crop duster biplane spraying"
   },
   {
    "key": "plane_private_jet",

@@ -34,6 +34,9 @@ describe('prompt rows', () => {
 
     it('describes subjects by category and adds flourishes for rare cards', () => {
         expect(subjectFor({ category: 'car', nameEn: 'Taxi' })).toBe('a cute cartoon Taxi');
+        expect(subjectFor({ category: 'dino', nameEn: 'Pteranodon' })).toContain('pterosaur');
+        expect(subjectFor({ category: 'dino', nameEn: 'Quetzalcoatlus' })).not.toContain('dinosaur');
+        expect(subjectFor({ category: 'dino', nameEn: 'Stegosaurus' })).toContain('dinosaur');
         expect(subjectFor({ category: 'space', nameEn: 'Mars' })).toContain('outer space');
         expect(flourishFor(1)).toBe('');
         expect(flourishFor(2)).toBe('');
