@@ -1,0 +1,260 @@
+<title>新版介面模擬圖</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: annotated phone frames in a wrapping row, then a wide frame for tablet/desktop. Single deliberate look (the app's sky-to-meadow world), so every colour is explicit. */
+:root{
+  --page:#EEF3F8; --ink:#1F2A37; --muted:#4B5B6E; --line:#D5DEE8;
+  --sky1:#74D0FF; --sky2:#CFEFFF; --meadow:#4ADE80;
+  --card:#FFFFFF; --text:#5B2A0B; --tan:#D4A373; --tan-d:#B98457;
+  --green:#16A34A; --green-d:#0E7A36; --purple:#A855F7; --purple-d:#7E22CE; --orange:#F59E0B; --blue:#0EA5E9;
+  --gold:#F5B301; --grey:#9AA7B5;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--ink);margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+main{max-width:1240px;margin:0 auto}
+h1{font-size:28px;margin:0 0 4px;letter-spacing:.01em}
+.lead{color:var(--muted);margin:0 0 24px;max-width:62ch}
+h2{font-size:20px;margin:36px 0 4px}
+.row{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.item{flex:0 1 390px;min-width:0;max-width:100%}
+.item.wide{flex:1 1 640px}
+.cap{font-size:15px;color:var(--muted);margin:10px 2px 0}
+.cap b{color:var(--ink)}
+.tag{display:inline-block;font-size:13px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 8px;margin-right:6px;color:var(--ink)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+.fact{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.fact b{display:block;font-size:15px}
+.fact span{font-size:15px;color:var(--muted)}
+
+/* ---- phone frame ---- */
+.phone{width:100%;max-width:390px;height:844px;border:10px solid #1B2430;border-radius:34px;overflow:hidden;position:relative;background:linear-gradient(#74D0FF,#CFEFFF 55%,#4ADE80);box-shadow:0 10px 30px rgba(20,40,70,.18)}
+.phone.wide{max-width:none;height:auto;min-height:560px;border-radius:18px;border-width:8px}
+.screen{height:100%;overflow:hidden;padding:14px 16px 0;display:flex;flex-direction:column;gap:12px;color:var(--text)}
+.screen.fit{padding-bottom:14px}
+.fade{position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(transparent,rgba(224,248,255,.95));pointer-events:none}
+.fade::after{content:"↓ 往下還有更多";position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:14px;font-weight:700;color:#2B4A63}
+
+/* top bar + chips */
+.top{display:flex;align-items:center;gap:10px}
+.icon-btn{width:56px;height:56px;border-radius:16px;background:#fff;border:2px solid #BFE3F6;display:grid;place-items:center;font-size:26px}
+.who{margin-left:auto;background:#fff;border-radius:999px;padding:8px 16px;font-weight:800;font-size:18px}
+.stats{display:flex;gap:8px}
+.chip{flex:1;background:#fff;border-radius:14px;padding:9px 6px;font-weight:800;font-size:18px;text-align:center;white-space:nowrap}
+.chip.tk{border:2px solid #FACC15}
+
+/* buttons */
+.cta{background:var(--green);border-bottom:6px solid var(--green-d);border-radius:20px;color:#fff;font-weight:900;font-size:22px;padding:14px 16px;text-align:center;line-height:1.25}
+.cta small{display:block;font-size:16px;font-weight:700;opacity:.95}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tbtn{border-radius:18px;padding:10px 4px 8px;text-align:center;font-weight:800;font-size:15px;line-height:1.2;color:#fff;border-bottom:5px solid rgba(0,0,0,.22)}
+.tbtn i{display:block;font-style:normal;font-size:30px;margin-bottom:2px}
+.t-purple{background:var(--purple)} .t-orange{background:#F97316} .t-teal{background:#0891B2}
+
+/* skill cards */
+.list{display:grid;gap:10px}
+.wide .list{grid-template-columns:1fr 1fr}
+.skill{background:#fff;border-radius:18px;padding:12px;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;min-height:88px;border:3px solid transparent}
+.skill .ic{width:56px;height:56px;border-radius:16px;background:#E8F7EC;display:grid;place-items:center;font-size:30px}
+.skill .nm{font-weight:900;font-size:19px;line-height:1.2}
+.skill .ex{font-size:14px;color:#6B4A33;font-weight:600}
+.skill .meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+.stars{display:inline-flex;gap:2px;font-size:24px;line-height:1}
+.stars .on{color:var(--gold)} .stars .off{color:#C7CFD8}
+.pill{font-size:14px;font-weight:800;border-radius:999px;padding:2px 10px;background:#EEF1F5;color:#3A4756}
+.pill.learn{background:#FFF3C4;color:#7A5200} .pill.master{background:#D3F5DE;color:#0E6B32}
+.skill.rec{border-color:var(--gold);background:#FFFBE6}
+.badge{background:var(--gold);color:#4A3500;font-weight:900;font-size:14px;border-radius:8px;padding:1px 8px;margin-left:6px;vertical-align:2px}
+.skill.lock{background:#EEF2F6;color:#56626F}
+.skill.lock .ic{background:#DDE3EA}
+.skill.pin{background:#EAF2FF}
+
+/* chart */
+.title{font-size:28px;font-weight:900;margin:0 0 0 4px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tab{border-radius:16px;padding:14px 8px;text-align:center;font-weight:900;font-size:20px;background:#FFF1C2;color:#6B4A00;border-bottom:5px solid #F5C542}
+.tab.on{background:var(--purple);color:#fff;border-bottom-color:var(--purple-d)}
+.prog{background:#fff;border-radius:18px;padding:12px 14px}
+.prog .n{font-size:30px;font-weight:900;text-align:center}
+.bar{height:16px;border-radius:999px;background:#FFF1C2;overflow:hidden;margin:6px 0 10px}
+.bar>i{display:block;height:100%;width:16%;background:var(--blue)}
+.ms{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ms span{font-size:14px;font-weight:800;background:#EEF1F5;border-radius:12px;padding:4px 2px;text-align:center;line-height:1.25}
+.ms span.done{background:#D3F5DE;color:#0E6B32}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;background:#fff;border-radius:14px;padding:9px 12px}
+.lg{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
+.sw{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:13px;font-weight:900;border:2px solid}
+.c-un{background:#E6EAEE;border-color:#CBD3DB;color:#7C8896}
+.c-le{background:#FFF08A;border-color:#F5C542;color:#7A5200}
+.c-so{background:#7FEFA3;border-color:#22C55E;color:#0E6B32}
+.c-ma{background:#7DD3FC;border-color:#0EA5E9;color:#073B57}
+.grid{display:grid;grid-template-columns:22px repeat(9,1fr);gap:4px;align-items:center}
+.grid .h{font-size:16px;font-weight:900;text-align:center;color:#5B2A0B}
+.cell{aspect-ratio:1;border-radius:8px;border:2px solid;display:grid;place-items:center;font-weight:900;font-size:18px;position:relative}
+.cell .st{position:absolute;top:-6px;right:-5px;font-size:13px}
+
+/* practice */
+.q{background:#fff;border-radius:22px;text-align:center;font-weight:900;font-size:64px;line-height:1.1;padding:8px 10px;color:#6B2F0A;box-shadow:0 3px 0 #C9D6E2}
+.frames{display:flex;gap:10px;justify-content:center;flex-wrap:nowrap}
+.tf{display:grid;grid-template-columns:repeat(5,24px);gap:3px;background:#fff;border:3px solid #B45309;border-radius:10px;padding:6px}
+.d{width:24px;height:24px;border-radius:50%;border:2px solid}
+.d.a{background:#F59E0B;border-color:#B45309} .d.b{background:#0EA5E9;border-color:#0369A1} .d.e{background:#FFF8DC;border-color:#E7DDB5}
+.ans{height:84px;border-radius:20px;background:#2C3E50;border:8px solid #E6CCB2;color:#fff;font-size:48px;font-weight:900;display:grid;place-items:center;position:relative}
+.ans.warn{border-color:#FBBF24;color:#FDE68A}
+.ans small{position:absolute;top:2px;left:0;right:0;text-align:center;font-size:14px;font-weight:700;color:#FDE68A}
+.msg{text-align:center;font-weight:900;font-size:20px;color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.35)}
+.msg small{display:block;font-size:16px;font-weight:700}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.k{height:62px;border-radius:16px;background:var(--tan);border-bottom:5px solid var(--tan-d);color:#fff;font-weight:900;font-size:32px;display:grid;place-items:center}
+.k.sec{background:#E6CCB2;border-bottom-color:var(--tan);color:#7A4A1D}
+.ok{height:66px;border-radius:18px;background:var(--green);border-bottom:6px solid var(--green-d);color:#fff;font-weight:900;font-size:28px;display:grid;place-items:center}
+.amber{background:linear-gradient(#FDE68A,#FBBF24)}
+.helpbtn{align-self:center;background:#FEF3C7;border:3px solid #F59E0B;border-radius:16px;padding:8px 18px;font-weight:900;font-size:18px;color:#7A4A00}
+@media (max-width:440px){.item{flex-basis:100%}}
+</style>
+
+<main>
+  <h1>新版介面模擬圖</h1>
+  <p class="lead">依照你說的「不好讀」重新設計版面。下面是大班孩子看到的畫面(英文介面),每張圖下方說明改了什麼。尺寸是真實手機大小(390 × 844),所以你可以直接判斷字夠不夠大。</p>
+
+  <div class="facts">
+    <div class="fact"><b>地圖長度</b><span>現在 3,037px,要捲很久 → 目標約 1,300px</span></div>
+    <div class="fact"><b>最小字級</b><span>現在 8~11px → 全部 14px 以上</span></div>
+    <div class="fact"><b>練習畫面</b><span>現在「OK」按鈕常在螢幕外 → 一律在螢幕內</span></div>
+    <div class="fact"><b>平板、筆電</b><span>現在固定窄欄 → 放大並改兩欄</span></div>
+  </div>
+
+  <h2>1. 手機畫面</h2>
+  <div class="row">
+
+    <!-- MAP -->
+    <div class="item">
+      <div class="phone"><div class="screen">
+        <div class="top"><div class="icon-btn">🏠</div><div class="who">🦁 Leo</div></div>
+        <div class="stats"><div class="chip">🪙 300</div><div class="chip">🔥 1 day</div><div class="chip tk">🎫 1 ticket</div></div>
+        <div class="cta">▶ Continue<small>Add up to 5</small></div>
+        <div class="trio">
+          <div class="tbtn t-purple"><i>🃏</i>My Cards</div>
+          <div class="tbtn t-orange"><i>⚡</i>60-second blitz</div>
+          <div class="tbtn t-teal"><i>🧮</i>Number Chart</div>
+        </div>
+        <div class="list">
+          <div class="skill pin"><div class="ic">🔁</div><div><div class="nm">Daily review</div><div class="meta"><span class="pill learn">Learning</span></div></div></div>
+          <div class="skill rec"><div class="ic">➕</div><div><div class="nm">Add up to 5 <span class="badge">Start here!</span></div><div class="meta"><span class="stars"><span class="on">★</span><span class="on">★</span><span class="off">★</span></span><span class="pill learn">Learning</span></div></div></div>
+          <div class="skill"><div class="ic">➖</div><div><div class="nm">Take away within 5</div><div class="meta"><span class="stars"><span class="on">★</span><span class="on">★</span><span class="off">★</span></span><span class="pill">New</span></div></div></div>
+          <div class="skill"><div class="ic">➕</div><div><div class="nm">Plus 1 and 2</div><div class="meta"><span class="stars"><span class="off">★</span><span class="off">★</span><span class="off">★</span></span><span class="pill">New</span></div></div></div>
+          <div class="skill lock"><div class="ic">🔒</div><div><div class="nm">Doubles</div><div class="ex">e.g. 3 + 3</div><div class="meta"><span class="pill">Locked</span></div></div></div>
+        </div>
+      </div><div class="fade"></div></div>
+      <p class="cap"><span class="tag">地圖</span><b>一個大按鈕就能開始。</b>孩子不用找路,按「Continue」直接進入系統建議的下一關。原本的蜿蜒路徑換成清楚的卡片:技能名稱 19px 粗體、三顆大星星、狀態文字(New / Learning / Mastered)都不再是 11px 小字。每個功能按鈕都有文字,不再只有圖示。</p>
+    </div>
+
+    <!-- CHART -->
+    <div class="item">
+      <div class="phone"><div class="screen">
+        <div class="top"><div class="icon-btn">🏠</div><div class="title">Number Chart</div></div>
+        <div class="tabs"><div class="tab on">➕ Add</div><div class="tab">➖ Take away</div></div>
+        <div class="prog"><div class="n">13 / 81 <span style="color:var(--gold)">★</span></div><div class="bar"><i></i></div>
+          <div class="ms"><span class="done">✓ 25%<br>🎫 +1</span><span>50%<br>🎫 +1</span><span>75%<br>🎫 +2</span><span>100%<br>🎫 +3</span></div></div>
+        <div class="legend">
+          <div class="lg"><span class="sw c-un"></span>Not yet</div>
+          <div class="lg"><span class="sw c-le">•</span>Learning</div>
+          <div class="lg"><span class="sw c-so">✓</span>Solid</div>
+          <div class="lg"><span class="sw c-ma">★</span>Mastered</div>
+        </div>
+        <div class="grid" id="grid"></div>
+      </div></div>
+      <p class="cap"><span class="tag">數字表</span><b>格子放大、狀態一眼看懂。</b>格子填滿整個寬度(約 38px),已熟練的格子直接顯示答案數字(18px 粗體)。新增圖例;每種狀態除了顏色,還有符號(• ✓ ★),色弱的人也分得出來。</p>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="item">
+      <div class="phone amber-wrap"><div class="screen fit">
+        <div class="top"><div class="icon-btn">🏠</div><div class="who">Question 3 / 8</div></div>
+        <div class="q">9 + 8 = ?</div>
+        <div class="frames">
+          <div class="tf"><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d b"></i></div>
+          <div class="tf"><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d e"></i><i class="d e"></i><i class="d e"></i></div>
+        </div>
+        <div class="ans"><span style="opacity:.35">?</span></div>
+        <div class="pad"><div class="k">1</div><div class="k">2</div><div class="k">3</div><div class="k">4</div><div class="k">5</div><div class="k">6</div><div class="k">7</div><div class="k">8</div><div class="k">9</div><div></div><div class="k">0</div><div class="k sec">⌫</div></div>
+        <div class="ok">OK ✅</div>
+      </div></div>
+      <p class="cap"><span class="tag">練習</span><b>題目、答案、鍵盤、OK 全在一個畫面。</b>算式字級跟著螢幕放大,兩個十格框並排。不論手機、平板、筆電,題目、鍵盤、OK 都在同一個畫面內,不用捲動。</p>
+    </div>
+
+    <!-- WRONG -->
+    <div class="item">
+      <div class="phone"><div class="screen fit amber">
+        <div class="top"><div class="icon-btn">🏠</div><div class="who">Question 3 / 8</div></div>
+        <div class="q" style="background:#FFF7DA">9 + 8 = ?</div>
+        <div class="frames">
+          <div class="tf"><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d a"></i><i class="d b"></i></div>
+          <div class="tf"><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d b"></i><i class="d e"></i><i class="d e"></i><i class="d e"></i></div>
+        </div>
+        <div class="ans warn"><small>The answer is</small><span style="margin-top:14px">17</span></div>
+        <div class="msg">Not quite 💪<small>We'll try this one again soon!</small></div>
+        <div class="pad"><div class="k">1</div><div class="k">2</div><div class="k">3</div><div class="k">4</div><div class="k">5</div><div class="k">6</div><div class="k">7</div><div class="k">8</div><div class="k">9</div><div></div><div class="k">0</div><div class="k sec">⌫</div></div>
+        <div class="ok" style="opacity:.55">OK ✅</div>
+      </div></div>
+      <p class="cap"><span class="tag">答錯</span><b>答案顯示在答案框內,不再多疊兩塊。</b>現在答錯時整個頁面會變長,把 OK 擠出螢幕。新版把「答案是 17」放進答案框,下面只留一行溫和的鼓勵(琥珀色,不用紅色)。</p>
+    </div>
+  </div>
+
+  <h2>2. 平板與筆電</h2>
+  <div class="row">
+    <div class="item wide">
+      <div class="phone wide"><div class="screen" style="padding:18px 28px 28px;gap:14px">
+        <div class="top"><div class="icon-btn">🏠</div><div class="who">🦁 Leo</div></div>
+        <div class="stats" style="max-width:520px"><div class="chip">🪙 300</div><div class="chip">🔥 1 day</div><div class="chip tk">🎫 1 ticket</div></div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:12px;align-items:stretch">
+          <div class="cta" style="display:grid;place-items:center">▶ Continue<small>Add up to 5</small></div>
+          <div class="tbtn t-purple"><i>🃏</i>My Cards</div>
+          <div class="tbtn t-orange"><i>⚡</i>60-second blitz</div>
+          <div class="tbtn t-teal"><i>🧮</i>Number Chart</div>
+        </div>
+        <div class="list" style="grid-template-columns:1fr 1fr">
+          <div class="skill pin"><div class="ic">🔁</div><div><div class="nm">Daily review</div><div class="meta"><span class="pill learn">Learning</span></div></div></div>
+          <div class="skill rec"><div class="ic">➕</div><div><div class="nm">Add up to 5 <span class="badge">Start here!</span></div><div class="meta"><span class="stars"><span class="on">★</span><span class="on">★</span><span class="off">★</span></span><span class="pill learn">Learning</span></div></div></div>
+          <div class="skill"><div class="ic">➖</div><div><div class="nm">Take away within 5</div><div class="meta"><span class="stars"><span class="on">★</span><span class="on">★</span><span class="off">★</span></span><span class="pill">New</span></div></div></div>
+          <div class="skill"><div class="ic">➕</div><div><div class="nm">Plus 1 and 2</div><div class="meta"><span class="stars"><span class="off">★</span><span class="off">★</span><span class="off">★</span></span><span class="pill">New</span></div></div></div>
+          <div class="skill"><div class="ic">👯</div><div><div class="nm">Doubles</div><div class="ex">e.g. 3 + 3</div><div class="meta"><span class="stars"><span class="off">★</span><span class="off">★</span><span class="off">★</span></span><span class="pill">New</span></div></div></div>
+          <div class="skill lock"><div class="ic">🔒</div><div><div class="nm">Make 10</div><div class="meta"><span class="pill">Locked</span></div></div></div>
+        </div>
+      </div></div>
+      <p class="cap"><span class="tag">平板 / 筆電</span><b>內容放寬到約 670px,技能改兩欄。</b>同一個畫面一次能看到 6 個技能,不用一直往下捲。「Continue」和三個功能按鈕排成一排。</p>
+    </div>
+  </div>
+
+  <h2>想請你看的重點</h2>
+  <div class="facts">
+    <div class="fact"><b>蜿蜒地圖 → 卡片清單</b><span>較好讀、較短,但少了「冒險地圖」的感覺。你覺得可以嗎?</span></div>
+    <div class="fact"><b>Continue 大按鈕</b><span>孩子不用選,一鍵開始。要保留讓孩子自己挑技能嗎?(目前仍可點任何已解鎖的卡片)</span></div>
+    <div class="fact"><b>數字表有圖例</b><span>顏色加符號。格子大小與字體夠不夠?</span></div>
+    <div class="fact"><b>色彩與風格不變</b><span>仍是天空藍、草地綠、奶茶色按鍵。只改尺寸、排版、對比。</span></div>
+  </div>
+</main>
+
+<script>
+// Sample chart data (mock): 0 unseen, 1 learning, 2 solid, 3 mastered
+(function(){
+  var g=document.getElementById('grid'); if(!g) return; var h='<div></div>';
+  for(var c=1;c<=9;c++) h+='<div class="h">'+c+'</div>';
+  var cls=['c-un','c-le','c-so','c-ma'];
+  for(var a=1;a<=9;a++){
+    h+='<div class="h">'+a+'</div>';
+    for(var b=1;b<=9;b++){
+      var s=0;
+      if(a+b<=10){ s=((a*3+b)%6); s = s>=4?3 : s>=2?2 : 1; }
+      if(a*b%7===0) s=0;
+      var inner='', st='';
+      if(s===3){inner=(a+b); st='<span class="st">★</span>';}
+      else if(s===2){inner='✓';}
+      else if(s===1){inner='•';}
+      h+='<div class="cell '+cls[s]+'">'+inner+st+'</div>';
+    }
+  }
+  g.innerHTML=h;
+})();
+</script>
