@@ -1,51 +1,57 @@
-import { create } from 'zustand';
+import { create, type StoreApi } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { storageService } from '../services/storageService';
+import type { Language } from '../utils/i18n';
+import type { UserMode } from '../data/skills';
+import { migrateV1ToV2 } from './migration';
 
-export interface PlacedItem {
-    id: string; // Unique ID for the placed instance
-    itemId: string; // ID from shopItems
-    x: number;
-    y: number;
-    experience?: number; // Growth experience (0-100+)
+export { migrateV1ToV2 };
+
+export type { Language, UserMode };
+
+export interface SkillStats {
+    attempts: number;
+    correct: number;
+    recent: boolean[]; // last 10 results, newest last
+    avgTimeMs: number; // exponential moving average
+    lastPlayedAt: number;
 }
 
 export interface UserProfile {
     id: string;
     name: string;
     avatar: string;
+    mode: UserMode;
+    language: Language;
     coins: number;
-    inventory: Record<string, number>; // ItemID -> Quantity
-    placedItems: PlacedItem[];
-    landLevel?: number; // Default 1
-}
-
-export interface GameSettings {
-    operations: ('+' | '-' | '*' | '/')[];
-    leftDigits: number;
-    rightDigits: number;
-    questionCount: number;
+    skills: Record<string, SkillStats>;
 }
 
 interface GameState {
     users: Record<string, UserProfile>;
     currentUserId: string | null;
-    settings: GameSettings;
-    language: 'zh-TW' | 'en';
 
-    // Actions
-    createUser: (name: string, avatar: string) => void;
-    switchUser: (userId: string) => void;
-    updateSettings: (settings: Partial<GameSettings>) => void;
+    createUser: (name: string, avatar: string, mode: UserMode, language: Language) => void;
+    switchUser: (id: string) => void;
+    setUserLanguage: (language: Language) => void;
     addCoins: (amount: number) => void;
-    setLanguage: (lang: 'zh-TW' | 'en') => void;
-    buyItem: (itemId: string, cost: number) => boolean;
-    placeItem: (itemId: string, x?: number, y?: number) => void;
-    moveItem: (placedId: string, x: number, y: number) => void;
-    removeItem: (placedId: string) => void;
-    growPlants: (amount: number) => void;
-    harvestPlot: (placedId: string) => boolean;
-    removeAllPlacedItems: () => void;
+    recordAnswer: (skillId: string, correct: boolean, timeMs: number) => void;
+}
+
+type PersistedState = Pick<GameState, 'users' | 'currentUserId'>;
+
+const RECENT_LIMIT = 10;
+const EMA_ALPHA = 0.2;
+
+function updateCurrentUser(
+    set: StoreApi<GameState>['setState'],
+    fn: (user: UserProfile) => UserProfile,
+): void {
+    set((state) => {
+        const userId = state.currentUserId;
+        if (!userId || !state.users[userId]) return state;
+        return { users: { ...state.users, [userId]: fn(state.users[userId]) } };
+    });
 }
 
 // Custom storage adapter to use our StorageService
@@ -64,258 +70,60 @@ const storageAdapter = {
 
 export const useGameStore = create<GameState>()(
     persist(
-        (set, get) => ({
+        (set) => ({
             users: {},
             currentUserId: null,
-            language: 'zh-TW',
-            settings: {
-                operations: ['+'],
-                leftDigits: 1,
-                rightDigits: 1,
-                questionCount: 10,
-            },
 
-            setLanguage: (lang) => set({ language: lang }),
-
-            createUser: (name, avatar) => {
+            createUser: (name, avatar, mode, language) => {
                 const id = crypto.randomUUID();
-                const newUser: UserProfile = {
-                    id,
-                    name,
-                    avatar,
-                    coins: 0,
-                    inventory: {},
-                    placedItems: []
-                };
+                const newUser: UserProfile = { id, name, avatar, mode, language, coins: 0, skills: {} };
                 set((state) => ({
                     users: { ...state.users, [id]: newUser },
-                    currentUserId: id, // Auto-switch to new user
+                    currentUserId: id,
                 }));
             },
 
-            switchUser: (userId) => {
-                set({ currentUserId: userId });
+            switchUser: (id) => {
+                set((state) => (state.users[id] ? { currentUserId: id } : state));
             },
 
-            updateSettings: (newSettings) => {
-                set((state) => ({
-                    settings: { ...state.settings, ...newSettings },
-                }));
+            setUserLanguage: (language) => {
+                updateCurrentUser(set, (user) => ({ ...user, language }));
             },
 
             addCoins: (amount) => {
-                set((state) => {
-                    const userId = state.currentUserId;
-                    if (!userId) return state;
-                    const user = state.users[userId];
-                    return {
-                        users: {
-                            ...state.users,
-                            [userId]: { ...user, coins: user.coins + amount },
-                        },
+                updateCurrentUser(set, (user) => ({ ...user, coins: user.coins + amount }));
+            },
+
+            recordAnswer: (skillId, correct, timeMs) => {
+                updateCurrentUser(set, (user) => {
+                    const prev = user.skills[skillId];
+                    const stats: SkillStats = {
+                        attempts: (prev?.attempts ?? 0) + 1,
+                        correct: (prev?.correct ?? 0) + (correct ? 1 : 0),
+                        recent: [...(prev?.recent ?? []), correct].slice(-RECENT_LIMIT),
+                        avgTimeMs: prev ? prev.avgTimeMs * (1 - EMA_ALPHA) + timeMs * EMA_ALPHA : timeMs,
+                        lastPlayedAt: Date.now(),
                     };
+                    return { ...user, skills: { ...user.skills, [skillId]: stats } };
                 });
             },
-
-            buyItem: (itemId, cost) => {
-                const state = get();
-                const userId = state.currentUserId;
-                if (!userId) return false;
-                const user = state.users[userId];
-                // Migration support: ensure inventory is Record
-                const inventory = Array.isArray(user.inventory) ? {} : (user.inventory || {});
-
-                if (user.coins >= cost) {
-                    // Special case: Land Expansion
-                    if (itemId === 'land_expansion') {
-                        set({
-                            users: {
-                                ...state.users,
-                                [userId]: {
-                                    ...user,
-                                    coins: user.coins - cost,
-                                    landLevel: (user.landLevel || 1) + 1
-                                }
-                            }
-                        });
-                        return true;
-                    }
-
-                    const currentCount = inventory[itemId] || 0;
-                    set({
-                        users: {
-                            ...state.users,
-                            [userId]: {
-                                ...user,
-                                coins: user.coins - cost,
-                                inventory: {
-                                    ...inventory,
-                                    [itemId]: currentCount + 1
-                                },
-                            },
-                        },
-                    });
-                    return true;
-                }
-                return false;
-            },
-
-            harvestPlot: (placedId) => {
-                const state = get();
-                const userId = state.currentUserId;
-                if (!userId) return false;
-                const user = state.users[userId];
-                const placedItems = user.placedItems || [];
-                const plot = placedItems.find(i => i.id === placedId);
-
-                // Check if it's a plot and ready (XP >= 100)
-                if (plot && plot.itemId === 'farm_plot' && (plot.experience || 0) >= 100) {
-                    set({
-                        users: {
-                            ...state.users,
-                            [userId]: {
-                                ...user,
-                                coins: user.coins + 500, // Harvest Reward
-                                placedItems: placedItems.map(item =>
-                                    item.id === placedId ? { ...item, experience: 0 } : item
-                                )
-                            }
-                        }
-                    });
-                    return true;
-                }
-                return false;
-            },
-
-            placeItem: (itemId, x = 100, y = 100) => {
-                const state = get();
-                const userId = state.currentUserId;
-                if (!userId) return;
-                const user = state.users[userId];
-                const inventory = Array.isArray(user.inventory) ? {} : (user.inventory || {});
-
-                if ((inventory[itemId] || 0) > 0) {
-                    const placedId = crypto.randomUUID();
-                    set({
-                        users: {
-                            ...state.users,
-                            [userId]: {
-                                ...user,
-                                inventory: {
-                                    ...inventory,
-                                    [itemId]: inventory[itemId] - 1
-                                },
-                                placedItems: [
-                                    ...(user.placedItems || []),
-                                    { id: placedId, itemId, x, y }
-                                ]
-                            }
-                        }
-                    });
-                }
-            },
-
-            moveItem: (placedId, x, y) => {
-                set((state) => {
-                    const userId = state.currentUserId;
-                    if (!userId) return state;
-                    const user = state.users[userId];
-                    const placedItems = user.placedItems || [];
-
-                    return {
-                        users: {
-                            ...state.users,
-                            [userId]: {
-                                ...user,
-                                placedItems: placedItems.map(item =>
-                                    item.id === placedId ? { ...item, x, y } : item
-                                )
-                            }
-                        }
-                    };
-                });
-            },
-
-            growPlants: (amount) => {
-                set((state) => {
-                    const userId = state.currentUserId;
-                    if (!userId) return state;
-                    const user = state.users[userId];
-
-                    const placedItems = (user.placedItems || []).map(item => ({
-                        ...item,
-                        experience: (item.experience || 0) + amount
-                    }));
-
-                    return {
-                        users: {
-                            ...state.users,
-                            [userId]: {
-                                ...user,
-                                placedItems
-                            }
-                        }
-                    };
-                });
-            },
-
-            removeItem: (placedId) => {
-                const state = get();
-                const userId = state.currentUserId;
-                if (!userId) return;
-                const user = state.users[userId];
-                const placedItems = user.placedItems || [];
-                const itemToRemove = placedItems.find(i => i.id === placedId);
-
-                if (itemToRemove) {
-                    const inventory = Array.isArray(user.inventory) ? {} : (user.inventory || {});
-                    set({
-                        users: {
-                            ...state.users,
-                            [userId]: {
-                                ...user,
-                                placedItems: placedItems.filter(i => i.id !== placedId),
-                                inventory: {
-                                    ...inventory,
-                                    [itemToRemove.itemId]: (inventory[itemToRemove.itemId] || 0) + 1
-                                }
-                            }
-                        }
-                    });
-                }
-            },
-
-            removeAllPlacedItems: () => {
-                set((state) => {
-                    const userId = state.currentUserId;
-                    if (!userId) return state;
-                    const user = state.users[userId];
-                    const placedItems = user.placedItems || [];
-                    const inventory = Array.isArray(user.inventory) ? {} : (user.inventory || {});
-
-                    // Return everything to inventory
-                    const newInventory = { ...inventory };
-                    placedItems.forEach(item => {
-                        newInventory[item.itemId] = (newInventory[item.itemId] || 0) + 1;
-                    });
-
-                    return {
-                        users: {
-                            ...state.users,
-                            [userId]: {
-                                ...user,
-                                placedItems: [],
-                                inventory: newInventory
-                            }
-                        }
-                    };
-                });
-            },
-
         }),
         {
             name: 'math-whiz-kids-storage',
+            version: 2,
             storage: createJSONStorage(() => storageAdapter),
-        }
-    )
+            migrate: (persisted, version) => (version < 2 ? migrateV1ToV2(persisted) : (persisted as PersistedState)),
+        },
+    ),
 );
+
+export function useCurrentUser(): UserProfile | null {
+    return useGameStore((state) => (state.currentUserId ? (state.users[state.currentUserId] ?? null) : null));
+}
+
+export function useLanguage(): Language {
+    return useGameStore((state) =>
+        state.currentUserId ? (state.users[state.currentUserId]?.language ?? 'zh-TW') : 'zh-TW',
+    );
+}
