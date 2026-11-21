@@ -15,6 +15,7 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
     const createUser = useGameStore((s) => s.createUser);
     const switchUser = useGameStore((s) => s.switchUser);
     const setUserLanguage = useGameStore((s) => s.setUserLanguage);
+    const setUserMode = useGameStore((s) => s.setUserMode);
     const currentUser = useCurrentUser();
     const language = useLanguage();
 
@@ -142,6 +143,15 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
 
                 {currentUser && (
                     <div className="mb-4">
+                        <div className="text-sm font-bold text-amber-800 mb-1">{t('mode', language)}</div>
+                        <div className="flex gap-2 mb-3">
+                            <button onClick={() => setUserMode('kinder')} className={choiceClass(currentUser.mode === 'kinder')}>
+                                {t('modeKinder', language)}
+                            </button>
+                            <button onClick={() => setUserMode('grade4')} className={choiceClass(currentUser.mode === 'grade4')}>
+                                {t('modeGrade4', language)}
+                            </button>
+                        </div>
                         <div className="text-sm font-bold text-amber-800 mb-1">{t('language', language)}</div>
                         <div className="flex gap-2">
                             <button

@@ -5,8 +5,6 @@ import type { Language } from '../utils/i18n';
 import type { UserMode } from '../data/skills';
 import { migrateV1ToV2 } from './migration';
 
-export { migrateV1ToV2 };
-
 export type { Language, UserMode };
 
 export interface SkillStats {
@@ -34,6 +32,7 @@ interface GameState {
     createUser: (name: string, avatar: string, mode: UserMode, language: Language) => void;
     switchUser: (id: string) => void;
     setUserLanguage: (language: Language) => void;
+    setUserMode: (mode: UserMode) => void;
     addCoins: (amount: number) => void;
     recordAnswer: (skillId: string, correct: boolean, timeMs: number) => void;
 }
@@ -89,6 +88,10 @@ export const useGameStore = create<GameState>()(
 
             setUserLanguage: (language) => {
                 updateCurrentUser(set, (user) => ({ ...user, language }));
+            },
+
+            setUserMode: (mode) => {
+                updateCurrentUser(set, (user) => ({ ...user, mode }));
             },
 
             addCoins: (amount) => {
