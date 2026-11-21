@@ -13,10 +13,10 @@ function altText(question: Question, lang: Language): string {
 }
 
 const CELL_CLASS: Record<FrameCell, string> = {
-    a: 'bg-red-400 border-red-600',
+    a: 'bg-amber-500 border-amber-600',
     b: 'bg-sky-500 border-sky-700',
     empty: 'bg-white/70 border-dashed border-amber-700/60',
-    crossed: 'bg-red-200 border-red-300 text-red-700',
+    crossed: 'bg-neutral-200 border-neutral-300 text-neutral-500 opacity-70',
 };
 
 /** Ten-frame(s) showing the quantities of a kinder fact question. Decorative: a text alternative is provided. */

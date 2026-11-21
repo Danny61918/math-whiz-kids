@@ -61,6 +61,11 @@ export function insertRetry<T>(queue: T[], item: T, insertAt: number): T[] {
     return [...queue.slice(0, at), item, ...queue.slice(at)];
 }
 
+/** Number of real (non-retry) questions up to and including the current queue position. */
+export function realQuestionNumber(queue: { isRetry: boolean }[], index: number): number {
+    return queue.slice(0, index + 1).filter((q) => !q.isRetry).length;
+}
+
 export type AidMode = 'visible' | 'help' | 'none';
 
 /** Skills that never show the ten-frame (mixed practice). */

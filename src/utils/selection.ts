@@ -120,19 +120,40 @@ function interleave(questions: Question[], rng: Rng): Question[] {
 }
 
 /** Swaps questions around until the same fact is never next to itself (only needed when facts repeat). */
-function separateRepeats(items: Question[]): Question[] {
+export function separateRepeats(items: Question[]): Question[] {
     const out = [...items];
-    const clashes = (i: number) =>
-        [i - 1, i].some((k) => k >= 0 && k + 1 < out.length && out[k].factKey === out[k + 1].factKey);
-    for (let i = 1; i < out.length; i++) {
-        if (out[i].factKey !== out[i - 1].factKey) continue;
-        for (let j = 0; j < out.length; j++) {
-            if (j === i || Math.abs(j - i) === 0) continue;
-            [out[i], out[j]] = [out[j], out[i]];
-            if (!clashes(i) && !clashes(j)) break;
-            [out[i], out[j]] = [out[j], out[i]];
+    const clashCount = () => out.reduce((n, q, i) => n + (i > 0 && q.factKey === out[i - 1].factKey ? 1 : 0), 0);
+    let clashes = clashCount();
+    for (let pass = 0; pass < out.length * out.length && clashes > 0; pass++) {
+        let improved = false;
+        for (let i = 1; i < out.length && !improved; i++) {
+            if (out[i].factKey !== out[i - 1].factKey) continue;
+            for (let j = 0; j < out.length; j++) {
+                if (j === i || out[j].factKey === out[i].factKey) continue;
+                [out[i], out[j]] = [out[j], out[i]];
+                const after = clashCount();
+                if (after < clashes) {
+                    clashes = after;
+                    improved = true;
+                    break;
+                }
+                [out[i], out[j]] = [out[j], out[i]];
+            }
         }
+        if (!improved) break;
     }
+    return out;
+}
+
+/** Splits a session size 60/30/10 with the largest-remainder method (exactly 6/3/1 for 10). */
+export function splitCount(count: number): Record<'priority' | 'new' | 'review', number> {
+    const exact = { priority: count * PRIORITY_SHARE, new: count * NEW_SHARE, review: count * (1 - PRIORITY_SHARE - NEW_SHARE) };
+    const out = { priority: Math.floor(exact.priority + 1e-9), new: Math.floor(exact.new + 1e-9), review: Math.floor(exact.review + 1e-9) };
+    let left = count - out.priority - out.new - out.review;
+    const order = (['priority', 'new', 'review'] as const)
+        .map((k) => ({ k, rem: exact[k] - out[k] }))
+        .sort((x, y) => y.rem - x.rem);
+    for (let i = 0; left > 0; i = (i + 1) % order.length, left--) out[order[i].k]++;
     return out;
 }
 
@@ -154,13 +175,7 @@ export function buildKinderSession(skillId: string, facts: Facts, today: string,
     buckets.review = shuffle(buckets.review, rng);
     buckets.rest = weakestFirst(buckets.rest, facts, rng);
 
-    const priorityWant = Math.round(count * PRIORITY_SHARE);
-    const newWant = Math.round(count * NEW_SHARE);
-    const want: Record<'priority' | 'new' | 'review', number> = {
-        priority: priorityWant,
-        new: newWant,
-        review: Math.max(0, count - priorityWant - newWant),
-    };
+    const want = splitCount(count);
 
     const picked: Fact[] = [];
     const taken: Record<'priority' | 'new' | 'review', number> = { priority: 0, new: 0, review: 0 };

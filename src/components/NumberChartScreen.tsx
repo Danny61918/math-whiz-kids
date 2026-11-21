@@ -1,7 +1,7 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { factsByKey, factKey, type FactKey } from '../data/facts';
 import { useCurrentUser, useGameStore } from '../store/useGameStore';
-import { CHART_MILESTONES, CHART_SIZE, chartMasteredCount, claimId, milestoneThreshold, type ChartId } from '../utils/chart';
+import { CHART_MILESTONES, CHART_SIZE, chartMasteredCount, claimId, milestoneThreshold, pendingMilestones, type ChartId } from '../utils/chart';
 import { factLevel, type FactLevel, type FactStats } from '../utils/factProgress';
 import { t, tp, type TranslationKey } from '../utils/i18n';
 import { useModal } from '../utils/useModal';
@@ -75,6 +75,12 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
     const claimChartMilestones = useGameStore((s) => s.claimChartMilestones);
     const [chart, setChart] = useState<ChartId>('add');
     const [selected, setSelected] = useState<Selected | null>(null);
+    // Tickets that this visit pays out (computed once on open, before the claim below).
+    const [toast] = useState(() => {
+        const { users, currentUserId } = useGameStore.getState();
+        const u = currentUserId ? users[currentUserId] : undefined;
+        return u ? pendingMilestones(u.facts, u.chartClaims).reduce((sum, m) => sum + m.tickets, 0) : 0;
+    });
 
     // Claim anything reached but not yet paid out (idempotent).
     useEffect(() => {
@@ -105,6 +111,12 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
                     <h1 className="text-2xl font-black text-green-900">{t('chartTitle', lang)}</h1>
                     <div className="min-w-[72px]" aria-hidden="true" />
                 </div>
+
+                {toast > 0 && (
+                    <div role="status" data-testid="chart-toast" className="mb-3 rounded-2xl bg-yellow-200 px-3 py-3 text-center text-xl font-black text-amber-900">
+                        🎉 {tp('chartTicketsEarned', lang, { n: toast })}
+                    </div>
+                )}
 
                 <div role="tablist" className="mb-3 flex gap-3">
                     <button role="tab" aria-selected={chart === 'add'} onClick={() => setChart('add')} className={tabClass('add')}>

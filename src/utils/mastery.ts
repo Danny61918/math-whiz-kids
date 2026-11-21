@@ -20,22 +20,30 @@ export function getMastery(stats?: SkillStats, maxAvgTimeMs: number = DEFAULT_MA
 
 const MIN_ATTEMPTED_FACTS = 3;
 const MASTERED_SHARE = 0.8;
+const SKILL_MASTERED_BOX = 3;
 
-/** Kinder skill badge from the facts in its pool: new (< 3 attempted), mastered (>= 80% at box 4+), else learning. */
+/** Kinder skill badge from the facts in its pool: new (< 3 attempted), mastered (>= floor(80%) at box 3+), else learning. */
 export function getSkillMastery(skillId: string, facts: Record<FactKey, FactStats>): Mastery {
     const pool = poolFor(skillId);
     if (pool.length === 0) return 'new';
     const attempted = pool.filter((f) => isAttempted(facts[f.key])).length;
     if (attempted < MIN_ATTEMPTED_FACTS) return 'new';
-    const mastered = pool.filter((f) => (facts[f.key]?.box ?? 0) >= 4 && isAttempted(facts[f.key])).length;
-    return mastered / pool.length >= MASTERED_SHARE ? 'mastered' : 'learning';
+    const solid = pool.filter((f) => isAttempted(facts[f.key]) && (facts[f.key]?.box ?? 0) >= SKILL_MASTERED_BOX).length;
+    return solid >= Math.floor(pool.length * MASTERED_SHARE) ? 'mastered' : 'learning';
 }
 
-/** First unlocked ladder skill that is not mastered yet (the "Start here" node), or null. */
+/**
+ * The "Start here" node: the first unlocked ladder skill that is not (mastered and starred).
+ * When the whole ladder qualifies: the mixed master (or the first unlocked node if even that is locked).
+ */
 export function recommendedSkillId(list: Skill[], stars: Record<string, Stars>, facts: Record<FactKey, FactStats>): string | null {
+    if (list.length === 0) return null;
     for (let i = 0; i < list.length; i++) {
-        if (getSkillMastery(list[i].id, facts) === 'mastered') continue;
-        return isSkillUnlocked(list, stars, i) ? list[i].id : null;
+        if (!isSkillUnlocked(list, stars, i)) continue;
+        const done = getSkillMastery(list[i].id, facts) === 'mastered' && (stars[list[i].id] ?? 0) >= 1;
+        if (!done) return list[i].id;
     }
-    return null;
+    const mixed = list.findIndex((s) => s.id === 'k_mixed');
+    if (mixed >= 0 && isSkillUnlocked(list, stars, mixed)) return list[mixed].id;
+    return list[0].id;
 }

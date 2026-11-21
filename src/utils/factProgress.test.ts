@@ -20,9 +20,21 @@ describe('updateFact', () => {
         expect(updateFact(stats({ box: 5 }), fast, D2).box).toBe(5);
     });
 
-    it('accepts the FAST_MS boundary, rejects one ms over', () => {
-        expect(updateFact(stats({ box: 1 }), { correct: true, retrievalMs: FAST_MS }, D2).box).toBe(2);
-        expect(updateFact(stats({ box: 1 }), { correct: true, retrievalMs: FAST_MS + 1 }, D2).box).toBe(1);
+    it('from box 2 up: accepts the FAST_MS boundary, rejects one ms over', () => {
+        expect(updateFact(stats({ box: 2 }), { correct: true, retrievalMs: FAST_MS }, D2).box).toBe(3);
+        expect(updateFact(stats({ box: 2 }), { correct: true, retrievalMs: FAST_MS + 1 }, D2).box).toBe(2);
+        expect(updateFact(stats({ box: 4 }), { correct: true, retrievalMs: 9000 }, D2).box).toBe(4);
+    });
+
+    it('boxes 0 and 1 rise on a slow unhelped correct answer, one box per day', () => {
+        const slow = { correct: true, retrievalMs: 12000 };
+        const day1 = updateFact(undefined, slow, D1);
+        expect(day1.box).toBe(1);
+        expect(updateFact(day1, slow, D1).box).toBe(1); // same day
+        const day2 = updateFact(day1, slow, D2);
+        expect(day2.box).toBe(2);
+        expect(updateFact(day2, slow, '2026-05-03').box).toBe(2); // slow at box 2: unchanged
+        expect(updateFact(stats({ box: 0 }), { ...slow, helped: true }, D2).box).toBe(0);
     });
 
     it('rises at most once per calendar day', () => {
@@ -90,6 +102,8 @@ describe('isDue', () => {
         expect(isDue(stats({ box: 3, lastSeenDay: '2026-05-10' }), '2026-05-01')).toBe(false);
         expect(isDue(stats({ box: 0, lastSeenDay: '2026-05-10' }), '2026-05-01')).toBe(false);
         expect(() => isDue(stats({ lastSeenDay: 'garbage' }), D1)).not.toThrow();
+        expect(isDue(stats({ box: 4, lastSeenDay: 'garbage' }), D1)).toBe(true);
+        expect(isDue(stats({ box: 4, lastSeenDay: '2026-02-31' }), D1)).toBe(true);
         expect(isDue(stats({ lastSeenDay: null }), D1)).toBe(true);
     });
     it('updateFact repairs a future lastSeenDay', () => {

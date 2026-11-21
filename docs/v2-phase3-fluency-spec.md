@@ -136,3 +136,15 @@ All new strings in both languages (identical key sets, parity test must pass), k
 - Keep Phase 2 invariants: coins awarded exactly once at the final submit; `completeSession` doesn't touch coins; cards/packs/streak untouched.
 - Update `docs/design_doc.md`/README briefly (fluency engine, ladder, chart).
 - If ambiguous choose the simplest option and list it under "Decisions made". Report anything unfinished or deviating candidly; a separate Opus reviewer will check against this spec.
+
+## Amendments (after review)
+- **A1 (§2 box rule):** an unhelped correct answer at box 0 or 1 raises the box by 1 regardless of speed (still at most one box-up per calendar day). From box 2 upward a box-up also needs `retrievalMs <= FAST_MS`; slow-correct leaves the box unchanged. Wrong stays -2.
+- **A2 (§7 skill mastery):** a kinder skill is `mastered` when at least `floor(0.8 * poolSize)` of its pool facts have box >= 3; `new` below 3 attempted pool facts; otherwise `learning`. The chart still uses box >= 4 as per-fact "mastered".
+- **A3 ("Start here"):** the recommended node is the first unlocked ladder skill that is not (mastered and starred); when all qualify it is `k_mixed`. It is never null for a non-empty ladder.
+- **A4 (unlock):** a node is also unlocked when it already has >= 1 star (migrated progress).
+- **A5 (counter):** the question counter shows the number of real (non-retry) questions up to the current one; a retry keeps the last real number plus the retry marker.
+- **A6 (box-5 bonus):** `recordFact` only reports the +20 bonus; `completeSession({ paidFacts })` marks `paid5` after the coins were awarded, so an abandoned session keeps the bonus earnable.
+- **A7 (ten-frame colours):** group A is orange, group B blue, crossed cells neutral grey (no red).
+- **A8 (selection mix):** 60/30/10 uses largest-remainder rounding (10 -> 6/3/1, 8 -> 5/2/1).
+- **A9 (isDue):** an invalid `lastSeenDay` counts as due; a future one (clock backwards) is not due.
+- **A10 (chart/blitz/map):** opening the chart shows a toast for tickets it pays out; skill names with a parenthetical example show the example on a smaller second line.

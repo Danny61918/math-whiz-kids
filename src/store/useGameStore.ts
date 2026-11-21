@@ -52,6 +52,8 @@ export interface SessionResult {
     now?: Date;
     /** Facts as they were when the session started; used to count newly mastered facts. */
     factsBefore?: Record<FactKey, FactStats>;
+    /** Facts whose +20 box-5 bonus is part of this session's coin award: they get marked as paid. */
+    paidFacts?: FactKey[];
 }
 
 export interface FactRecordResult {
@@ -201,10 +203,10 @@ export const useGameStore = create<GameState>()(
                 updateCurrentUser(set, (user) => {
                     const prev = user.facts[factKey];
                     const next = updateFact(prev, { correct, retrievalMs, helped }, dayKey(now));
+                    // paid5 is set by completeSession once the coins were really awarded.
                     const reachedTop = next.box === 5 && (prev?.box ?? 0) < 5 && !prev?.paid5;
-                    const stored: FactStats = reachedTop ? { ...next, paid5: true } : next;
                     outcome = { boxBefore: prev?.box ?? 0, boxAfter: next.box, bonusCoins: reachedTop ? FACT_MASTERY_BONUS : 0 };
-                    return { ...user, facts: { ...user.facts, [factKey]: stored } };
+                    return { ...user, facts: { ...user.facts, [factKey]: next } };
                 });
                 return outcome;
             },
@@ -248,6 +250,10 @@ export const useGameStore = create<GameState>()(
                     const newMasteredFacts = result.factsBefore ? newlyMastered(result.factsBefore, user.facts) : 0;
                     const pending = pendingMilestones(user.facts, user.chartClaims);
                     const chartTickets = pending.reduce((sum, m) => sum + m.tickets, 0);
+                    const paid = result.paidFacts ?? [];
+                    const facts = paid.some((k) => user.facts[k])
+                        ? { ...user.facts, ...Object.fromEntries(paid.filter((k) => user.facts[k]).map((k) => [k, { ...user.facts[k], paid5: true }])) }
+                        : user.facts;
                     summary = {
                         stars: earned,
                         isNewBest: earned > previousBest,
@@ -266,6 +272,7 @@ export const useGameStore = create<GameState>()(
                         tickets: user.tickets + (dailyTicket ? 1 : 0) + (milestoneTicket ? 1 : 0) + chartTickets,
                         chartClaims: pending.length > 0 ? [...user.chartClaims, ...pending.map((m) => m.id)] : user.chartClaims,
                         totalSessions: user.totalSessions + 1,
+                        facts,
                     };
                 });
                 return summary;

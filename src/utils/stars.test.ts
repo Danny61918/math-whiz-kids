@@ -19,6 +19,11 @@ describe('isSkillUnlocked', () => {
     it('first node is always open', () => {
         expect(isSkillUnlocked(list, {}, 0)).toBe(true);
     });
+    it('a node that already has a star stays open (migrated progress)', () => {
+        const stars = { k_make10: 2 as const };
+        expect(isSkillUnlocked(list, stars, list.findIndex((s) => s.id === 'k_make10'))).toBe(true);
+        expect(isSkillUnlocked(list, stars, list.findIndex((s) => s.id === 'k_doubles'))).toBe(false);
+    });
     it('next opens after previous has a star', () => {
         expect(isSkillUnlocked(list, {}, 1)).toBe(false);
         expect(isSkillUnlocked(list, { [list[0].id]: 1 }, 1)).toBe(true);

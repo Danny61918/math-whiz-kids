@@ -5,7 +5,7 @@ import { audioService } from '../services/audioService';
 import { t, tp, type TranslationKey } from '../utils/i18n';
 import { buildKinderSession, checkAnswer, generateSession, type Question } from '../utils/mathEngine';
 import { questionCoins } from '../utils/rewards';
-import { QUESTION_COUNT, aidModeFor, insertRetry, resolveSubmit, type AidMode } from '../utils/session';
+import { QUESTION_COUNT, aidModeFor, insertRetry, realQuestionNumber, resolveSubmit, type AidMode } from '../utils/session';
 import { dayKey } from '../utils/streak';
 import { ResultScreen } from './ResultScreen';
 import { TenFrame } from './TenFrame';
@@ -80,6 +80,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const [combo, setCombo] = useState(0);
     const [aidShown, setAidShown] = useState(false); // Help button pressed for this question
     const [extraCoins, setExtraCoins] = useState(0); // one-time fact bonuses collected this session
+    const [bonusFacts, setBonusFacts] = useState<string[]>([]); // facts whose box-5 bonus is in that total
 
     const startTimeRef = useRef(0);
     const firstDigitAtRef = useRef<number | null>(null); // time of the first digit = retrieval time
@@ -126,9 +127,11 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         // Retries do not count towards stats or coins; only the first attempt does.
         const helped = aidShown && !item.isRetry;
         let bonusCoins = 0;
+        let nextBonusFacts = bonusFacts;
         if (isKinder && !item.isRetry && current.factKey) {
             const retrievalMs = (firstDigitAtRef.current ?? Date.now()) - startTimeRef.current;
             bonusCoins = recordFact(current.factKey, ok, retrievalMs, helped)?.bonusCoins ?? 0;
+            if (bonusCoins > 0) nextBonusFacts = [...bonusFacts, current.factKey];
         }
         const outcome = resolveSubmit({
             isRetry: item.isRetry,
@@ -153,6 +156,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         setCorrectCount(nextCorrect);
         setEarnedCoins(nextEarned);
         setExtraCoins(nextExtra);
+        setBonusFacts(nextBonusFacts);
         setFeedback(ok ? 'correct' : 'incorrect');
         if (ok) audioService.playCorrect();
         else if (isKinder) audioService.playGentleIncorrect();
@@ -162,7 +166,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         let summary: SessionSummary | null = null;
         if (isLast) {
             addCoins(finalCoins);
-            summary = completeSession({ skillId, correct: nextCorrect, total: totalQuestions, factsBefore: factsBeforeRef.current });
+            summary = completeSession({ skillId, correct: nextCorrect, total: totalQuestions, factsBefore: factsBeforeRef.current, paidFacts: nextBonusFacts });
         }
 
         timerRef.current = window.setTimeout(
@@ -260,13 +264,13 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                 <button
                     onClick={onBack}
                     aria-label={t('exit', lang)}
-                    className="min-h-12 text-amber-900 font-bold text-lg bg-white/50 px-4 rounded-xl border-2 border-amber-900/10"
+                    className={`${isKinder ? 'min-h-[72px] min-w-[72px] text-3xl' : 'min-h-12 text-lg'} text-amber-900 font-bold bg-white/50 px-4 rounded-xl border-2 border-amber-900/10`}
                 >
                     {isKinder ? '🏠' : t('exit', lang)}
                 </button>
                 <div className="text-xl font-bold text-green-900 bg-white/50 px-4 py-2 rounded-xl border-2 border-green-900/10">
                     {t('questionProgress', lang)
-                        .replace('{n}', String(Math.min(index + 1, totalQuestions)))
+                        .replace('{n}', String(Math.min(realQuestionNumber(queue, index), totalQuestions)))
                         .replace('{total}', String(totalQuestions))}
                     {currentItem.isRetry && <span className="ml-2">{t('retryMarker', lang)}</span>}
                 </div>
@@ -291,7 +295,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                 {showHelp && (
                     <button
                         onClick={() => setAidShown(true)}
-                        className="mb-4 min-h-16 min-w-40 rounded-2xl border-b-[6px] border-yellow-600 bg-yellow-300 px-6 text-3xl font-black text-amber-900 transition active:translate-y-1 active:border-b-0"
+                        className="mb-4 min-h-[72px] min-w-[72px] rounded-2xl border-b-[6px] border-yellow-600 bg-yellow-300 px-6 text-3xl font-black text-amber-900 transition active:translate-y-1 active:border-b-0"
                     >
                         {t('helpButton', lang)}
                     </button>

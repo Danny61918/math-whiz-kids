@@ -24,13 +24,17 @@ describe('getSkillMastery', () => {
         const facts = { ...factsFor('k_add_5', 10, 1), ...factsFor('k_add_5', 7, 4) };
         expect(getSkillMastery('k_add_5', facts)).toBe('learning');
     });
-    it('is mastered at 80% of the pool with box >= 4', () => {
-        const facts = { ...factsFor('k_add_5', 10, 1), ...factsFor('k_add_5', 8, 4) };
+    it('is mastered at floor(80%) of the pool with box >= 3', () => {
+        const facts = { ...factsFor('k_add_5', 10, 1), ...factsFor('k_add_5', 8, 3) };
         expect(getSkillMastery('k_add_5', facts)).toBe('mastered');
         expect(getSkillMastery('k_add_5', factsFor('k_add_5', 10, 5))).toBe('mastered');
     });
-    it('box 3 does not count and unknown skills are new', () => {
-        expect(getSkillMastery('k_add_5', factsFor('k_add_5', 10, 3))).toBe('learning');
+    it('make10 (9 facts) needs 7 solid facts', () => {
+        expect(getSkillMastery('k_make10', { ...factsFor('k_make10', 9, 1), ...factsFor('k_make10', 6, 3) })).toBe('learning');
+        expect(getSkillMastery('k_make10', { ...factsFor('k_make10', 9, 1), ...factsFor('k_make10', 7, 3) })).toBe('mastered');
+    });
+    it('box 2 does not count and unknown skills are new', () => {
+        expect(getSkillMastery('k_add_5', factsFor('k_add_5', 10, 2))).toBe('learning');
         expect(getSkillMastery('nope', {})).toBe('new');
     });
 });
@@ -43,9 +47,20 @@ describe('recommendedSkillId', () => {
     it('skips mastered skills', () => {
         expect(recommendedSkillId(list, { k_add_5: 3 }, factsFor('k_add_5', 10, 5))).toBe('k_sub_5');
     });
-    it('is null when the first unmastered skill is still locked, or everything is mastered', () => {
-        expect(recommendedSkillId(list, {}, factsFor('k_add_5', 10, 5))).toBeNull();
+    it('a mastered skill with no star is still recommended (stars come from playing it)', () => {
+        expect(recommendedSkillId(list, {}, factsFor('k_add_5', 10, 5))).toBe('k_add_5');
+    });
+    it('a superset skill mastered through other skills but unstarred is recommended', () => {
+        const stars = Object.fromEntries(list.slice(0, 6).map((s) => [s.id, 3 as const]));
+        const facts = Object.fromEntries(list.flatMap((s) => poolFor(s.id).map((f) => [f.key, fact(5)])));
+        expect(recommendedSkillId(list, stars, facts)).toBe(list[6].id);
+    });
+    it('everything mastered and starred recommends the mixed master', () => {
+        const stars = Object.fromEntries(list.map((s) => [s.id, 3 as const]));
         const all = Object.fromEntries(list.flatMap((s) => poolFor(s.id).map((f) => [f.key, fact(5)])));
-        expect(recommendedSkillId(list, {}, all)).toBeNull();
+        expect(recommendedSkillId(list, stars, all)).toBe('k_mixed');
+    });
+    it('never returns null for a non-empty ladder', () => {
+        expect(recommendedSkillId(list, {}, {})).not.toBeNull();
     });
 });

@@ -36,6 +36,12 @@ function skillIcon(skillId: string): string {
     return '➗';
 }
 
+/** Splits "Doubles (e.g. 3+3)" style names into a main label and a smaller example line. */
+function nameParts(name: string): { main: string; example: string } {
+    const m = /^(.*?)\s*([（(].*[）)])$/.exec(name);
+    return m ? { main: m[1], example: m[2] } : { main: name, example: '' };
+}
+
 interface Props {
     onSelect: (skillId: string) => void;
     onBack: () => void;
@@ -112,8 +118,11 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                 </button>
                 <div className="mt-1 text-center w-40 bg-white/80 rounded-lg px-2 py-1">
                     <div className={`font-black text-amber-900 leading-tight ${isKinder ? 'text-base' : 'text-sm'}`}>
-                        {t(skill.nameKey, lang)}
+                        {nameParts(t(skill.nameKey, lang)).main}
                     </div>
+                    {nameParts(t(skill.nameKey, lang)).example && (
+                        <div className="text-xs font-bold leading-tight text-neutral-600">{nameParts(t(skill.nameKey, lang)).example}</div>
+                    )}
                     <div className="text-lg leading-none" aria-label={`${stars} / 3`}>
                         {[1, 2, 3].map((n) => (n <= stars ? '⭐' : '☆')).join('')}
                     </div>

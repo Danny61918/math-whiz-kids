@@ -3,7 +3,9 @@ import { LADDER_POOL_IDS, allFacts, poolFor, type FactKey } from '../data/facts'
 import { skillsForMode, specialSkills } from '../data/skills';
 import { checkAnswer, type Rng } from './mathEngine';
 import type { FactStats } from './factProgress';
-import { bucketOf, buildBlitzQuestions, buildKinderSession } from './selection';
+import { bucketOf, buildBlitzQuestions, buildKinderSession, separateRepeats, splitCount } from './selection';
+import { parseFactKey } from '../data/facts';
+import { questionFromFact } from './selection';
 
 function mulberry32(seed: number): Rng {
     let a = seed;
@@ -213,5 +215,33 @@ describe('buildBlitzQuestions', () => {
         const qs = buildBlitzQuestions(facts, mulberry32(2), 80);
         expect(qs.every((q) => allowed.has(q.factKey ?? ''))).toBe(true);
         expect(qs.some((q) => q.kind === 'diff')).toBe(true);
+    });
+});
+
+describe('separateRepeats / splitCount', () => {
+    const q = (key: string) => {
+        const fact = parseFactKey(key);
+        if (!fact) throw new Error(key);
+        return questionFromFact('k_add_5', fact, 'sum');
+    };
+
+    it('separates repeats from a tiny three-fact pool', () => {
+        const a = q('1+1');
+        const b = q('1+2');
+        const c = q('2+1');
+        for (const input of [[a, a, a, b, b, b, c, c, c], [a, a, b, b, c, c, a, b, c], [a, a, a, b, b, c, c, c]]) {
+            const out = separateRepeats(input);
+            expect(out).toHaveLength(input.length);
+            for (let i = 1; i < out.length; i++) expect(out[i].factKey).not.toBe(out[i - 1].factKey);
+        }
+    });
+
+    it('splits sessions with largest remainder: exactly 6/3/1 for 10, 5/2/1 for 8', () => {
+        expect(splitCount(10)).toEqual({ priority: 6, new: 3, review: 1 });
+        expect(splitCount(8)).toEqual({ priority: 5, new: 2, review: 1 });
+        for (const n of [1, 2, 3, 5, 8, 13]) {
+            const s = splitCount(n);
+            expect(s.priority + s.new + s.review).toBe(n);
+        }
     });
 });

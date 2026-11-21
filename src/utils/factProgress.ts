@@ -1,4 +1,4 @@
-import { daysBetween } from './streak';
+import { daysBetween, isValidDayKey } from './streak';
 
 export interface FactStats {
     box: 0 | 1 | 2 | 3 | 4 | 5;
@@ -31,7 +31,9 @@ export function updateFact(s: FactStats | undefined, r: FactResult, today: strin
     let box = prev.box;
     let lastUpDay = prev.lastUpDay;
     if (r.correct) {
-        if (!r.helped && r.retrievalMs <= FAST_MS && prev.lastUpDay !== today && box < 5) {
+        // Boxes 0-1 rise on any unhelped correct answer; from box 2 up the answer must also be fast.
+        const fastEnough = box <= 1 || r.retrievalMs <= FAST_MS;
+        if (!r.helped && fastEnough && prev.lastUpDay !== today && box < 5) {
             box = (box + 1) as FactStats['box'];
             lastUpDay = today;
         }
@@ -56,7 +58,7 @@ export function isAttempted(s: FactStats | undefined): s is FactStats {
 }
 
 export function isDue(s: FactStats | undefined, today: string): boolean {
-    if (!isAttempted(s) || s.lastSeenDay === null) return true;
+    if (!isAttempted(s) || !isValidDayKey(s.lastSeenDay)) return true;
     const gap = daysBetween(s.lastSeenDay, today);
     if (gap < 0) return false; // clock went backwards
     return gap >= BOX_INTERVAL_DAYS[s.box];

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aidModeFor, insertRetry, resolveSubmit, type SubmitInput } from './session';
+import { aidModeFor, insertRetry, realQuestionNumber, resolveSubmit, type SubmitInput } from './session';
 import type { FactStats } from './factProgress';
 
 const base: SubmitInput = {
@@ -109,5 +109,18 @@ describe('aidModeFor', () => {
     it('mixed and review never show an aid', () => {
         expect(aidModeFor('k_mixed', undefined)).toBe('none');
         expect(aidModeFor('k_review', stat(0))).toBe('none');
+    });
+});
+
+describe('realQuestionNumber', () => {
+    it('counts real questions up to the current one and never repeats a number', () => {
+        // 8 real questions, the 2nd re-asked after the 5th (queue index 5).
+        const queue = [0, 1, 2, 3, 4, 'r', 5, 6, 7].map((x) => ({ isRetry: x === 'r' }));
+        const numbers = queue.map((_, i) => realQuestionNumber(queue, i));
+        expect(numbers).toEqual([1, 2, 3, 4, 5, 5, 6, 7, 8]);
+        expect(realQuestionNumber([{ isRetry: false }, { isRetry: false }, { isRetry: true }], 2)).toBe(2);
+        const atEnd = [...Array(8).fill({ isRetry: false }), { isRetry: true }];
+        expect(realQuestionNumber(atEnd, 8)).toBe(8);
+        expect(realQuestionNumber(atEnd, 7)).toBe(8);
     });
 });

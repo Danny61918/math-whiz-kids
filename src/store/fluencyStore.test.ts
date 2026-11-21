@@ -61,7 +61,7 @@ describe('recordFact', () => {
         expect(useGameStore.getState().recordFact('3+4', true, 100, false)).toBeNull();
     });
 
-    it('pays the +20 box-5 bonus once per fact, in a single store update', () => {
+    it('reports the +20 box-5 bonus in a single store update, and paid5 is only set by completeSession', () => {
         const base: FactStats = { box: 4, attempts: 9, correct: 9, lastSeenDay: '2026-05-01', lastUpDay: '2026-05-01', bestMs: 1000 };
         patchUser({ facts: { '3+4': base } });
         let updates = 0;
@@ -72,14 +72,24 @@ describe('recordFact', () => {
         unsubscribe();
         expect(updates).toBe(1);
         expect(up).toEqual({ boxBefore: 4, boxAfter: 5, bonusCoins: 20 });
-        // drop and climb again: no second bonus
+        expect(user().facts['3+4'].paid5).toBeUndefined(); // not paid yet: abandoning keeps it earnable
+        expect(user().coins).toBe(0); // coins are awarded by the session, never by recordFact
+
+        // abandoned session: the same transition pays out again later
         useGameStore.getState().recordFact('3+4', false, 1000, false, day(4));
-        expect(user().facts['3+4'].box).toBe(3);
         useGameStore.getState().recordFact('3+4', true, 1000, false, day(5));
         const again = useGameStore.getState().recordFact('3+4', true, 1000, false, day(6));
-        expect(user().facts['3+4'].box).toBe(5);
-        expect(again?.bonusCoins).toBe(0);
-        expect(user().coins).toBe(0); // coins are awarded by the session, never by recordFact
+        expect(again?.bonusCoins).toBe(20);
+
+        // the session that awards the coins marks the fact as paid
+        useGameStore.getState().completeSession({ skillId: 'k_add_5', correct: 8, total: 8, now: day(6), paidFacts: ['3+4', '9+9'] });
+        expect(user().facts['3+4'].paid5).toBe(true);
+        expect(user().facts['9+9']).toBeUndefined();
+        expect(user().coins).toBe(0);
+        useGameStore.getState().recordFact('3+4', false, 1000, false, day(7));
+        useGameStore.getState().recordFact('3+4', true, 1000, false, day(8));
+        const third = useGameStore.getState().recordFact('3+4', true, 1000, false, day(9));
+        expect(third?.bonusCoins).toBe(0);
     });
 });
 

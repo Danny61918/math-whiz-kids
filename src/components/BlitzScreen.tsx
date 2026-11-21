@@ -149,7 +149,7 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
                     <p className="mb-1 text-xl font-bold text-amber-900">{t('blitzIntro', lang)}</p>
                     {user.blitzBest > 0 && <p className="mb-3 text-lg font-bold text-amber-800">{tp('blitzBestLabel', lang, { n: user.blitzBest })}</p>}
                     <div className="mt-3 flex flex-col gap-3">
-                        <button data-autofocus onClick={start} className={`${bigButton} border-orange-700 bg-orange-500 text-white`}>
+                        <button autoFocus onClick={start} className={`${bigButton} border-orange-700 bg-orange-500 text-white`}>
                             {t('blitzStart', lang)}
                         </button>
                         <button onClick={onBack} className={`${bigButton} border-amber-400 bg-amber-200 text-amber-900`}>
@@ -174,7 +174,7 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
                         onBack();
                     }}
                     aria-label={t('exit', lang)}
-                    className="min-h-12 rounded-xl border-2 border-amber-900/10 bg-white/50 px-4 text-lg font-bold text-amber-900"
+                    className="min-h-[72px] min-w-[72px] rounded-xl border-2 border-amber-900/10 bg-white/50 px-4 text-3xl font-bold text-amber-900"
                 >
                     🏠
                 </button>
