@@ -47,3 +47,11 @@ export function displayStreak(s: StreakState, today: string): number {
 export function isMilestone(count: number): boolean {
     return STREAK_MILESTONES.includes(count);
 }
+
+/** Whole calendar days from `from` to `to` ('YYYY-MM-DD'); negative when `to` is earlier. NaN-safe: invalid keys give 0. */
+export function daysBetween(from: string, to: string): number {
+    if (!isValidDayKey(from) || !isValidDayKey(to)) return 0;
+    const [fy, fm, fd] = from.split('-').map(Number);
+    const [ty, tm, td] = to.split('-').map(Number);
+    return Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(fy, fm - 1, fd)) / 86400000);
+}
