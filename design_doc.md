@@ -1,63 +1,22 @@
-# Design Doc: Math Whiz Kids (v1.0)
+# Design Doc: Math Whiz Kids (v2)
 
 ## 1. 專案願景
-這是一個專為 5 歲與 8 歲孩子設計的數學練習遊戲。透過完成客製化的數學練習，孩子可以賺取金幣，並在未來的版本中利用金幣在「商店街」購買材料建設自己的空間。
+給兩位孩子的數學練習遊戲：大班（約 5 歲，加減法，英文介面）與國小四年級（約 10 歲，大數加減乘除，中文介面）。練習賺金幣，並依「技能」追蹤進度。農場／商店玩法已在 v2 移除。
 
-## 2. 技術棧 (Tech Stack)
-- **框架**: Vite + React + TypeScript
-- **樣式**: Tailwind CSS
-- **狀態管理**: Zustand (需具備 Persist 功能)
-- **部署**: GitHub Pages (透過 GitHub Actions 自動化)
-- **資料存儲**: 
-    - 階段一：LocalStorage (透過 Service Layer 封裝)
-    - 階段二：預計轉移至 Google Sheets API 或 Supabase
+## 2. 技術棧
+Vite + React 19 + TypeScript + Tailwind CSS 4 + Zustand (persist) + Vitest。部署：GitHub Pages（GitHub Actions：test、build、deploy）。資料存於 LocalStorage（storageService 封裝），store 版本 `2`，附 v1 → v2 migration。
 
-## 3. 核心功能規格
+## 3. 核心設計
+- **使用者**：每位使用者有各自的 `mode`（kinder / grade4）、`language`（zh-TW / en）、金幣與各技能統計。
+- **技能 (skills)**：`src/data/skills.ts`。kinder 7 項（5/10/20 以內加減、湊 10）；grade4 10 項（四位、六位加減，乘法 2x1 / 3x2 / 4x2，除法 2÷1 / 3÷2 / 4÷1 含餘數）。
+- **題目引擎**：`src/utils/mathEngine.ts`，純函式、可注入 rng；進退位次數有限制，除法約 70% 有餘數；`generateSession` 不重複。
+- **熟練度**：`new`（練習不足 5 題）/ `learning` / `mastered`（近 10 題至少答對 9 題且平均時間達標）。
+- **獎勵**：每題基礎 10 金幣，5 秒內 30、10 秒內 20，乘以技能倍率後四捨五入；全對則整場總額 x1.2。答錯不給金幣。
+- **大班答錯**：溫和提示，該題最後再出現一次（不給金幣、不計入統計）；國小答錯顯示正確答案後繼續。
 
-### A. 練習設定 (Exercise Settings)
-- **運算類型**: 
-    - 整數：加、減、乘、除、加減混合、乘除混合。
-    - 未來擴充：小數、分數。
-- **難度自定義**: 
-    - 可設定「左側數字位數」與「右側數字位數」（例如：2位數 + 1位數）。
-    - 適合不同年齡層（5歲 vs 8歲）的彈性調整。
-
-### B. 獎勵演算法 (Reward Algorithm)
-- **基礎獎勵**: 每對一題獲得 10 金幣。
-- **難度加權 (Multiplier)**:
-    - 1位數加減: 1.0x
-    - 2位數加減: 1.2x
-    - 1位數乘除: 1.5x
-    - 混合運算/多位數乘除: 2.0x
-- **全對加成**: 答對率 100% 時，總金幣額外 x 1.2。
-
-### C. 用戶資料結構 (Data Schema)
-```json
-{
-  "userId": "string",
-  "profile": { "name": "string", "avatar": "string" },
-  "stats": {
-    "totalCoins": "number",
-    "completedSessions": "number"
-  },
-  "settings": {
-    "defaultDigits": [2, 1],
-    "preferredOperators": ["+", "-"]
-  }
-}```
-
-### D. 階段一：LocalStorage 資料存儲
-- **使用者設定**: 
-    - 儲存使用者的設定（例如：預設運算類型、難度等）。
-    - 使用 Zustand 管理狀態，並透過 Service Layer 封裝 LocalStorage 操作。
-- **練習紀錄**: 
-    - 儲存使用者的練習紀錄（例如：完成的練習、答對率等）。
-    - 使用 Zustand 管理狀態，並透過 Service Layer 封裝 LocalStorage 操作。
-
-### E. 階段二：Google Sheets API 資料存儲
-- **使用者設定**: 
-    - 儲存使用者的設定（例如：預設運算類型、難度等）。
-    - 使用 Zustand 管理狀態，並透過 Service Layer 封裝 Google Sheets API 操作。
-- **練習紀錄**: 
-    - 儲存使用者的練習紀錄（例如：完成的練習、答對率等）。
-    - 使用 Zustand 管理狀態，並透過 Service Layer 封裝 Google Sheets API 操作。
+## 4. 路線圖
+- **Phase 1（本版）**：練習基礎：技能、引擎、進度追蹤、store 版本與遷移、單元測試。
+- **Phase 2**：分數與小數；直式計算介面。
+- **Phase 3**：地圖 + 星星 + 收藏卡片（約 200 張）作為獎勵系統。
+- **Phase 4**：錯題本、適性出題、家長頁面、資料匯出。
+- **Phase 5**：PWA（離線）、TTS 語音。

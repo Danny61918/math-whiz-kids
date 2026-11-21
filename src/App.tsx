@@ -3,7 +3,6 @@ import { SetupScreen } from './components/SetupScreen';
 import { SkillSelectScreen } from './components/SkillSelectScreen';
 import { GamePlayScreen } from './components/GamePlayScreen';
 import { useCurrentUser } from './store/useGameStore';
-import './App.css';
 
 type Screen = 'setup' | 'skills' | 'game';
 
