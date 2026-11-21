@@ -54,15 +54,15 @@ export const ResultScreen: React.FC<Props> = ({
     }, [coins]);
 
     const canOpenPack = user.tickets > 0 || user.coins >= PACK_PRICE[user.mode];
-    const big = user.mode === 'kinder' ? 'min-h-[72px] text-2xl' : 'min-h-14 text-xl';
+    const big = user.mode === 'kinder' ? 'min-h-[72px] text-2xl' : 'min-h-[60px] text-xl';
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center p-4 font-sans">
+        <div className="min-h-dvh bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center px-4 py-6 font-sans">
             {stars === 3 && <Confetti />}
-            <div className="bg-white/95 p-6 rounded-3xl shadow-2xl text-center max-w-md w-full border-[6px] border-[#d4a373]">
-                <h2 className="text-3xl font-black text-green-800 mb-3">{t('practiceComplete', lang)}</h2>
+            <div className="relative z-50 bg-white p-5 sm:p-6 rounded-3xl shadow-2xl text-center max-w-[520px] w-full border-[6px] border-[#d4a373]">
+                <h2 className="text-3xl font-black text-green-900 mb-3">{t('practiceComplete', lang)}</h2>
 
-                <div className="flex justify-center gap-2 mb-3 text-6xl" aria-label={`${stars} / 3`}>
+                <div className="flex justify-center gap-2 mb-3 text-[clamp(64px,18vw,88px)] leading-none" aria-label={`${stars} / 3`}>
                     {[1, 2, 3].map((n) => (
                         <span key={n} className={n <= shownStars ? 'animate-star-pop' : 'opacity-20 grayscale'}>
                             ⭐
@@ -70,18 +70,18 @@ export const ResultScreen: React.FC<Props> = ({
                     ))}
                 </div>
                 {summary?.isNewBest && shownStars >= stars && (
-                    <p className="text-lg font-black text-purple-600 mb-1">{t('newBest', lang)}</p>
+                    <p className="text-xl font-black text-purple-800 mb-1">{t('newBest', lang)}</p>
                 )}
 
                 {user.mode !== 'kinder' && (
-                    <p className="text-xl text-amber-800 mb-1 font-bold">
+                    <p className="text-xl text-amber-950 mb-1 font-bold">
                         {t('correctCount', lang)}: {correctCount} / {totalQuestions}
                     </p>
                 )}
-                <p className="text-3xl font-black text-amber-600 mb-1">+ {shownCoins} 🪙</p>
-                {perfect && <p className="text-base font-bold text-green-700">{t('perfectBonus', lang)}</p>}
+                <p className="text-3xl font-black text-amber-800 mb-1">+ {shownCoins} 🪙</p>
+                {perfect && <p className="text-lg font-bold text-green-800">{t('perfectBonus', lang)}</p>}
 
-                <div className="my-3 flex flex-col gap-1 text-base font-bold text-amber-900">
+                <div className="my-3 flex flex-col gap-1 text-lg font-bold text-amber-950">
                     {summary?.streakIncreased && (
                         <div className="bg-orange-100 rounded-xl px-3 py-2">
                             {tp('streakToast', lang, { n: summary.streak.count })}
@@ -109,7 +109,7 @@ export const ResultScreen: React.FC<Props> = ({
                     {canOpenPack && (
                         <button
                             onClick={onOpenPack}
-                            className={`${big} w-full bg-purple-500 hover:bg-purple-400 text-white font-black rounded-2xl border-b-8 border-purple-700 transition active:translate-y-1 active:border-b-4 animate-node-pulse`}
+                            className={`${big} w-full bg-purple-600 hover:bg-purple-500 text-white font-black rounded-2xl border-b-8 border-purple-800 transition active:translate-y-1 active:border-b-4 animate-node-pulse`}
                         >
                             {t('openPack', lang)}
                         </button>
@@ -117,7 +117,7 @@ export const ResultScreen: React.FC<Props> = ({
                     {hasNext && (
                         <button
                             onClick={onNext}
-                            className={`${big} w-full bg-green-500 hover:bg-green-400 text-white font-black rounded-2xl border-b-8 border-green-700 transition active:translate-y-1 active:border-b-4`}
+                            className={`${big} w-full bg-green-700 hover:bg-green-600 text-white font-black rounded-2xl border-b-8 border-green-900 transition active:translate-y-1 active:border-b-4`}
                         >
                             {t('nextSkill', lang)}
                         </button>

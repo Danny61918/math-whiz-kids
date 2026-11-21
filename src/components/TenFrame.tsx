@@ -16,7 +16,7 @@ const CELL_CLASS: Record<FrameCell, string> = {
     a: 'bg-amber-500 border-amber-600',
     b: 'bg-sky-500 border-sky-700',
     empty: 'bg-white/70 border-dashed border-amber-700/60',
-    crossed: 'bg-neutral-200 border-neutral-300 text-neutral-500 opacity-70',
+    crossed: 'bg-neutral-200 border-neutral-400 text-neutral-700',
 };
 
 /** Ten-frame(s) showing the quantities of a kinder fact question. Decorative: a text alternative is provided. */
@@ -28,15 +28,15 @@ export const TenFrame: React.FC<{ question: Question; lang: Language }> = ({ que
     return (
         <div data-testid="ten-frame">
             <span className="sr-only">{altText(question, lang)}</span>
-            <div aria-hidden="true" className="flex flex-wrap items-center justify-center gap-3">
+            <div aria-hidden="true" className="flex flex-wrap items-center justify-center gap-2">
                 {frames.map((frame, f) => (
-                    <div key={f} className="grid grid-cols-5 gap-1 rounded-xl border-4 border-amber-700 bg-amber-50 p-1">
+                    <div key={f} className="grid grid-cols-5 gap-1 rounded-xl border-[3px] border-amber-700 bg-amber-50 p-1">
                         {Array.from({ length: FRAME_SIZE }, (_, i) => {
                             const cell = frame[i];
                             return (
                                 <div
                                     key={i}
-                                    className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-xs font-black ${
+                                    className={`flex size-[clamp(24px,min(7.2vw,5dvh),40px)] items-center justify-center rounded-full border-2 text-sm font-black ${
                                         cell ? CELL_CLASS[cell] : 'border-amber-200 bg-transparent'
                                     }`}
                                 >

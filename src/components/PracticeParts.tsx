@@ -1,0 +1,133 @@
+import React from 'react';
+
+/**
+ * Shared building blocks of the practice screens (GamePlay and Blitz).
+ * Sizes use clamp()/dvh so that question, answer, keypad and OK stay inside one viewport.
+ * On wide landscape screens the shell switches to two columns (question left, keypad right).
+ */
+
+const WIDE = 'min-[900px]:landscape:';
+
+interface ShellProps {
+    /** Tailwind gradient stops, e.g. "from-sky-300 via-sky-100 to-green-400". */
+    background: string;
+    top: React.ReactNode;
+    /** Question, aid, answer box and feedback. */
+    upper: React.ReactNode;
+    /** Keypad and OK button. */
+    lower: React.ReactNode;
+}
+
+export const PracticeShell: React.FC<ShellProps> = ({ background, top, upper, lower }) => (
+    <div className={`flex h-dvh flex-col overflow-y-auto overflow-x-hidden bg-gradient-to-b px-3 py-2 font-sans transition-colors duration-500 ${background}`}>
+        <div
+            className={`mx-auto flex min-h-0 w-full max-w-[520px] flex-1 flex-col gap-[clamp(4px,1dvh,10px)] ${WIDE}grid ${WIDE}max-w-[980px] ${WIDE}grid-cols-2 ${WIDE}grid-rows-[auto_1fr] ${WIDE}gap-x-10`}
+        >
+            <div className={`${WIDE}col-span-2`}>{top}</div>
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-[clamp(4px,1dvh,10px)]">{upper}</div>
+            <div className="flex shrink-0 flex-col justify-center gap-[clamp(4px,1dvh,10px)]">{lower}</div>
+        </div>
+    </div>
+);
+
+interface TopRowProps {
+    onBack: () => void;
+    backLabel: string;
+    /** Visible text of the back button (grade 4); kinder shows the house icon. */
+    backText?: string;
+    children: React.ReactNode;
+}
+
+/** Back/home button on the left, status chips on the right. */
+export const PracticeTopRow: React.FC<TopRowProps> = ({ onBack, backLabel, backText, children }) => (
+    <div className="flex items-center justify-between gap-2">
+        <button
+            onClick={onBack}
+            aria-label={backLabel}
+            className="flex h-[clamp(48px,7dvh,56px)] min-w-14 items-center justify-center rounded-2xl border-2 border-amber-900/20 bg-white px-3 text-lg font-black text-amber-950"
+        >
+            {backText ?? <span className="text-3xl leading-none">🏠</span>}
+        </button>
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">{children}</div>
+    </div>
+);
+
+export const TopChip: React.FC<{ children: React.ReactNode; className?: string; role?: string; testId?: string }> = ({ children, className = '', role, testId }) => (
+    <div role={role} data-testid={testId} className={`rounded-2xl border-2 border-amber-900/10 bg-white px-3 py-1.5 text-lg font-black text-amber-950 ${className}`}>
+        {children}
+    </div>
+);
+
+/** The equation, scaled with the viewport. Never wraps; scrolls sideways as a last resort. */
+export const EquationBox: React.FC<{ text: string; isKinder: boolean; tint?: string }> = ({ text, isKinder, tint = 'bg-white' }) => (
+    <div
+        className={`max-w-full overflow-x-auto whitespace-nowrap rounded-3xl border-4 border-amber-900/20 px-4 py-[clamp(2px,0.8dvh,8px)] text-center font-black leading-tight text-amber-950 shadow-lg ${tint} ${
+            isKinder ? 'text-[clamp(44px,min(9vw,8dvh),96px)]' : 'text-[clamp(24px,min(7vw,7dvh),72px)]'
+        }`}
+    >
+        {text}
+    </div>
+);
+
+export const ANSWER_HEIGHT = 'h-[clamp(60px,10dvh,96px)]';
+export const ANSWER_FONT = 'text-[clamp(32px,6dvh,56px)]';
+
+/** Reserved space for combo / feedback text so the layout never jumps between states. */
+export const MessageSlot: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
+    <div className="flex min-h-[42px] w-full flex-col items-center justify-center text-center leading-tight" aria-live="polite">
+        {children}
+    </div>
+);
+
+const KEY_H = 'h-[clamp(56px,9dvh,80px)]';
+const KEY_FONT = 'text-[clamp(28px,4.8dvh,40px)]';
+const KEY_BASE = `${KEY_H} ${KEY_FONT} rounded-2xl font-black shadow-md transition active:translate-y-1 active:border-b-0`;
+
+interface KeypadProps {
+    onDigit: (n: number) => void;
+    onBackspace: () => void;
+    /** Bottom-left cell (the quotient/remainder toggle); empty when omitted. */
+    extra?: React.ReactNode;
+}
+
+export const Keypad: React.FC<KeypadProps> = ({ onDigit, onBackspace, extra }) => {
+    const digit = `${KEY_BASE} border-b-[5px] border-[#8f5a2b] bg-[#b97f4a] text-white`;
+    return (
+        <div className="grid w-full grid-cols-3 gap-[clamp(4px,1dvh,8px)]">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+                <button key={n} onClick={() => onDigit(n)} className={digit}>
+                    {n}
+                </button>
+            ))}
+            {extra ?? <div />}
+            <button onClick={() => onDigit(0)} className={digit}>
+                0
+            </button>
+            <button onClick={onBackspace} aria-label="⌫" className={`${KEY_BASE} border-b-[5px] border-[#b9895a] bg-[#f0d9bf] text-amber-950`}>
+                ⌫
+            </button>
+        </div>
+    );
+};
+
+/** Keypad-sized secondary key (the division toggle). */
+export const ToggleKey: React.FC<{ onClick: () => void; active: boolean; children: React.ReactNode }> = ({ onClick, active, children }) => (
+    <button
+        onClick={onClick}
+        className={`${KEY_H} rounded-2xl border-b-[5px] px-1 text-lg font-black leading-tight shadow-md transition active:translate-y-1 active:border-b-0 ${
+            active ? 'border-[#b9895a] bg-[#f0d9bf] text-amber-950' : 'border-[#6b4423] bg-[#8f5a2b] text-white'
+        }`}
+    >
+        {children}
+    </button>
+);
+
+export const SubmitButton: React.FC<{ onClick: () => void; disabled: boolean; label: string }> = ({ onClick, disabled, label }) => (
+    <button
+        onClick={onClick}
+        disabled={disabled}
+        className="h-[clamp(56px,8dvh,72px)] w-full rounded-2xl border-b-[6px] border-green-900 bg-green-700 text-[clamp(24px,4dvh,32px)] font-black text-white transition active:translate-y-1 active:border-b-0 disabled:border-slate-400 disabled:bg-slate-300 disabled:text-slate-700"
+    >
+        {label}
+    </button>
+);

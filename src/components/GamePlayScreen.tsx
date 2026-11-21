@@ -8,6 +8,7 @@ import { questionCoins } from '../utils/rewards';
 import { QUESTION_COUNT, aidModeFor, insertRetry, realQuestionNumber, resolveSubmit, type AidMode } from '../utils/session';
 import { dayKey } from '../utils/streak';
 import { ResultScreen } from './ResultScreen';
+import { ANSWER_FONT, ANSWER_HEIGHT, EquationBox, Keypad, MessageSlot, PracticeShell, PracticeTopRow, SubmitButton, ToggleKey, TopChip } from './PracticeParts';
 import { TenFrame } from './TenFrame';
 
 const MAX_DIGITS = { kinder: 2, grade4: 8 } as const;
@@ -227,7 +228,6 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         );
     }
 
-    const keyHeight = isKinder ? 'min-h-16 text-4xl' : 'min-h-14 text-3xl';
     const wrongForKinder = feedback === 'incorrect' && isKinder;
     const background =
         feedback === 'correct'
@@ -243,13 +243,13 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
             feedback === 'correct'
                 ? 'border-green-400 text-green-300'
                 : feedback === 'incorrect' && !isKinder
-                  ? 'border-red-500 text-red-400'
+                  ? 'border-red-500 text-red-300'
                   : wrongForKinder
                     ? 'border-amber-400 text-amber-200'
                     : activeBox === box || !isDivision
                       ? 'border-[#e6ccb2] text-white'
-                      : 'border-[#8b5a2b] text-[#dddddd]';
-        return `h-28 bg-[#2c3e50] rounded-2xl border-8 flex flex-col items-center justify-center text-5xl font-bold shadow-inner ${border}`;
+                      : 'border-[#8b5a2b] text-[#e5e5e5]';
+        return `${ANSWER_HEIGHT} ${ANSWER_FONT} bg-[#2c3e50] rounded-2xl border-[5px] flex flex-col items-center justify-center leading-none font-bold shadow-inner ${border}`;
     };
 
     // A wrong answer immediately shows the correct answer (and, for kinder, the ten-frame).
@@ -257,138 +257,103 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const hasFrame = isKinder && current.factKey !== undefined;
     const showFrame = hasFrame && (currentItem.aid === 'visible' || (currentItem.aid === 'help' && aidShown) || feedback === 'incorrect');
     const showHelp = hasFrame && currentItem.aid === 'help' && !aidShown && feedback === 'none';
+    const correctionLabel = t(isKinder ? 'theAnswerIs' : 'correctAnswerWas', lang);
+    const labelClass = 'mb-0.5 text-sm font-bold leading-none text-amber-100';
+    const chip = 'rounded-2xl bg-white px-4 py-0.5 text-amber-950 shadow';
 
-    return (
-        <div className={`min-h-screen flex flex-col p-4 transition-colors duration-500 font-sans bg-gradient-to-b ${background}`}>
-            <div className="flex justify-between items-center mb-4">
+    const top = (
+        <PracticeTopRow onBack={onBack} backLabel={t('exit', lang)} backText={isKinder ? undefined : t('exit', lang)}>
+            <TopChip>
+                {t('questionProgress', lang)
+                    .replace('{n}', String(Math.min(realQuestionNumber(queue, index), totalQuestions)))
+                    .replace('{total}', String(totalQuestions))}
+                {currentItem.isRetry && <span className="ml-2">{t('retryMarker', lang)}</span>}
+            </TopChip>
+        </PracticeTopRow>
+    );
+
+    const upper = (
+        <>
+            <EquationBox text={formatQuestion(current)} isKinder={isKinder} tint={wrongForKinder ? 'bg-amber-50' : 'bg-white'} />
+
+            {showFrame && <TenFrame question={current} lang={lang} />}
+            {showHelp && (
                 <button
-                    onClick={onBack}
-                    aria-label={t('exit', lang)}
-                    className={`${isKinder ? 'min-h-[72px] min-w-[72px] text-3xl' : 'min-h-12 text-lg'} text-amber-900 font-bold bg-white/50 px-4 rounded-xl border-2 border-amber-900/10`}
+                    onClick={() => setAidShown(true)}
+                    className="h-[clamp(56px,8dvh,72px)] min-w-[72px] rounded-2xl border-b-[6px] border-yellow-700 bg-yellow-300 px-6 text-2xl font-black text-amber-950 transition active:translate-y-1 active:border-b-0"
                 >
-                    {isKinder ? '🏠' : t('exit', lang)}
+                    {t('helpButton', lang)}
                 </button>
-                <div className="text-xl font-bold text-green-900 bg-white/50 px-4 py-2 rounded-xl border-2 border-green-900/10">
-                    {t('questionProgress', lang)
-                        .replace('{n}', String(Math.min(realQuestionNumber(queue, index), totalQuestions)))
-                        .replace('{total}', String(totalQuestions))}
-                    {currentItem.isRetry && <span className="ml-2">{t('retryMarker', lang)}</span>}
-                </div>
-            </div>
-
-            {combo >= 2 && (
-                <div className="mb-2 text-center text-2xl font-black text-orange-600" aria-live="polite">
-                    {tp('comboLabel', lang, { n: combo })} {t(COMBO_PRAISE[Math.min(combo, 5)], lang)}
-                </div>
             )}
 
-            <div className="flex-1 flex flex-col items-center justify-center mb-6">
-                <div className={`font-black text-amber-900 tracking-wider mb-4 max-w-full overflow-x-auto whitespace-nowrap ${isKinder ? 'text-5xl sm:text-7xl' : 'text-2xl min-[420px]:text-3xl sm:text-5xl'} bg-white/60 px-4 sm:px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl`}>
-                    {formatQuestion(current)}
-                </div>
-
-                {showFrame && (
-                    <div className="mb-4">
-                        <TenFrame question={current} lang={lang} />
-                    </div>
-                )}
-                {showHelp && (
-                    <button
-                        onClick={() => setAidShown(true)}
-                        className="mb-4 min-h-[72px] min-w-[72px] rounded-2xl border-b-[6px] border-yellow-600 bg-yellow-300 px-6 text-3xl font-black text-amber-900 transition active:translate-y-1 active:border-b-0"
-                    >
-                        {t('helpButton', lang)}
-                    </button>
-                )}
-
-                {showCorrection && (
-                    <div className="mb-2 text-xl font-black text-amber-900">
-                        {t(isKinder ? 'theAnswerIs' : 'correctAnswerWas', lang)}
-                    </div>
-                )}
-
-                {isDivision ? (
-                    <div className="flex items-center gap-4">
-                        <div onClick={() => feedback === 'none' && setActiveBox('q')} className={`${boxClass('q')} w-36`}>
-                            <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('quotient', lang)}</span>
+            {isDivision ? (
+                <div className="flex w-full flex-col items-center gap-1">
+                    {showCorrection && !isKinder && <div className="text-base font-black leading-none text-red-950">{correctionLabel}</div>}
+                    <div className="flex w-full items-center justify-center gap-2">
+                        <div onClick={() => feedback === 'none' && setActiveBox('q')} className={`${boxClass('q')} min-w-0 flex-1`}>
+                            <span className="mb-0.5 text-sm font-bold uppercase tracking-wider text-slate-200">{t('quotient', lang)}</span>
                             {showCorrection ? fmt(current.answer) : answer}
                         </div>
-                        <div className="text-5xl font-black text-amber-900">...</div>
-                        <div onClick={() => feedback === 'none' && setActiveBox('r')} className={`${boxClass('r')} w-36`}>
-                            <span className="text-xs text-neutral-400 uppercase tracking-widest">{t('remainder', lang)}</span>
+                        <div className="text-3xl font-black leading-none text-amber-950" aria-hidden="true">
+                            …
+                        </div>
+                        <div onClick={() => feedback === 'none' && setActiveBox('r')} className={`${boxClass('r')} min-w-0 flex-1`}>
+                            <span className="mb-0.5 text-sm font-bold uppercase tracking-wider text-slate-200">{t('remainder', lang)}</span>
                             {showCorrection ? fmt(current.remainder ?? 0) : remainder}
                         </div>
                     </div>
-                ) : (
-                    <div className={`${boxClass('q')} w-full max-w-xs`}>{showCorrection ? fmt(current.answer) : answer}</div>
-                )}
+                </div>
+            ) : (
+                <div className={`${boxClass('q')} w-full max-w-xs`}>
+                    {showCorrection && <span className={labelClass}>{correctionLabel}</span>}
+                    {showCorrection ? fmt(current.answer) : answer}
+                </div>
+            )}
 
+            <MessageSlot>
+                {feedback === 'none' && combo >= 2 && (
+                    <div className={`${chip} text-lg font-black`}>
+                        {tp('comboLabel', lang, { n: combo })} {t(COMBO_PRAISE[Math.min(combo, 5)], lang)}
+                    </div>
+                )}
                 {feedback === 'correct' && (
-                    <div className="mt-4 text-4xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] animate-bounce">
+                    <div className={`${chip} text-xl font-black text-green-800`}>
                         {t('correct', lang)}
+                        {combo >= 2 && <span className="ml-2 text-lg text-orange-800">{tp('comboLabel', lang, { n: combo })}</span>}
                     </div>
                 )}
                 {feedback === 'incorrect' && (
-                    <div className="mt-4 text-center text-3xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
-                        <div>{t('incorrect', lang)}</div>
-                        {isKinder && !currentItem.isRetry && <div className="text-xl mt-1">{t('tryAgainLater', lang)}</div>}
+                    <div className={chip}>
+                        <div className="text-xl font-black">{t('incorrect', lang)}</div>
+                        {isKinder && !currentItem.isRetry && <div className="text-base font-bold">{t('tryAgainLater', lang)}</div>}
                         {!isKinder && (
-                            <div className="text-xl mt-1">
+                            <div className="text-base font-bold">
                                 {t('yourAnswer', lang)} {fmt(Number(answer))}
                                 {isDivision && remainder !== '' ? ` ... ${fmt(Number(remainder))}` : ''}
                             </div>
                         )}
                     </div>
                 )}
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto w-full">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                    <button
-                        key={num}
-                        onClick={() => appendDigit(num)}
-                        className={`${keyHeight} bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] font-black rounded-2xl shadow-md active:translate-y-1 active:border-b-0 transition`}
-                    >
-                        {num}
-                    </button>
-                ))}
-                {isDivision ? (
-                    <button
-                        onClick={toggleBox}
-                        className={`${keyHeight} text-2xl border-b-[6px] font-black rounded-2xl shadow-md transition active:translate-y-1 active:border-b-0 ${
-                            activeBox === 'q'
-                                ? 'bg-[#e6ccb2] border-[#d4a373] text-amber-900'
-                                : 'bg-[#bc8a5f] border-[#9c6644] text-white'
-                        }`}
-                    >
-                        {activeBox === 'q' ? t('remainder', lang) : t('quotient', lang)}
-                    </button>
-                ) : (
-                    <div />
-                )}
-                <button
-                    onClick={() => appendDigit(0)}
-                    className={`${keyHeight} bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] font-black rounded-2xl shadow-md active:translate-y-1 active:border-b-0 transition`}
-                >
-                    0
-                </button>
-                <button
-                    onClick={backspace}
-                    className={`${keyHeight} bg-[#e6ccb2] text-amber-900 border-b-[6px] border-[#d4a373] font-black rounded-2xl shadow-md transition active:translate-y-1 active:border-b-0`}
-                >
-                    ⌫
-                </button>
-            </div>
-
-            <div className="max-w-sm mx-auto w-full mt-4">
-                <button
-                    onClick={submit}
-                    disabled={answer === '' || feedback !== 'none'}
-                    className="w-full min-h-16 bg-green-500 disabled:bg-green-200 disabled:border-green-300 text-white border-b-[8px] border-green-700 text-3xl font-black rounded-2xl transition active:translate-y-2 active:border-b-0"
-                >
-                    {t('submit', lang)} ✅
-                </button>
-            </div>
-        </div>
+            </MessageSlot>
+        </>
     );
+
+    const lower = (
+        <>
+            <Keypad
+                onDigit={appendDigit}
+                onBackspace={backspace}
+                extra={
+                    isDivision ? (
+                        <ToggleKey onClick={toggleBox} active={activeBox === 'q'}>
+                            {activeBox === 'q' ? t('remainder', lang) : t('quotient', lang)}
+                        </ToggleKey>
+                    ) : undefined
+                }
+            />
+            <SubmitButton onClick={submit} disabled={answer === '' || feedback !== 'none'} label={`${t('submit', lang)} ✅`} />
+        </>
+    );
+
+    return <PracticeShell background={background} top={top} upper={upper} lower={lower} />;
 };

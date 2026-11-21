@@ -5,6 +5,7 @@ import { BLITZ_SECONDS } from '../utils/blitz';
 import { t, tp } from '../utils/i18n';
 import { buildBlitzQuestions } from '../utils/mathEngine';
 import { Confetti } from './Confetti';
+import { ANSWER_FONT, ANSWER_HEIGHT, EquationBox, Keypad, PracticeShell, PracticeTopRow, SubmitButton, TopChip } from './PracticeParts';
 
 const QUESTION_POOL_SIZE = 200;
 const TICK_MS = 200;
@@ -112,27 +113,28 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
     if (!user) return null;
     const lang = user.language;
     const secondsLeft = Math.ceil(remainingMs / 1000);
-    const keyClass = 'min-h-16 text-4xl bg-[#d4a373] text-white border-b-[6px] border-[#bc8a5f] font-black rounded-2xl shadow-md active:translate-y-1 active:border-b-0 transition';
     const bigButton = 'min-h-[72px] w-full text-2xl font-black rounded-2xl border-b-8 transition active:translate-y-1 active:border-b-4';
+    const cardShell = 'min-h-dvh bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center px-4 py-6 font-sans';
+    const card = 'w-full max-w-[520px] rounded-3xl border-[6px] border-[#d4a373] bg-white p-6 text-center shadow-2xl';
 
     if (phase === 'done' && result) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center p-4 font-sans">
+            <div className={cardShell}>
                 {result.newRecord && <Confetti />}
-                <div className="w-full max-w-md rounded-3xl border-[6px] border-[#d4a373] bg-white/95 p-6 text-center shadow-2xl">
+                <div className={`${card} relative z-50`}>
                     <h2 className="mb-2 text-3xl font-black text-green-800">{t('blitzTimeUp', lang)}</h2>
-                    <p className="text-xl font-bold text-amber-800">{t('blitzScoreLabel', lang)}</p>
-                    <p className="mb-2 text-7xl font-black text-amber-600" data-testid="blitz-score">
+                    <p className="text-xl font-bold text-amber-900">{t('blitzScoreLabel', lang)}</p>
+                    <p className="mb-2 text-7xl font-black text-amber-700" data-testid="blitz-score">
                         {score}
                     </p>
-                    {result.newRecord && <p className="text-2xl font-black text-purple-600">{t('blitzNewRecord', lang)}</p>}
-                    <p className="mb-2 text-lg font-bold text-amber-900">{tp('blitzBestLabel', lang, { n: result.best })}</p>
-                    {result.ticket && <div className="mb-2 rounded-xl bg-sky-100 px-3 py-2 text-base font-bold text-amber-900">{t('blitzTicket', lang)}</div>}
+                    {result.newRecord && <p className="text-2xl font-black text-purple-700">{t('blitzNewRecord', lang)}</p>}
+                    <p className="mb-2 text-xl font-bold text-amber-950">{tp('blitzBestLabel', lang, { n: result.best })}</p>
+                    {result.ticket && <div className="mb-2 rounded-xl bg-sky-100 px-3 py-2 text-lg font-bold text-amber-950">{t('blitzTicket', lang)}</div>}
                     <div className="mt-3 flex flex-col gap-3">
-                        <button onClick={onAgain} className={`${bigButton} border-orange-700 bg-orange-500 text-white`}>
+                        <button onClick={onAgain} className={`${bigButton} border-orange-800 bg-orange-600 text-white`}>
                             {t('blitzAgain', lang)}
                         </button>
-                        <button onClick={onBack} className={`${bigButton} border-amber-400 bg-amber-200 text-amber-900`}>
+                        <button onClick={onBack} className={`${bigButton} border-amber-400 bg-amber-200 text-amber-950`}>
                             {t('backToMap', lang)}
                         </button>
                     </div>
@@ -143,16 +145,16 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
 
     if (phase === 'ready') {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center p-4 font-sans">
-                <div className="w-full max-w-md rounded-3xl border-[6px] border-[#d4a373] bg-white/95 p-6 text-center shadow-2xl">
-                    <h1 className="mb-2 text-3xl font-black text-orange-600">{t('blitzTitle', lang)}</h1>
-                    <p className="mb-1 text-xl font-bold text-amber-900">{t('blitzIntro', lang)}</p>
-                    {user.blitzBest > 0 && <p className="mb-3 text-lg font-bold text-amber-800">{tp('blitzBestLabel', lang, { n: user.blitzBest })}</p>}
+            <div className={cardShell}>
+                <div className={card}>
+                    <h1 className="mb-2 text-3xl font-black text-orange-700">{t('blitzTitle', lang)}</h1>
+                    <p className="mb-1 text-xl font-bold text-amber-950">{t('blitzIntro', lang)}</p>
+                    {user.blitzBest > 0 && <p className="mb-3 text-xl font-bold text-amber-900">{tp('blitzBestLabel', lang, { n: user.blitzBest })}</p>}
                     <div className="mt-3 flex flex-col gap-3">
-                        <button autoFocus onClick={start} className={`${bigButton} border-orange-700 bg-orange-500 text-white`}>
+                        <button autoFocus onClick={start} className={`${bigButton} border-orange-800 bg-orange-600 text-white`}>
                             {t('blitzStart', lang)}
                         </button>
-                        <button onClick={onBack} className={`${bigButton} border-amber-400 bg-amber-200 text-amber-900`}>
+                        <button onClick={onBack} className={`${bigButton} border-amber-400 bg-amber-200 text-amber-950`}>
                             {t('backToMap', lang)}
                         </button>
                     </div>
@@ -163,71 +165,47 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
 
     const wrong = feedback === 'wrong';
     const background = feedback === 'correct' ? 'from-green-300 to-green-500' : wrong ? 'from-amber-200 to-amber-300' : 'from-sky-300 via-sky-100 to-green-400';
+    const boxBorder = feedback === 'correct' ? 'border-green-400 text-green-300' : wrong ? 'border-amber-400 text-amber-200' : 'border-[#e6ccb2] text-white';
 
-    return (
-        <div className={`min-h-screen flex flex-col p-4 font-sans bg-gradient-to-b ${background}`}>
-            <div className="mb-3 flex items-center justify-between gap-2">
-                <button
-                    onClick={() => {
-                        window.clearInterval(intervalRef.current);
-                        window.clearTimeout(timeoutRef.current);
-                        onBack();
-                    }}
-                    aria-label={t('exit', lang)}
-                    className="min-h-[72px] min-w-[72px] rounded-xl border-2 border-amber-900/10 bg-white/50 px-4 text-3xl font-bold text-amber-900"
-                >
-                    🏠
-                </button>
-                <div role="timer" className="rounded-xl border-2 border-green-900/10 bg-white/50 px-4 py-2 text-xl font-black text-green-900">
-                    {tp('secondsLeft', lang, { n: secondsLeft })}
-                </div>
-                <div className="rounded-xl border-2 border-green-900/10 bg-white/50 px-4 py-2 text-xl font-black text-orange-600" data-testid="blitz-live-score">
+    const top = (
+        <>
+            <PracticeTopRow
+                onBack={() => {
+                    window.clearInterval(intervalRef.current);
+                    window.clearTimeout(timeoutRef.current);
+                    onBack();
+                }}
+                backLabel={t('exit', lang)}
+            >
+                <TopChip role="timer">{tp('secondsLeft', lang, { n: secondsLeft })}</TopChip>
+                <TopChip className="text-orange-800" testId="blitz-live-score">
                     ⭐ {score}
-                </div>
+                </TopChip>
+            </PracticeTopRow>
+            <div className="mt-1.5 h-3 w-full overflow-hidden rounded-full bg-white/70" aria-hidden="true">
+                <div className="h-full bg-orange-600" style={{ width: `${(remainingMs / (BLITZ_SECONDS * 1000)) * 100}%` }} />
             </div>
-            <div className="mb-3 h-3 w-full overflow-hidden rounded-full bg-white/60" aria-hidden="true">
-                <div className="h-full bg-orange-500" style={{ width: `${(remainingMs / (BLITZ_SECONDS * 1000)) * 100}%` }} />
-            </div>
-
-            <div className="mb-6 flex flex-1 flex-col items-center justify-center">
-                <div className="mb-4 max-w-full whitespace-nowrap rounded-3xl border-4 border-amber-900/20 bg-white/60 px-4 py-4 text-5xl font-black tracking-wider text-amber-900 shadow-xl sm:text-7xl">
-                    {current ? `${fmt(current.left)} ${current.operator} ${fmt(current.right)} = ${fmt(current.result)}` : ''}
-                </div>
-                {wrong && current && <div className="mb-2 text-xl font-black text-amber-900">{t('theAnswerIs', lang)}</div>}
-                <div
-                    className={`flex h-28 w-full max-w-xs items-center justify-center rounded-2xl border-8 bg-[#2c3e50] text-5xl font-bold shadow-inner ${
-                        feedback === 'correct' ? 'border-green-400 text-green-300' : wrong ? 'border-amber-400 text-amber-200' : 'border-[#e6ccb2] text-white'
-                    }`}
-                >
-                    {wrong && current ? current.answer : answer}
-                </div>
-            </div>
-
-            <div className="mx-auto grid w-full max-w-sm grid-cols-3 gap-3">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-                    <button key={n} onClick={() => appendDigit(n)} className={keyClass}>
-                        {n}
-                    </button>
-                ))}
-                <div />
-                <button onClick={() => appendDigit(0)} className={keyClass}>
-                    0
-                </button>
-                <button onClick={backspace} className="min-h-16 rounded-2xl border-b-[6px] border-[#d4a373] bg-[#e6ccb2] text-4xl font-black text-amber-900 shadow-md transition active:translate-y-1 active:border-b-0">
-                    ⌫
-                </button>
-            </div>
-            <div className="mx-auto mt-4 w-full max-w-sm">
-                <button
-                    onClick={submit}
-                    disabled={answer === '' || feedback !== 'none'}
-                    className="min-h-16 w-full rounded-2xl border-b-8 border-green-700 bg-green-500 text-3xl font-black text-white transition active:translate-y-2 active:border-b-0 disabled:border-green-300 disabled:bg-green-200"
-                >
-                    {t('submit', lang)} ✅
-                </button>
-            </div>
-        </div>
+        </>
     );
+
+    const upper = (
+        <>
+            <EquationBox text={current ? `${fmt(current.left)} ${current.operator} ${fmt(current.right)} = ${fmt(current.result)}` : ''} isKinder />
+            <div className={`${ANSWER_HEIGHT} ${ANSWER_FONT} flex w-full max-w-xs flex-col items-center justify-center rounded-2xl border-[5px] bg-[#2c3e50] font-bold leading-none shadow-inner ${boxBorder}`}>
+                {wrong && current && <span className="mb-0.5 text-sm font-bold leading-none text-amber-100">{t('theAnswerIs', lang)}</span>}
+                {wrong && current ? current.answer : answer}
+            </div>
+        </>
+    );
+
+    const lower = (
+        <>
+            <Keypad onDigit={appendDigit} onBackspace={backspace} />
+            <SubmitButton onClick={submit} disabled={answer === '' || feedback !== 'none'} label={`${t('submit', lang)} ✅`} />
+        </>
+    );
+
+    return <PracticeShell background={background} top={top} upper={upper} lower={lower} />;
 };
 
 export const BlitzScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
