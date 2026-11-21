@@ -19,8 +19,10 @@ interface QueueItem {
 type Feedback = 'none' | 'correct' | 'incorrect';
 type Box = 'q' | 'r';
 
+const fmt = (n: number | null): string => (n === null ? '?' : n.toLocaleString('en-US'));
+
 function formatQuestion(q: Question): string {
-    return `${q.left ?? '?'} ${q.operator} ${q.right ?? '?'} = ${q.result ?? '?'}`;
+    return `${fmt(q.left)} ${q.operator} ${fmt(q.right)} = ${fmt(q.result)}`;
 }
 
 interface Props {
@@ -62,7 +64,8 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
 
     useEffect(() => () => window.clearTimeout(timerRef.current), []);
 
-    const current = queue[index]?.question;
+    const currentItem = queue[index];
+    const current = currentItem?.question;
     const isDivision = current?.operator === '÷';
     const maxDigits = MAX_DIGITS[mode];
 
@@ -110,21 +113,25 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
         setEarnedCoins(nextEarned);
         setFeedback(ok ? 'correct' : 'incorrect');
         if (ok) audioService.playCorrect();
+        else if (isKinder) audioService.playGentleIncorrect();
         else audioService.playIncorrect();
+
+        // Award immediately on the final question so leaving during the feedback delay cannot lose coins.
+        const isLast = index + 1 >= nextQueueLength;
+        const finalCoins = isLast ? sessionBonus(nextEarned, nextCorrect, totalQuestions) : 0;
+        if (isLast) addCoins(finalCoins);
 
         timerRef.current = window.setTimeout(
             () => {
-                if (index + 1 < nextQueueLength) {
+                if (!isLast) {
                     setIndex(index + 1);
                     setAnswer('');
                     setRemainder('');
                     setActiveBox('q');
                     setFeedback('none');
                 } else {
-                    const coins = sessionBonus(nextEarned, nextCorrect, totalQuestions);
-                    addCoins(coins);
                     audioService.playWin();
-                    setFinished({ coins, perfect: nextCorrect === totalQuestions });
+                    setFinished({ coins: finalCoins, perfect: nextCorrect === totalQuestions });
                 }
             },
             ok ? 1000 : 2000,
@@ -199,7 +206,8 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
         return `h-28 bg-[#2c3e50] rounded-2xl border-8 flex flex-col items-center justify-center text-5xl font-bold shadow-inner ${border}`;
     };
 
-    const showCorrection = feedback === 'incorrect' && !isKinder;
+    // Grade4 always sees the correction; kinder only after a wrong retry.
+    const showCorrection = feedback === 'incorrect' && (!isKinder || currentItem.isRetry);
 
     return (
         <div className={`min-h-screen flex flex-col p-4 transition-colors duration-500 font-sans bg-gradient-to-b ${background}`}>
@@ -208,21 +216,30 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
                     onClick={onBack}
                     className="min-h-12 text-amber-900 font-bold text-lg bg-white/50 px-4 rounded-xl border-2 border-amber-900/10"
                 >
-                    {t('exit', lang)}
+                    {isKinder ? '🏠' : t('exit', lang)}
                 </button>
                 <div className="text-xl font-bold text-green-900 bg-white/50 px-4 py-2 rounded-xl border-2 border-green-900/10">
-                    {t('question', lang)} {index + 1} / {queue.length}
+                    {t('questionProgress', lang)
+                        .replace('{n}', String(Math.min(index + 1, totalQuestions)))
+                        .replace('{total}', String(totalQuestions))}
+                    {currentItem.isRetry && <span className="ml-2">{t('retryMarker', lang)}</span>}
                 </div>
             </div>
 
             <div className="flex-1 flex flex-col items-center justify-center mb-6">
-                <div className="text-5xl sm:text-7xl font-black text-amber-900 tracking-wider mb-4 bg-white/60 px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl">
+                <div className={`font-black text-amber-900 tracking-wider mb-4 whitespace-nowrap ${isKinder ? 'text-5xl sm:text-7xl' : 'text-3xl sm:text-5xl'}  bg-white/60 px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl`}>
                     {formatQuestion(current)}
                 </div>
 
                 {isKinder && OBJECT_AID_SKILLS.includes(skillId) && (
                     <div className="mb-4">
                         <ObjectAid question={current} />
+                    </div>
+                )}
+
+                {showCorrection && (
+                    <div className="mb-2 text-xl font-black text-amber-900">
+                        {t(isKinder ? 'theAnswerIs' : 'correctAnswerWas', lang)}
                     </div>
                 )}
 
@@ -250,7 +267,13 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
                 {feedback === 'incorrect' && (
                     <div className="mt-4 text-center text-3xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
                         <div>{t('incorrect', lang)}</div>
-                        {isKinder && <div className="text-xl mt-1">{t('tryAgainLater', lang)}</div>}
+                        {isKinder && !currentItem.isRetry && <div className="text-xl mt-1">{t('tryAgainLater', lang)}</div>}
+                        {!isKinder && (
+                            <div className="text-xl mt-1">
+                                {t('yourAnswer', lang)} {answer}
+                                {isDivision && remainder !== '' ? ` ... ${remainder}` : ''}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

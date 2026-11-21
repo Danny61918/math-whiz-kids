@@ -1,6 +1,7 @@
 export interface AudioService {
     playCorrect(): void;
     playIncorrect(): void;
+    playGentleIncorrect(): void;
     playWin(): void;
 }
 
@@ -34,6 +35,10 @@ class WebAudioService implements AudioService {
     playIncorrect() {
         this.playTone(330, 'sawtooth', 0.3);
         setTimeout(() => this.playTone(220, 'sawtooth', 0.4), 300);
+    }
+
+    playGentleIncorrect() {
+        this.playTone(392, 'sine', 0.25);
     }
 
     playWin() {
