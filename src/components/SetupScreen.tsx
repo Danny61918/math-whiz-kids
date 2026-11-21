@@ -37,17 +37,17 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
 
     const choiceClass = (selected: boolean) =>
         `flex-1 min-h-16 rounded-2xl text-xl font-black border-b-4 transition active:translate-y-1 ${
-            selected ? 'bg-green-500 text-white border-green-700' : 'bg-white text-amber-900 border-amber-300'
+            selected ? 'bg-green-700 text-white border-green-900' : 'bg-white text-amber-950 border-amber-400'
         }`;
 
     const userList = Object.values(users);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center p-4 font-sans">
-            <div className="bg-white/95 p-6 rounded-3xl shadow-2xl text-center max-w-md w-full border-[6px] border-[#d4a373] mt-6">
-                <h1 className="text-4xl font-black text-green-800 mb-6">{t('appTitle', language)}</h1>
+        <div className="min-h-dvh bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center p-4 font-sans">
+            <div className="bg-white/95 p-6 rounded-3xl shadow-2xl text-center max-w-[520px] w-full border-[6px] border-[#d4a373] mt-6">
+                <h1 className="text-4xl font-black text-green-900 mb-6">{t('appTitle', language)}</h1>
 
-                <h2 className="text-xl font-bold text-amber-800 mb-3">{t('whoIsPlaying', language)}</h2>
+                <h2 className="text-xl font-bold text-amber-950 mb-3">{t('whoIsPlaying', language)}</h2>
                 <div className="flex flex-col gap-3 mb-4">
                     {userList.map((u) => (
                         <button
@@ -62,11 +62,11 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
                             <span className="text-4xl">{u.avatar}</span>
                             <span className="flex-1">
                                 <span className="block text-xl font-black text-amber-900">{u.name}</span>
-                                <span className="block text-sm font-bold text-green-700">
+                                <span className="block text-base font-bold text-green-800">
                                     {t(u.mode === 'kinder' ? 'modeKinder' : 'modeGrade4', language)}
                                 </span>
                             </span>
-                            <span className="text-lg font-black text-amber-600">🪙 {u.coins}</span>
+                            <span className="text-lg font-black text-amber-800">🪙 {u.coins}</span>
                         </button>
                     ))}
                 </div>
@@ -95,7 +95,7 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
                             ))}
                         </div>
                         <div>
-                            <div className="text-sm font-bold text-amber-800 mb-1">{t('mode', language)}</div>
+                            <div className="text-base font-bold text-amber-950 mb-1">{t('mode', language)}</div>
                             <div className="flex gap-2">
                                 <button onClick={() => setMode('kinder')} className={choiceClass(mode === 'kinder')}>
                                     {t('modeKinder', language)}
@@ -106,7 +106,7 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
                             </div>
                         </div>
                         <div>
-                            <div className="text-sm font-bold text-amber-800 mb-1">{t('language', language)}</div>
+                            <div className="text-base font-bold text-amber-950 mb-1">{t('language', language)}</div>
                             <div className="flex gap-2">
                                 <button onClick={() => setLanguageChoice('zh-TW')} className={choiceClass(newLanguage === 'zh-TW')}>
                                     {t('langZhTW', language)}
@@ -119,14 +119,14 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setIsCreating(false)}
-                                className="flex-1 min-h-14 rounded-xl bg-neutral-200 text-neutral-700 text-lg font-bold"
+                                className="flex-1 min-h-14 rounded-xl bg-neutral-200 text-neutral-900 text-lg font-bold"
                             >
                                 {t('cancel', language)}
                             </button>
                             <button
                                 onClick={handleCreate}
                                 disabled={!name.trim()}
-                                className="flex-1 min-h-14 rounded-xl bg-green-500 disabled:bg-green-200 text-white text-lg font-black"
+                                className="flex-1 min-h-14 rounded-xl bg-green-700 disabled:bg-slate-300 disabled:text-slate-700 text-white text-lg font-black"
                             >
                                 {t('add', language)}
                             </button>
@@ -135,7 +135,7 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
                 ) : (
                     <button
                         onClick={() => setIsCreating(true)}
-                        className="w-full min-h-14 mb-4 rounded-2xl border-4 border-dashed border-amber-300 text-amber-700 text-lg font-bold hover:bg-amber-50"
+                        className="w-full min-h-14 mb-4 rounded-2xl border-4 border-dashed border-amber-400 text-amber-900 text-lg font-bold hover:bg-amber-50"
                     >
                         {t('addNewPlayer', language)}
                     </button>
@@ -143,7 +143,7 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
 
                 {currentUser && (
                     <div className="mb-4">
-                        <div className="text-sm font-bold text-amber-800 mb-1">{t('mode', language)}</div>
+                        <div className="text-base font-bold text-amber-950 mb-1">{t('mode', language)}</div>
                         <div className="flex gap-2 mb-3">
                             <button onClick={() => setUserMode('kinder')} className={choiceClass(currentUser.mode === 'kinder')}>
                                 {t('modeKinder', language)}
@@ -152,7 +152,7 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
                                 {t('modeGrade4', language)}
                             </button>
                         </div>
-                        <div className="text-sm font-bold text-amber-800 mb-1">{t('language', language)}</div>
+                        <div className="text-base font-bold text-amber-950 mb-1">{t('language', language)}</div>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setUserLanguage('zh-TW')}
@@ -170,11 +170,11 @@ export const SetupScreen: React.FC<Props> = ({ onStart }) => {
                 <button
                     onClick={onStart}
                     disabled={!currentUser}
-                    className="w-full bg-green-500 disabled:bg-green-200 text-white border-b-8 border-green-700 disabled:border-green-300 text-3xl font-black py-4 rounded-2xl transition active:translate-y-2 active:border-b-0"
+                    className="w-full min-h-[72px] bg-green-700 disabled:bg-slate-300 disabled:text-slate-700 text-white border-b-8 border-green-900 disabled:border-slate-400 text-3xl font-black py-4 rounded-2xl transition active:translate-y-2 active:border-b-0"
                 >
                     {t('startPractice', language)}
                 </button>
-                {!currentUser && <p className="mt-3 text-amber-700 font-bold">{t('selectPlayerHint', language)}</p>}
+                {!currentUser && <p className="mt-3 text-lg text-amber-900 font-bold">{t('selectPlayerHint', language)}</p>}
             </div>
         </div>
     );

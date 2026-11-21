@@ -68,7 +68,7 @@ export const PackOpenModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 font-sans"
         >
             {phase === 'revealed' && card && card.rarity >= 3 && <Confetti count={30} />}
-            <div className="relative w-full max-w-sm rounded-3xl border-[6px] border-[#d4a373] bg-white p-6 text-center shadow-2xl">
+            <div className="relative max-h-full w-full max-w-sm overflow-y-auto rounded-3xl border-[6px] border-[#d4a373] bg-white p-6 text-center shadow-2xl">
                 {phase !== 'revealed' && (
                     <>
                         <button
@@ -79,13 +79,13 @@ export const PackOpenModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
                         >
                             🎁
                         </button>
-                        <p id={titleId} className="mt-3 text-2xl font-black text-purple-700">{t('packTapToOpen', lang)}</p>
-                        <p className="mt-1 text-lg font-bold text-amber-800">{tp('packCost', lang, { n: price })}</p>
-                        <p className="text-base font-bold text-neutral-600">
+                        <p id={titleId} className="mt-3 text-2xl font-black text-purple-800">{t('packTapToOpen', lang)}</p>
+                        <p className="mt-1 text-lg font-bold text-amber-900">{tp('packCost', lang, { n: price })}</p>
+                        <p className="text-lg font-bold text-stone-700">
                             🎫 {user.tickets} · 🪙 {user.coins}
                         </p>
                         {(broke || !canAfford) && (
-                            <p className="mt-2 font-bold text-amber-700">{t('packCannotAfford', lang)}</p>
+                            <p className="mt-2 text-lg font-bold text-amber-900">{t('packCannotAfford', lang)}</p>
                         )}
                     </>
                 )}
@@ -113,10 +113,10 @@ export const PackOpenModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
                             {result.isNew ? (
                                 <span className="rounded-full bg-yellow-300 px-4 py-1 text-amber-900">{t('cardNew', lang)}</span>
                             ) : (
-                                <span className="text-amber-700">{tp('duplicateRefund', lang, { n: result.refund })}</span>
+                                <span className="text-amber-900">{tp('duplicateRefund', lang, { n: result.refund })}</span>
                             )}
                         </div>
-                        <div className="mt-1 text-lg font-bold text-neutral-600">
+                        <div className="mt-1 text-lg font-bold text-stone-700">
                             {t(`rarity_${card.rarity}`, lang)} {'⭐'.repeat(card.rarity)}
                         </div>
                     </>
@@ -127,7 +127,7 @@ export const PackOpenModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
                         <button
                             onClick={again}
                             data-autofocus
-                            className={`${bigButton} w-full rounded-2xl border-b-8 border-purple-700 bg-purple-500 font-black text-white`}
+                            className={`${bigButton} w-full rounded-2xl border-b-8 border-purple-900 bg-purple-700 font-black text-white`}
                         >
                             {t('openAnother', lang)}
                         </button>
@@ -136,7 +136,7 @@ export const PackOpenModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
                         <button
                             onClick={onClose}
                             data-autofocus={phase === 'revealed' && !canAfford ? true : undefined}
-                            className={`${bigButton} w-full rounded-2xl border-b-8 border-amber-400 bg-amber-200 font-black text-amber-900`}
+                            className={`${bigButton} w-full rounded-2xl border-b-8 border-amber-400 bg-amber-200 font-black text-amber-950`}
                         >
                             {t('close', lang)}
                         </button>

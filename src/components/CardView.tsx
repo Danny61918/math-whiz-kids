@@ -7,8 +7,8 @@ export type CardSize = 'sm' | 'md' | 'lg';
 
 // Pixel box of the picture area per size; the card is 5:7.
 const SIZES: Record<CardSize, { width: number; art: number; emoji: string; name: string }> = {
-    sm: { width: 88, art: 72, emoji: 'text-4xl', name: 'text-[10px]' },
-    md: { width: 140, art: 116, emoji: 'text-6xl', name: 'text-sm' },
+    sm: { width: 88, art: 72, emoji: 'text-4xl', name: 'text-sm' },
+    md: { width: 140, art: 116, emoji: 'text-6xl', name: 'text-base' },
     lg: { width: 220, art: 190, emoji: 'text-8xl', name: 'text-xl' },
 };
 
@@ -18,9 +18,11 @@ interface Props {
     silhouette?: boolean;
     lang?: Language; // when given, the card name is printed on the card
     className?: string;
+    /** Fill the parent's width (square art) instead of the fixed pixel width of the size. */
+    fluid?: boolean;
 }
 
-const Face: React.FC<Props> = ({ card, size = 'md', silhouette = false, lang, className = '' }) => {
+const Face: React.FC<Props> = ({ card, size = 'md', silhouette = false, lang, className = '', fluid = false }) => {
     // Art is user-supplied: public/cards/<id>.webp. Falls back to emoji + hue when missing or broken.
     const [imageState, setImageState] = useState<'loading' | 'loaded' | 'failed'>('loading');
     const dim = SIZES[size];
@@ -32,11 +34,11 @@ const Face: React.FC<Props> = ({ card, size = 'md', silhouette = false, lang, cl
     return (
         <div
             className={`inline-flex flex-col items-center justify-center rounded-2xl border-4 p-1 select-none card-frame-${card.rarity} ${className}`}
-            style={{ width: dim.width, backgroundColor: background, ['--card-bg' as string]: background }}
+            style={{ width: fluid ? '100%' : dim.width, backgroundColor: background, ['--card-bg' as string]: background }}
         >
             <div
                 className="relative flex items-center justify-center overflow-hidden rounded-xl"
-                style={{ width: dim.art, height: dim.art }}
+                style={fluid ? { width: '100%', aspectRatio: '1 / 1' } : { width: dim.art, height: dim.art }}
             >
                 {silhouette ? (
                     <span className={`${dim.emoji} font-black text-gray-500`}>?</span>
