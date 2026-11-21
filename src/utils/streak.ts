@@ -39,6 +39,11 @@ export function updateStreak(s: StreakState, today: string): StreakState {
     return { count, best: Math.max(s.best, count), lastDay: today };
 }
 
+/** Streak to display: the stored count only while it is still alive (last session today or yesterday). */
+export function displayStreak(s: StreakState, today: string): number {
+    return s.lastDay !== null && (s.lastDay === today || s.lastDay === previousDay(today)) ? s.count : 0;
+}
+
 export function isMilestone(count: number): boolean {
     return STREAK_MILESTONES.includes(count);
 }

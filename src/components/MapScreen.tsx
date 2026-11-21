@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { skillsForMode } from '../data/skills';
 import { useCurrentUser } from '../store/useGameStore';
 import { getMastery, type Mastery } from '../utils/mastery';
 import { t, type TranslationKey } from '../utils/i18n';
 import { isSkillUnlocked } from '../utils/stars';
+import { dayKey, displayStreak } from '../utils/streak';
 
 const KINDER_MASTERY_TIME_MS = 15000;
 
@@ -31,7 +32,25 @@ interface Props {
 export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPack }) => {
     const user = useCurrentUser();
     const [shakingId, setShakingId] = useState<string | null>(null);
+    const [hint, setHint] = useState(false);
+    const [today] = useState(() => dayKey(new Date()));
+    const timers = useRef<number[]>([]);
+
+    useEffect(() => {
+        const pending = timers.current;
+        return () => pending.forEach((id) => window.clearTimeout(id));
+    }, []);
+
     if (!user) return null;
+
+    const tapLocked = (id: string) => {
+        setShakingId(id);
+        setHint(true);
+        timers.current.push(
+            window.setTimeout(() => setShakingId(null), 500),
+            window.setTimeout(() => setHint(false), 2000),
+        );
+    };
 
     const lang = user.language;
     const isKinder = user.mode === 'kinder';
@@ -45,7 +64,7 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                     <button
                         onClick={onBack}
                         aria-label={t('back', lang)}
-                        className="min-h-12 text-amber-900 font-bold text-lg bg-white/70 px-4 rounded-xl border-2 border-amber-900/10"
+                        className={`${isKinder ? 'min-h-[72px] min-w-[72px] text-3xl' : 'min-h-12'} text-amber-900 font-bold text-lg bg-white/70 px-4 rounded-xl border-2 border-amber-900/10`}
                     >
                         {isKinder ? '🏠' : t('back', lang)}
                     </button>
@@ -59,12 +78,12 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                         🪙 {user.coins}
                     </span>
                     <span className="bg-white/80 rounded-xl px-3 py-2" aria-label={t('streakLabel', lang)}>
-                        🔥 {user.streak.count}
+                        🔥 {displayStreak(user.streak, today)}
                     </span>
                     <button
                         onClick={onOpenPack}
                         aria-label={t('ticketsLabel', lang)}
-                        className="bg-white/80 rounded-xl px-3 min-h-12 border-2 border-amber-300"
+                        className={`bg-white/80 rounded-xl px-3 border-2 border-amber-300 ${isKinder ? 'min-h-[72px]' : 'min-h-12'}`}
                     >
                         🎫 {user.tickets}
                     </button>
@@ -78,7 +97,7 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                 </button>
 
                 <h1 className="text-2xl font-black text-green-900 text-center mb-2">{t('chooseSkill', lang)}</h1>
-                {shakingId && <p className="text-center font-bold text-amber-800 mb-2">{t('lockedHint', lang)}</p>}
+                {hint && <p className="text-center font-bold text-amber-800 mb-2">{t('lockedHint', lang)}</p>}
 
                 <div className="relative flex flex-col items-center gap-6 py-4">
                     <div className="absolute top-0 bottom-0 left-1/2 w-3 -translate-x-1/2 rounded-full bg-amber-700/30" aria-hidden="true" />
@@ -98,10 +117,9 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                                 <button
                                     onClick={() => {
                                         if (unlocked) onSelect(skill.id);
-                                        else setShakingId(skill.id);
+                                        else tapLocked(skill.id);
                                     }}
-                                    onAnimationEnd={() => setShakingId(null)}
-                                    aria-label={`${t(skill.nameKey, lang)}${unlocked ? '' : ' 🔒'}`}
+                                    aria-label={`${t(skill.nameKey, lang)}${unlocked ? '' : ` (${t('locked', lang)})`}`}
                                     aria-disabled={!unlocked}
                                     className={`${nodeSize} rounded-full border-8 shadow-lg flex items-center justify-center transition ${state} ${
                                         isCurrent ? 'animate-node-pulse' : ''

@@ -176,7 +176,8 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
 
     if (finished) {
         const list = skillsForMode(user.mode);
-        const next = list[list.findIndex((sk) => sk.id === skillId) + 1];
+        const position = list.findIndex((sk) => sk.id === skillId);
+        const next = position >= 0 ? list[position + 1] : undefined;
         return (
             <ResultScreen
                 user={user}

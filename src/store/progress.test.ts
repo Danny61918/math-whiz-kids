@@ -114,6 +114,18 @@ describe('openPack', () => {
         expect(user().cards[dup.cardId]).toBe(2);
     });
 
+    it('applies the whole pack (cost, card, refund, pity) in a single store update', () => {
+        patchUser({ coins: 200 });
+        let updates = 0;
+        const unsubscribe = useGameStore.subscribe(() => {
+            updates += 1;
+        });
+        const r = useGameStore.getState().openPack(rng);
+        unsubscribe();
+        expect(r).not.toBe(false);
+        expect(updates).toBe(1);
+    });
+
     it('tracks pity with the draw', () => {
         patchUser({ coins: 60, pity: 9 });
         const r = useGameStore.getState().openPack(rng);

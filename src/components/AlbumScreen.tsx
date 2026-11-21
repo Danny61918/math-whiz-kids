@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useId, useRef, useState } from 'react';
 import { CATEGORIES, cards, type Card, type CardCategory } from '../data/cards';
 import { useCurrentUser } from '../store/useGameStore';
-import { t, tp } from '../utils/i18n';
+import { t, tp, type Language } from '../utils/i18n';
+import { useModal } from '../utils/useModal';
 import { CardView } from './CardView';
 
 const CATEGORY_ICON: Record<CardCategory, string> = {
@@ -17,6 +18,53 @@ function speak(text: string, lang: 'en-US' | 'zh-TW') {
     utterance.lang = lang;
     window.speechSynthesis.speak(utterance);
 }
+
+const CardDetail: React.FC<{ card: Card; owned: number; lang: Language; isKinder: boolean; onClose: () => void }> = ({
+    card, owned, lang, isKinder, onClose,
+}) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const titleId = useId();
+    useModal(ref, onClose);
+    const tall = isKinder ? 'min-h-[72px]' : 'min-h-14';
+    return (
+        <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            ref={ref}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+        >
+            <div className="w-full max-w-sm rounded-3xl border-[6px] border-[#d4a373] bg-white p-5 text-center shadow-2xl">
+                <div className="flex justify-center">
+                    <CardView card={card} size="lg" />
+                </div>
+                <h2 id={titleId} className="mt-3 text-2xl font-black text-amber-900">{card.nameEn}</h2>
+                <div className="text-2xl font-black text-amber-900">{card.nameZh}</div>
+                <div className="mt-1 font-bold text-neutral-600">
+                    {t(`rarity_${card.rarity}`, lang)} {'⭐'.repeat(card.rarity)}
+                </div>
+                <div className="font-bold text-neutral-600">{tp('copiesOwned', lang, { n: owned })}</div>
+                {canSpeak && (
+                    <div className="mt-3 flex gap-2">
+                        <button onClick={() => speak(card.nameEn, 'en-US')} className={`${tall} flex-1 rounded-xl bg-sky-500 text-lg font-black text-white`}>
+                            {t('speakEn', lang)}
+                        </button>
+                        <button onClick={() => speak(card.nameZh, 'zh-TW')} className={`${tall} flex-1 rounded-xl bg-sky-500 text-lg font-black text-white`}>
+                            {t('speakZh', lang)}
+                        </button>
+                    </div>
+                )}
+                <button
+                    onClick={onClose}
+                    data-autofocus
+                    className={`mt-3 ${tall} w-full rounded-2xl border-b-8 border-amber-400 bg-amber-200 text-xl font-black text-amber-900`}
+                >
+                    {t('close', lang)}
+                </button>
+            </div>
+        </div>
+    );
+};
 
 export const AlbumScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const user = useCurrentUser();
@@ -37,7 +85,7 @@ export const AlbumScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <button
                         onClick={onBack}
                         aria-label={t('back', lang)}
-                        className="min-h-12 rounded-xl border-2 border-amber-900/10 bg-white/70 px-4 text-lg font-bold text-amber-900"
+                        className={`${isKinder ? 'min-h-[72px] min-w-[72px] text-3xl' : 'min-h-12'} rounded-xl border-2 border-amber-900/10 bg-white/70 px-4 text-lg font-bold text-amber-900`}
                     >
                         {isKinder ? '🏠' : t('back', lang)}
                     </button>
@@ -65,7 +113,7 @@ export const AlbumScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                                 role="tab"
                                 aria-selected={category === cat}
                                 onClick={() => setCategory(cat)}
-                                className={`min-h-16 rounded-xl border-b-4 px-1 py-1 text-sm font-black leading-tight ${
+                                className={`${isKinder ? 'min-h-[88px]' : 'min-h-16'} rounded-xl border-b-4 px-1 py-1 text-sm font-black leading-tight ${
                                     category === cat
                                         ? 'border-purple-700 bg-purple-500 text-white'
                                         : 'border-purple-200 bg-white/90 text-purple-900'
@@ -98,45 +146,7 @@ export const AlbumScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             </div>
 
             {selected && (
-                <div
-                    role="dialog"
-                    aria-modal="true"
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-                >
-                    <div className="w-full max-w-sm rounded-3xl border-[6px] border-[#d4a373] bg-white p-5 text-center shadow-2xl">
-                        <div className="flex justify-center">
-                            <CardView card={selected} size="lg" />
-                        </div>
-                        <div className="mt-3 text-2xl font-black text-amber-900">{selected.nameEn}</div>
-                        <div className="text-2xl font-black text-amber-900">{selected.nameZh}</div>
-                        <div className="mt-1 font-bold text-neutral-600">
-                            {t(`rarity_${selected.rarity}`, lang)} {'⭐'.repeat(selected.rarity)}
-                        </div>
-                        <div className="font-bold text-neutral-600">{tp('copiesOwned', lang, { n: owned(selected) })}</div>
-                        {canSpeak && (
-                            <div className="mt-3 flex gap-2">
-                                <button
-                                    onClick={() => speak(selected.nameEn, 'en-US')}
-                                    className="min-h-14 flex-1 rounded-xl bg-sky-500 text-lg font-black text-white"
-                                >
-                                    {t('speakEn', lang)}
-                                </button>
-                                <button
-                                    onClick={() => speak(selected.nameZh, 'zh-TW')}
-                                    className="min-h-14 flex-1 rounded-xl bg-sky-500 text-lg font-black text-white"
-                                >
-                                    {t('speakZh', lang)}
-                                </button>
-                            </div>
-                        )}
-                        <button
-                            onClick={() => setSelected(null)}
-                            className="mt-3 min-h-14 w-full rounded-2xl border-b-8 border-amber-400 bg-amber-200 text-xl font-black text-amber-900"
-                        >
-                            {t('close', lang)}
-                        </button>
-                    </div>
-                </div>
+                <CardDetail card={selected} owned={owned(selected)} lang={lang} isKinder={isKinder} onClose={() => setSelected(null)} />
             )}
         </div>
     );

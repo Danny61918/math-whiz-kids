@@ -35,7 +35,7 @@ const Face: React.FC<Props> = ({ card, size = 'md', silhouette = false, lang, cl
             style={{ width: dim.width, backgroundColor: background, ['--card-bg' as string]: background }}
         >
             <div
-                className="flex items-center justify-center overflow-hidden rounded-xl"
+                className="relative flex items-center justify-center overflow-hidden rounded-xl"
                 style={{ width: dim.art, height: dim.art }}
             >
                 {silhouette ? (
@@ -52,7 +52,7 @@ const Face: React.FC<Props> = ({ card, size = 'md', silhouette = false, lang, cl
                                 height={dim.art}
                                 onLoad={() => setImageState('loaded')}
                                 onError={() => setImageState('failed')}
-                                className={imageState === 'loaded' ? 'h-full w-full object-contain' : 'hidden'}
+                                className={imageState === 'loaded' ? 'h-full w-full object-contain' : 'pointer-events-none absolute opacity-0'}
                             />
                         )}
                     </>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dayKey, isMilestone, isValidDayKey, STREAK_MILESTONES, updateStreak } from './streak';
+import { dayKey, displayStreak, isMilestone, isValidDayKey, STREAK_MILESTONES, updateStreak } from './streak';
 
 const fresh = { count: 0, best: 0, lastDay: null };
 
@@ -60,5 +60,15 @@ describe('isValidDayKey', () => {
         expect(isValidDayKey('2026-13-45')).toBe(false);
         expect(isValidDayKey('2026-1-5')).toBe(false);
         expect(isValidDayKey(20260101)).toBe(false);
+    });
+});
+
+describe('displayStreak', () => {
+    it('shows the count only while the streak is alive', () => {
+        const s = { count: 4, best: 6, lastDay: '2026-03-10' };
+        expect(displayStreak(s, '2026-03-10')).toBe(4);
+        expect(displayStreak(s, '2026-03-11')).toBe(4);
+        expect(displayStreak(s, '2026-03-12')).toBe(0);
+        expect(displayStreak(fresh, '2026-03-12')).toBe(0);
     });
 });

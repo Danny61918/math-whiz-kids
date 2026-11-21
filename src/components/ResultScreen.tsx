@@ -73,9 +73,11 @@ export const ResultScreen: React.FC<Props> = ({
                     <p className="text-lg font-black text-purple-600 mb-1">{t('newBest', lang)}</p>
                 )}
 
-                <p className="text-xl text-amber-800 mb-1 font-bold">
-                    {t('correctCount', lang)}: {correctCount} / {totalQuestions}
-                </p>
+                {user.mode !== 'kinder' && (
+                    <p className="text-xl text-amber-800 mb-1 font-bold">
+                        {t('correctCount', lang)}: {correctCount} / {totalQuestions}
+                    </p>
+                )}
                 <p className="text-3xl font-black text-amber-600 mb-1">+ {shownCoins} 🪙</p>
                 {perfect && <p className="text-base font-bold text-green-700">{t('perfectBonus', lang)}</p>}
 
