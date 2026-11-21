@@ -2,19 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { REVIEW_SKILL_ID, skillsForMode, specialSkills, type Skill } from '../data/skills';
 import { useCurrentUser } from '../store/useGameStore';
 import { getMastery, getSkillMastery, recommendedSkillId, type Mastery } from '../utils/mastery';
+import { nameParts } from '../utils/skillName';
+import { SkillCard } from './SkillCard';
+import { StatChip } from './StatChip';
+import { TopBar } from './TopBar';
 import { isAttempted } from '../utils/factProgress';
-import { t, tp, type TranslationKey } from '../utils/i18n';
+import { t, tp } from '../utils/i18n';
 import { isSkillUnlocked } from '../utils/stars';
 import { dayKey, displayStreak } from '../utils/streak';
 
 /** The daily review appears once this many facts have been attempted. */
 const REVIEW_MIN_FACTS = 10;
-
-const masteryLabel: Record<Mastery, TranslationKey> = {
-    new: 'masteryNew',
-    learning: 'masteryLearning',
-    mastered: 'masteryMastered',
-};
 
 const SKILL_ICONS: Record<string, string> = {
     k_plus12: '➕',
@@ -34,12 +32,6 @@ function skillIcon(skillId: string): string {
     if (skillId.includes('_sub_')) return '➖';
     if (skillId.includes('_mul_')) return '✖️';
     return '➗';
-}
-
-/** Splits "Doubles (e.g. 3+3)" style names into a main label and a smaller example line. */
-function nameParts(name: string): { main: string; example: string } {
-    const m = /^(.*?)\s*([（(].*[）)])$/.exec(name);
-    return m ? { main: m[1], example: m[2] } : { main: name, example: '' };
 }
 
 interface Props {
@@ -77,132 +69,110 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
     const lang = user.language;
     const isKinder = user.mode === 'kinder';
     const list = skillsForMode(user.mode);
-    const nodeSize = isKinder ? 'h-24 w-24 text-5xl' : 'h-20 w-20 text-4xl';
-    const bigButton = isKinder ? 'min-h-[72px] min-w-[72px]' : 'min-h-12';
     const recommended = isKinder ? recommendedSkillId(list, user.stars, user.facts) : null;
     const attemptedFacts = Object.values(user.facts).filter(isAttempted).length;
     const review = isKinder && attemptedFacts >= REVIEW_MIN_FACTS ? specialSkills.find((s) => s.id === REVIEW_SKILL_ID) : undefined;
 
-    const renderNode = (skill: Skill, unlocked: boolean, offset: string) => {
+    // Grade 4 has no recommendation: continue with the first unlocked skill that has no stars yet.
+    const continueId =
+        recommended ?? (isKinder ? null : (list.find((s, i) => isSkillUnlocked(list, user.stars, i) && (user.stars[s.id] ?? 0) === 0)?.id ?? null));
+    const continueSkill = continueId ? list.find((s) => s.id === continueId) : undefined;
+    const continueName = continueSkill ? nameParts(t(continueSkill.nameKey, lang)).main : '';
+
+    const renderCard = (skill: Skill, unlocked: boolean) => {
+        const isReview = skill.id === REVIEW_SKILL_ID;
         const stars = user.stars[skill.id] ?? 0;
-        const isRecommended = skill.id === recommended;
-        const isCurrent = unlocked && (isRecommended || (!isKinder && stars === 0));
-        const mastery = isKinder
-            ? getSkillMastery(skill.id, user.facts)
-            : getMastery(user.skills[skill.id], undefined);
-        const state = !unlocked
-            ? 'bg-neutral-300 border-neutral-400 text-neutral-500'
-            : stars > 0
-              ? 'bg-green-200 border-green-500'
-              : 'bg-amber-200 border-amber-500';
+        const mastery: Mastery = isKinder ? getSkillMastery(skill.id, user.facts) : getMastery(user.skills[skill.id], undefined);
+        const name = t(skill.nameKey, lang);
         return (
-            <div key={skill.id} className={`relative flex flex-col items-center ${offset}`}>
-                {isRecommended && (
-                    <div className="mb-1 rounded-full bg-yellow-300 px-3 py-1 text-sm font-black text-amber-900 shadow">
-                        {t('startHere', lang)}
-                    </div>
-                )}
-                <button
-                    onClick={() => {
-                        if (unlocked) onSelect(skill.id);
-                        else tapLocked(skill.id);
-                    }}
-                    aria-label={`${t(skill.nameKey, lang)}${unlocked ? '' : ` (${t('locked', lang)})`}${isRecommended ? ` - ${t('startHere', lang)}` : ''}`}
-                    aria-disabled={!unlocked}
-                    data-skill={skill.id}
-                    className={`${nodeSize} rounded-full border-8 shadow-lg flex items-center justify-center transition ${state} ${
-                        isCurrent ? 'animate-node-pulse' : ''
-                    } ${isRecommended ? 'ring-8 ring-yellow-300 shadow-yellow-300' : ''} ${shakingId === skill.id ? 'animate-gentle-shake' : ''}`}
-                >
-                    {unlocked ? skillIcon(skill.id) : '🔒'}
-                </button>
-                <div className="mt-1 text-center w-40 bg-white/80 rounded-lg px-2 py-1">
-                    <div className={`font-black text-amber-900 leading-tight ${isKinder ? 'text-base' : 'text-sm'}`}>
-                        {nameParts(t(skill.nameKey, lang)).main}
-                    </div>
-                    {nameParts(t(skill.nameKey, lang)).example && (
-                        <div className="text-xs font-bold leading-tight text-neutral-600">{nameParts(t(skill.nameKey, lang)).example}</div>
-                    )}
-                    <div className="text-lg leading-none" aria-label={`${stars} / 3`}>
-                        {[1, 2, 3].map((n) => (n <= stars ? '⭐' : '☆')).join('')}
-                    </div>
-                    {unlocked && (isKinder ? mastery !== 'new' || stars > 0 : stars > 0) && (
-                        <div className="text-[11px] font-bold text-neutral-600">{t(masteryLabel[mastery], lang)}</div>
-                    )}
-                </div>
-            </div>
+            <SkillCard
+                key={skill.id}
+                skillId={skill.id}
+                name={name}
+                icon={skillIcon(skill.id)}
+                lang={lang}
+                unlocked={unlocked}
+                recommended={skill.id === recommended}
+                pinned={isReview}
+                stars={isReview ? null : stars}
+                mastery={mastery}
+                shaking={shakingId === skill.id}
+                onClick={() => (unlocked ? onSelect(skill.id) : tapLocked(skill.id))}
+            />
         );
     };
 
+    const bigBtn = isKinder ? 'min-h-[88px]' : 'min-h-[64px]';
+    const trioBtn = `flex ${bigBtn} flex-col items-center justify-center gap-0.5 rounded-[18px] px-1 py-2 text-center text-base font-black leading-tight text-white border-b-[5px] transition active:translate-y-1 active:border-b-0`;
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center p-4 font-sans overflow-x-hidden">
-            <div className="w-full max-w-md">
-                <div className="flex justify-between items-center mb-3 gap-2">
-                    <button
-                        onClick={onBack}
-                        aria-label={t('back', lang)}
-                        className={`${bigButton} ${isKinder ? 'text-3xl' : ''} text-amber-900 font-bold text-lg bg-white/70 px-4 rounded-xl border-2 border-amber-900/10`}
-                    >
-                        {isKinder ? '🏠' : t('back', lang)}
-                    </button>
-                    <div className="text-lg font-black text-amber-800 bg-white/70 px-3 py-2 rounded-xl truncate">
-                        {user.avatar} {user.name}
-                    </div>
-                    {isKinder && (
+        <div className="min-h-dvh overflow-x-hidden bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 px-4 pb-10 pt-4 font-sans">
+            <div className="mx-auto flex w-full max-w-[672px] flex-col gap-3">
+                <TopBar
+                    lang={lang}
+                    isKinder={isKinder}
+                    onBack={onBack}
+                    right={
+                        <div className="truncate rounded-full bg-white px-4 py-2 text-lg font-black text-amber-950">
+                            {user.avatar} {user.name}
+                        </div>
+                    }
+                />
+
+                <div className="flex gap-2">
+                    <StatChip icon="🪙" value={user.coins} label={t('myCoinsLabel', lang)} />
+                    <StatChip icon="🔥" value={displayStreak(user.streak, today)} label={t('streakLabel', lang)} />
+                    <StatChip icon="🎫" value={user.tickets} label={t('ticketsLabel', lang)} onClick={onOpenPack} highlight />
+                </div>
+
+                <div className={`grid gap-3 ${continueSkill ? 'sm:grid-cols-[1.3fr_2.7fr]' : ''}`}>
+                    {continueSkill && (
                         <button
-                            onClick={onChart}
-                            aria-label={t('chartButtonLabel', lang)}
-                            className="min-h-[72px] min-w-[72px] text-3xl bg-white/70 px-3 rounded-xl border-2 border-amber-900/10"
+                            onClick={() => onSelect(continueSkill.id)}
+                            aria-label={`${t('continueLabel', lang)}: ${continueName}`}
+                            className={`flex ${isKinder ? 'min-h-[84px]' : 'min-h-[72px]'} flex-col items-center justify-center rounded-[20px] border-b-[6px] border-green-800 bg-green-600 px-4 py-3 text-center text-[22px] font-black leading-tight text-white transition active:translate-y-1 active:border-b-0`}
                         >
-                            🧮
+                            <span>{t('continueLabel', lang)}</span>
+                            <span className="text-base font-bold">{continueName}</span>
                         </button>
                     )}
+                    <div className={`grid gap-2.5 ${isKinder ? 'grid-cols-3' : 'grid-cols-1'}`}>
+                        <button onClick={onAlbum} className={`${trioBtn} border-purple-800 bg-purple-600`}>
+                            <span aria-hidden="true" className="text-3xl leading-none">🃏</span>
+                            <span>{t('albumTitle', lang)}</span>
+                        </button>
+                        {isKinder && (
+                            <button onClick={onBlitz} className={`${trioBtn} border-orange-800 bg-orange-600`}>
+                                <span aria-hidden="true" className="text-3xl leading-none">⚡</span>
+                                <span>{t('blitzTitle', lang)}</span>
+                                {user.blitzBest > 0 && <span className="text-sm font-bold">{tp('blitzBestLabel', lang, { n: user.blitzBest })}</span>}
+                            </button>
+                        )}
+                        {isKinder && (
+                            <button onClick={onChart} aria-label={t('chartButtonLabel', lang)} className={`${trioBtn} border-cyan-900 bg-cyan-700`}>
+                                <span aria-hidden="true" className="text-3xl leading-none">🧮</span>
+                                <span>{t('chartTitle', lang)}</span>
+                            </button>
+                        )}
+                    </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 mb-3 text-lg font-black text-amber-900">
-                    <span className="bg-white/80 rounded-xl px-3 py-2" aria-label={t('myCoinsLabel', lang)}>
-                        🪙 {user.coins}
-                    </span>
-                    <span className="bg-white/80 rounded-xl px-3 py-2" aria-label={t('streakLabel', lang)}>
-                        🔥 {displayStreak(user.streak, today)}
-                    </span>
-                    <button
-                        onClick={onOpenPack}
-                        aria-label={t('ticketsLabel', lang)}
-                        className={`bg-white/80 rounded-xl px-3 border-2 border-amber-300 ${isKinder ? 'min-h-[72px]' : 'min-h-12'}`}
-                    >
-                        🎫 {user.tickets}
-                    </button>
-                </div>
+                <h1 className="sr-only">{t('chooseSkill', lang)}</h1>
 
-                <button
-                    onClick={onAlbum}
-                    className="w-full min-h-[72px] mb-3 rounded-2xl bg-purple-500 text-white text-2xl font-black border-b-8 border-purple-700 transition active:translate-y-1 active:border-b-4"
-                >
-                    {t('cardsButton', lang)}
-                </button>
-
-                {isKinder && (
-                    <button
-                        onClick={onBlitz}
-                        className="w-full min-h-[72px] mb-4 rounded-2xl bg-orange-500 text-white text-2xl font-black border-b-8 border-orange-700 transition active:translate-y-1 active:border-b-4"
-                    >
-                        {t('blitzButton', lang)}
-                        {user.blitzBest > 0 && <span className="ml-2 text-lg">({tp('blitzBestLabel', lang, { n: user.blitzBest })})</span>}
-                    </button>
-                )}
-
-                <h1 className="text-2xl font-black text-green-900 text-center mb-2">{t('chooseSkill', lang)}</h1>
-                {hint && <p className="text-center font-bold text-amber-800 mb-2">{t('lockedHint', lang)}</p>}
-
-                <div className="relative flex flex-col items-center gap-6 py-4">
-                    <div className="absolute top-0 bottom-0 left-1/2 w-3 -translate-x-1/2 rounded-full bg-amber-700/30" aria-hidden="true" />
-                    {review && renderNode(review, true, '')}
-                    {list.map((skill, i) =>
-                        renderNode(skill, isSkillUnlocked(list, user.stars, i), i % 2 === 0 ? '-translate-x-12' : 'translate-x-12'),
-                    )}
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                    {review && renderCard(review, true)}
+                    {list.map((skill, i) => renderCard(skill, isSkillUnlocked(list, user.stars, i)))}
                 </div>
             </div>
+
+            {hint && (
+                <p
+                    role="status"
+                    className="fixed inset-x-4 bottom-4 z-30 mx-auto max-w-sm rounded-2xl border-2 border-amber-400 bg-white px-4 py-3 text-center text-lg font-black text-amber-950 shadow-xl"
+                >
+                    {t('lockedHint', lang)}
+                </p>
+            )}
         </div>
     );
 };
