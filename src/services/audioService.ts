@@ -3,6 +3,8 @@ export interface AudioService {
     playIncorrect(): void;
     playGentleIncorrect(): void;
     playWin(): void;
+    playStar(index: number): void;
+    playReveal(rarity: number, gentle: boolean): void;
 }
 
 class WebAudioService implements AudioService {
@@ -39,6 +41,22 @@ class WebAudioService implements AudioService {
 
     playGentleIncorrect() {
         this.playTone(392, 'sine', 0.25);
+    }
+
+    playStar(index: number) {
+        this.playTone(523.25 * 2 ** (index / 6), 'sine', 0.25);
+    }
+
+    playReveal(rarity: number, gentle: boolean) {
+        this.playTone(440, 'sine', 0.15);
+        setTimeout(() => this.playTone(660, 'sine', 0.2), 120);
+        if (rarity >= 3 && !gentle) {
+            [783.99, 987.77, 1174.66, 1567.98].forEach((freq, i) => {
+                setTimeout(() => this.playTone(freq, 'triangle', 0.3), 300 + i * 130);
+            });
+        } else if (rarity >= 3) {
+            setTimeout(() => this.playTone(880, 'sine', 0.4), 300);
+        }
     }
 
     playWin() {

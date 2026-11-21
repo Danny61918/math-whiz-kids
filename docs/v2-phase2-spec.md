@@ -73,6 +73,7 @@ Rules:
 - `id` stable snake_case, unique (e.g. `dino_triceratops`). Never renumber later.
 - Names must be **correct, real, kid-appropriate** in both languages (zh-TW wording as used in Taiwan: 暴龍, 三角龍, 劍龍, 翼龍, 挖土機, 消防車, 高鐵…). English names are real words a 5-year-old will learn (Triceratops, Fire Truck, Rocket…). No duplicates within a category. Dinosaurs = real species; vehicles = real vehicle types.
 - Art: card face = large emoji. There are not 40 distinct dinosaur emoji, so reuse emoji across similar cards is allowed, but each card gets a `hue` (0–359) used as the card background tint so siblings look different; rarity decides frame style (r1 plain, r2 silver, r3 gold, r4 holographic/rainbow animated border — CSS). Add an optional `art?: string` (image URL) field that, when present, replaces the emoji later. Document this clearly in code comment and README: **placeholder art, to be replaced by real illustrations later**.
+- **Art is user-supplied** through a pipeline: images go in `public/cards/<cardId>.webp` (square, ~512x512, small); `CardView` shows the image when the file exists and falls back to the emoji + hue face when it is missing or fails to load. `npm run cards:prompts` exports one generation prompt per card to `docs/card-prompts.csv/.json`; `npm run cards:check` reports which cards have art. See `public/cards/README.md`.
 - Validation test (see §9) enforces all counts/uniqueness/non-empty names/emoji present.
 
 ## 6. Packs (`src/utils/packs.ts`, pure)

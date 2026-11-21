@@ -1,1 +1,80 @@
 @import "tailwindcss";
+
+@keyframes star-pop {
+    0% { transform: scale(0) rotate(-40deg); opacity: 0; }
+    70% { transform: scale(1.35) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes node-pulse {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.06); }
+}
+
+@keyframes gentle-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+
+@keyframes confetti-fall {
+    0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(540deg); opacity: 0.9; }
+}
+
+@keyframes pack-shake {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-14deg) scale(1.05); }
+    40% { transform: rotate(12deg) scale(1.1); }
+    60% { transform: rotate(-10deg) scale(1.1); }
+    80% { transform: rotate(8deg) scale(1.05); }
+}
+
+@keyframes card-flip-in {
+    0% { transform: perspective(800px) rotateY(180deg) scale(0.7); opacity: 0; }
+    60% { opacity: 1; }
+    100% { transform: perspective(800px) rotateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes holo-shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.4); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@layer utilities {
+    .animate-star-pop { animation: star-pop 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+    .animate-node-pulse { animation: node-pulse 1.4s ease-in-out infinite; }
+    .animate-gentle-shake { animation: gentle-shake 0.4s ease-in-out; }
+    .animate-confetti { animation: confetti-fall 3.5s linear forwards; }
+    .animate-pack-shake { animation: pack-shake 0.8s ease-in-out; }
+    .animate-card-flip { animation: card-flip-in 0.8s ease-out both; }
+    .animate-sparkle { animation: sparkle 1.6s ease-in-out infinite; }
+    .card-frame-1 { border-color: #d4d4d4; }
+    .card-frame-2 { border-color: #cbd5e1; box-shadow: 0 0 0 2px #94a3b8, 0 2px 8px rgba(100, 116, 139, 0.5); }
+    .card-frame-3 { border-color: #facc15; box-shadow: 0 0 0 2px #ca8a04, 0 0 14px rgba(250, 204, 21, 0.7); }
+    .card-frame-4 {
+        border-color: transparent;
+        background-image:
+            linear-gradient(var(--card-bg, #fff), var(--card-bg, #fff)),
+            linear-gradient(90deg, #f43f5e, #f59e0b, #22c55e, #06b6d4, #8b5cf6, #f43f5e, #f59e0b);
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+        background-size: 100% 100%, 200% 100%;
+        animation: holo-shift 3s linear infinite;
+        box-shadow: 0 0 16px rgba(168, 85, 247, 0.6);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    .animate-confetti { display: none; }
+}

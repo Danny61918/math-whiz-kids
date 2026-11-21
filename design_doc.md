@@ -16,7 +16,7 @@ Vite + React 19 + TypeScript + Tailwind CSS 4 + Zustand (persist) + Vitest。部
 
 ## 4. 路線圖
 - **Phase 1（本版）**：練習基礎：技能、引擎、進度追蹤、store 版本與遷移、單元測試。
-- **Phase 2**：分數與小數；直式計算介面。
-- **Phase 3**：地圖 + 星星 + 收藏卡片（約 200 張）作為獎勵系統。
+- **Phase 2（已完成）**：地圖、星星、連續天數與每日券、200 張收藏卡片與抽卡（卡片圖片由使用者提供，見 public/cards/README.md）。
+- **Phase 3**：分數與小數；直式計算介面。
 - **Phase 4**：錯題本、適性出題、家長頁面、資料匯出。
 - **Phase 5**：PWA（離線）、TTS 語音。

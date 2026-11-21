@@ -7,6 +7,10 @@ A small math practice game for two kinds of players. Practice earns coins; progr
 
 Each player has their own mode, language, coins and skill statistics, saved in the browser (localStorage).
 
+## Collectible cards and art
+
+Practice earns stars, coins and pack tickets; packs hold one of 200 collectible cards (dinosaurs, cars, planes, ships and trains, space, rescue). Card faces are emoji placeholders until real art is added: put `public/cards/<cardId>.webp` files in place and they appear automatically. `npm run cards:prompts` writes `docs/card-prompts.csv` and `docs/card-prompts.json` (one image prompt per card), and `npm run cards:check` reports which cards still lack art. Details in `public/cards/README.md`.
+
 ## Development
 
 ```bash
@@ -15,6 +19,8 @@ npm run dev     # start the dev server
 npm run build   # type-check and build to dist/
 npm run lint    # eslint
 npm test        # vitest unit tests
+npm run cards:prompts   # export card image prompts to docs/
+npm run cards:check     # report which cards have art in public/cards/
 ```
 
 Stack: Vite, React 19, TypeScript, Tailwind CSS 4, Zustand, Vitest.

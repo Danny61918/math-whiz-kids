@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { SetupScreen } from './components/SetupScreen';
-import { SkillSelectScreen } from './components/SkillSelectScreen';
+import { MapScreen } from './components/MapScreen';
 import { GamePlayScreen } from './components/GamePlayScreen';
+import { AlbumScreen } from './components/AlbumScreen';
+import { PackOpenModal } from './components/PackOpenModal';
 import { useCurrentUser, useLanguage } from './store/useGameStore';
 
-type Screen = 'setup' | 'skills' | 'game';
+type Screen = 'setup' | 'map' | 'game' | 'album';
 
 function App() {
   const [screen, setScreen] = useState<Screen>('setup');
   const [skillId, setSkillId] = useState<string | null>(null);
+  const [packOpen, setPackOpen] = useState(false);
   const user = useCurrentUser();
   const language = useLanguage();
 
@@ -17,14 +20,16 @@ function App() {
   }, [language]);
 
   // Without a current user only the setup screen makes sense.
-  const current: Screen = !user ? 'setup' : screen === 'game' && !skillId ? 'skills' : screen;
+  const current: Screen = !user ? 'setup' : screen === 'game' && !skillId ? 'map' : screen;
 
   return (
     <div className="App">
-      {current === 'setup' && <SetupScreen onStart={() => setScreen('skills')} />}
-      {current === 'skills' && (
-        <SkillSelectScreen
+      {current === 'setup' && <SetupScreen onStart={() => setScreen('map')} />}
+      {current === 'map' && (
+        <MapScreen
           onBack={() => setScreen('setup')}
+          onAlbum={() => setScreen('album')}
+          onOpenPack={() => setPackOpen(true)}
           onSelect={(id) => {
             setSkillId(id);
             setScreen('game');
@@ -32,8 +37,16 @@ function App() {
         />
       )}
       {current === 'game' && skillId && (
-        <GamePlayScreen key={skillId} skillId={skillId} onBack={() => setScreen('skills')} />
+        <GamePlayScreen
+          key={skillId}
+          skillId={skillId}
+          onBack={() => setScreen('map')}
+          onNext={setSkillId}
+          onOpenPack={() => setPackOpen(true)}
+        />
       )}
+      {current === 'album' && <AlbumScreen onBack={() => setScreen('map')} />}
+      {packOpen && user && <PackOpenModal onClose={() => setPackOpen(false)} />}
     </div>
   );
 }

@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { getSkill } from '../data/skills';
-import { useCurrentUser, useGameStore } from '../store/useGameStore';
+import { getSkill, skillsForMode } from '../data/skills';
+import { useCurrentUser, useGameStore, type SessionSummary } from '../store/useGameStore';
 import { audioService } from '../services/audioService';
-import { t } from '../utils/i18n';
+import { t, tp, type TranslationKey } from '../utils/i18n';
 import { checkAnswer, generateSession, type Question } from '../utils/mathEngine';
 import { questionCoins } from '../utils/rewards';
 import { resolveSubmit } from '../utils/session';
 import { ObjectAid } from './ObjectAid';
+import { ResultScreen } from './ResultScreen';
 
 const QUESTION_COUNT = { kinder: 5, grade4: 10 } as const;
 const MAX_DIGITS = { kinder: 2, grade4: 8 } as const;
@@ -29,12 +30,22 @@ function formatQuestion(q: Question): string {
 interface Props {
     skillId: string;
     onBack: () => void;
+    onNext: (skillId: string) => void;
+    onOpenPack: () => void;
 }
 
-export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
+const COMBO_PRAISE: Record<number, TranslationKey> = {
+    2: 'comboPraise2',
+    3: 'comboPraise3',
+    4: 'comboPraise4',
+    5: 'comboPraise5',
+};
+
+export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpenPack }) => {
     const user = useCurrentUser();
     const addCoins = useGameStore((s) => s.addCoins);
     const recordAnswer = useGameStore((s) => s.recordAnswer);
+    const completeSession = useGameStore((s) => s.completeSession);
 
     const mode = user?.mode ?? 'grade4';
     const lang = user?.language ?? 'zh-TW';
@@ -53,7 +64,8 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
     const [feedback, setFeedback] = useState<Feedback>('none');
     const [correctCount, setCorrectCount] = useState(0);
     const [earnedCoins, setEarnedCoins] = useState(0);
-    const [finished, setFinished] = useState<{ coins: number; perfect: boolean } | null>(null);
+    const [finished, setFinished] = useState<{ coins: number; perfect: boolean; correct: number; summary: SessionSummary | null } | null>(null);
+    const [combo, setCombo] = useState(0);
 
     const startTimeRef = useRef(0);
     const timerRef = useRef<number | undefined>(undefined);
@@ -108,6 +120,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
         });
         const { nextCorrect, nextEarned, isLast, finalCoins } = outcome;
         if (outcome.countsForStats) recordAnswer(skillId, ok, timeMs);
+        if (outcome.countsForStats) setCombo(ok ? combo + 1 : 0);
         if (outcome.appendRetry) setQueue((prev) => [...prev, { question: current, isRetry: true }]);
 
         setCorrectCount(nextCorrect);
@@ -118,7 +131,11 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
         else audioService.playIncorrect();
 
         // Award immediately on the final question so leaving during the feedback delay cannot lose coins.
-        if (isLast) addCoins(finalCoins);
+        let summary: SessionSummary | null = null;
+        if (isLast) {
+            addCoins(finalCoins);
+            summary = completeSession({ skillId, correct: nextCorrect, total: totalQuestions });
+        }
 
         timerRef.current = window.setTimeout(
             () => {
@@ -130,7 +147,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
                     setFeedback('none');
                 } else {
                     audioService.playWin();
-                    setFinished({ coins: finalCoins, perfect: nextCorrect === totalQuestions });
+                    setFinished({ coins: finalCoins, perfect: nextCorrect === totalQuestions, correct: nextCorrect, summary });
                 }
             },
             ok ? 1000 : 2000,
@@ -158,25 +175,21 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
     if (!user || !current) return null;
 
     if (finished) {
+        const list = skillsForMode(user.mode);
+        const next = list[list.findIndex((sk) => sk.id === skillId) + 1];
         return (
-            <div className="min-h-screen bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 flex flex-col items-center justify-center p-4 font-sans">
-                <div className="bg-white/95 p-8 rounded-3xl shadow-2xl text-center max-w-md w-full border-[6px] border-[#d4a373]">
-                    <h2 className="text-4xl font-bold text-green-800 mb-4">{t('practiceComplete', lang)}</h2>
-                    <p className="text-2xl text-amber-800 mb-2 font-bold">
-                        {t('correctCount', lang)}: {correctCount} / {totalQuestions}
-                    </p>
-                    <p className="text-3xl font-black text-amber-600 mb-2">
-                        + {finished.coins} {t('coinsEarned', lang)} 🪙
-                    </p>
-                    {finished.perfect && <p className="text-lg font-bold text-green-700 mb-6">{t('perfectBonus', lang)}</p>}
-                    <button
-                        onClick={onBack}
-                        className="w-full mt-4 bg-green-500 hover:bg-green-400 text-white text-2xl font-black py-4 rounded-xl border-b-8 border-green-700 transition active:translate-y-2 active:border-b-0"
-                    >
-                        {t('backToSkills', lang)}
-                    </button>
-                </div>
-            </div>
+            <ResultScreen
+                user={user}
+                summary={finished.summary}
+                correctCount={finished.correct}
+                totalQuestions={totalQuestions}
+                coins={finished.coins}
+                perfect={finished.perfect}
+                hasNext={next !== undefined}
+                onNext={() => next && onNext(next.id)}
+                onMap={onBack}
+                onOpenPack={onOpenPack}
+            />
         );
     }
 
@@ -225,6 +238,12 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack }) => {
                     {currentItem.isRetry && <span className="ml-2">{t('retryMarker', lang)}</span>}
                 </div>
             </div>
+
+            {combo >= 2 && (
+                <div className="mb-2 text-center text-2xl font-black text-orange-600" aria-live="polite">
+                    {tp('comboLabel', lang, { n: combo })} {t(COMBO_PRAISE[Math.min(combo, 5)], lang)}
+                </div>
+            )}
 
             <div className="flex-1 flex flex-col items-center justify-center mb-6">
                 <div className={`font-black text-amber-900 tracking-wider mb-4 max-w-full overflow-x-auto whitespace-nowrap ${isKinder ? 'text-5xl sm:text-7xl' : 'text-2xl min-[420px]:text-3xl sm:text-5xl'} bg-white/60 px-4 sm:px-6 py-4 rounded-3xl border-4 border-amber-900/20 shadow-xl`}>
