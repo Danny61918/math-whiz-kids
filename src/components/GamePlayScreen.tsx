@@ -341,6 +341,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const lower = (
         <>
             <Keypad
+                deleteLabel={t('deleteKey', lang)}
                 onDigit={appendDigit}
                 onBackspace={backspace}
                 extra={

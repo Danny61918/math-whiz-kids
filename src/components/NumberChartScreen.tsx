@@ -5,6 +5,7 @@ import { CHART_MILESTONES, CHART_SIZE, chartMasteredCount, claimId, milestoneThr
 import { factLevel, type FactLevel, type FactStats } from '../utils/factProgress';
 import { t, tp, type TranslationKey } from '../utils/i18n';
 import { useModal } from '../utils/useModal';
+import { STAR_PATH } from '../utils/starPath';
 import { TopBar } from './TopBar';
 
 const LEVEL_LABEL: Record<FactLevel, TranslationKey> = {
@@ -35,7 +36,7 @@ const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const CornerStar: React.FC<{ size: number }> = ({ size }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path
-            d="M12 2.5l2.94 6.1 6.66.9-4.85 4.7 1.2 6.6L12 17.6l-5.95 3.2 1.2-6.6L2.4 9.5l6.66-.9z"
+            d={STAR_PATH}
             fill="#F5B301"
             stroke="#8A5A00"
             strokeWidth="1.6"

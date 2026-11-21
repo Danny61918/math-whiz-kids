@@ -1,5 +1,5 @@
 import React from 'react';
-import { t, type Language } from '../utils/i18n';
+import { t, tp, type Language } from '../utils/i18n';
 import type { Mastery } from '../utils/mastery';
 import { nameParts } from '../utils/skillName';
 import { StarRating } from './StarRating';
@@ -39,7 +39,14 @@ export const SkillCard: React.FC<Props> = ({ skillId, name, icon, lang, unlocked
     return (
         <button
             onClick={onClick}
-            aria-label={`${name}${unlocked ? '' : ` (${t('locked', lang)})`}${recommended ? ` - ${t('startHere', lang)}` : ''}`}
+            aria-label={[
+                name,
+                unlocked && stars !== null ? tp('starsOf', lang, { n: stars }) : '',
+                unlocked ? (stars !== null ? t(pill.key, lang) : '') : t('locked', lang),
+                recommended ? t('startHere', lang) : '',
+            ]
+                .filter(Boolean)
+                .join(', ')}
             aria-disabled={!unlocked}
             data-skill={skillId}
             className={`grid min-h-[88px] w-full grid-cols-[56px_1fr] items-center gap-3 rounded-[18px] border-[3px] p-3 text-left shadow-sm transition active:translate-y-0.5 ${surface} ${
@@ -63,7 +70,7 @@ export const SkillCard: React.FC<Props> = ({ skillId, name, icon, lang, unlocked
                 </span>
                 {example && <span className="block text-sm font-semibold leading-tight text-stone-700">{example}</span>}
                 <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                    {unlocked && stars !== null && <StarRating value={stars} size={28} />}
+                    {unlocked && stars !== null && <StarRating value={stars} size={28} label={tp('starsOf', lang, { n: stars })} />}
                     {!unlocked && (
                         <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-sm font-extrabold text-slate-800">🔒 {t('locked', lang)}</span>
                     )}

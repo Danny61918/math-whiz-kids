@@ -122,15 +122,15 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                 <div className="flex gap-2">
                     <StatChip icon="🪙" value={user.coins} label={t('myCoinsLabel', lang)} />
                     <StatChip icon="🔥" value={displayStreak(user.streak, today)} label={t('streakLabel', lang)} />
-                    <StatChip icon="🎫" value={user.tickets} label={t('ticketsLabel', lang)} onClick={onOpenPack} highlight />
+                    <StatChip icon="🎫" value={user.tickets} label={t('ticketsLabel', lang)} onClick={onOpenPack} highlight tall={isKinder} />
                 </div>
 
                 <div className={`grid gap-3 ${continueSkill ? 'sm:grid-cols-[1.3fr_2.7fr]' : ''}`}>
                     {continueSkill && (
                         <button
                             onClick={() => onSelect(continueSkill.id)}
-                            aria-label={`${t('continueLabel', lang)}: ${continueName}`}
-                            className={`flex ${isKinder ? 'min-h-[84px]' : 'min-h-[72px]'} flex-col items-center justify-center rounded-[20px] border-b-[6px] border-green-800 bg-green-600 px-4 py-3 text-center text-[22px] font-black leading-tight text-white transition active:translate-y-1 active:border-b-0`}
+                            aria-label={`${t('continueAria', lang)}: ${continueName}`}
+                            className={`flex ${isKinder ? 'min-h-[84px]' : 'min-h-[72px]'} flex-col items-center justify-center rounded-[20px] border-b-[6px] border-green-800 bg-green-700 px-4 py-3 text-center text-[22px] font-black leading-tight text-white transition active:translate-y-1 active:border-b-0`}
                         >
                             <span>{t('continueLabel', lang)}</span>
                             <span className="text-base font-bold">{continueName}</span>
@@ -142,7 +142,7 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                             <span>{t('albumTitle', lang)}</span>
                         </button>
                         {isKinder && (
-                            <button onClick={onBlitz} className={`${trioBtn} border-orange-800 bg-orange-600`}>
+                            <button onClick={onBlitz} className={`${trioBtn} border-orange-900 bg-orange-700`}>
                                 <span aria-hidden="true" className="text-3xl leading-none">⚡</span>
                                 <span>{t('blitzTitle', lang)}</span>
                                 {user.blitzBest > 0 && <span className="text-sm font-bold">{tp('blitzBestLabel', lang, { n: user.blitzBest })}</span>}

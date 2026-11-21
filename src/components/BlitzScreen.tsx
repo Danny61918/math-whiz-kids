@@ -200,7 +200,7 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
 
     const lower = (
         <>
-            <Keypad onDigit={appendDigit} onBackspace={backspace} />
+            <Keypad deleteLabel={t('deleteKey', lang)} onDigit={appendDigit} onBackspace={backspace} />
             <SubmitButton onClick={submit} disabled={answer === '' || feedback !== 'none'} label={`${t('submit', lang)} ✅`} />
         </>
     );

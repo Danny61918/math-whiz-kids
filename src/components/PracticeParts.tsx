@@ -17,13 +17,11 @@ interface ShellProps {
 }
 
 export const PracticeShell: React.FC<ShellProps> = ({ background, top, upper, lower }) => (
-    <div className={`flex h-dvh flex-col overflow-y-auto overflow-x-hidden bg-gradient-to-b px-3 py-2 font-sans transition-colors duration-500 ${background}`}>
-        <div
-            className={`mx-auto flex min-h-0 w-full max-w-[520px] flex-1 flex-col gap-[clamp(4px,1dvh,10px)] min-[900px]:landscape:grid min-[900px]:landscape:max-w-[980px] min-[900px]:landscape:grid-cols-2 min-[900px]:landscape:grid-rows-[auto_1fr] min-[900px]:landscape:gap-x-10`}
-        >
-            <div className="min-[900px]:landscape:col-span-2">{top}</div>
-            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-[clamp(4px,1dvh,10px)]">{upper}</div>
-            <div className="flex shrink-0 flex-col justify-center gap-[clamp(4px,1dvh,10px)]">{lower}</div>
+    <div className={`flex min-h-dvh flex-col overflow-x-hidden bg-gradient-to-b px-3 py-2 font-sans transition-colors duration-500 ${background}`}>
+        <div className="mx-auto flex w-full max-w-[520px] flex-1 flex-col gap-[clamp(4px,1dvh,10px)] min-[900px]:landscape:grid min-[900px]:landscape:max-w-[980px] min-[900px]:landscape:grid-cols-2 min-[900px]:landscape:grid-rows-[auto_1fr] min-[900px]:landscape:gap-x-10 [@media(orientation:landscape)_and_(max-height:520px)]:grid [@media(orientation:landscape)_and_(max-height:520px)]:max-w-[980px] [@media(orientation:landscape)_and_(max-height:520px)]:grid-cols-2 [@media(orientation:landscape)_and_(max-height:520px)]:grid-rows-[auto_1fr] [@media(orientation:landscape)_and_(max-height:520px)]:gap-x-8">
+            <div className="shrink-0 min-[900px]:landscape:col-span-2 [@media(orientation:landscape)_and_(max-height:520px)]:col-span-2">{top}</div>
+            <div className="flex min-h-fit flex-1 flex-col items-center justify-center gap-[clamp(4px,1dvh,10px)] [&>*]:shrink-0">{upper}</div>
+            <div className="flex shrink-0 flex-col justify-center gap-[clamp(4px,1dvh,10px)] [&>*]:shrink-0">{lower}</div>
         </div>
     </div>
 );
@@ -56,16 +54,23 @@ export const TopChip: React.FC<{ children: React.ReactNode; className?: string; 
     </div>
 );
 
-/** The equation, scaled with the viewport. Never wraps; scrolls sideways as a last resort. */
-export const EquationBox: React.FC<{ text: string; isKinder: boolean; tint?: string }> = ({ text, isKinder, tint = 'bg-white' }) => (
-    <div
-        className={`max-w-full overflow-x-auto whitespace-nowrap rounded-3xl border-4 border-amber-900/20 px-4 py-[clamp(2px,0.8dvh,8px)] text-center font-black leading-tight text-amber-950 shadow-lg ${tint} ${
-            isKinder ? 'text-[clamp(44px,min(9vw,8dvh),96px)]' : 'text-[clamp(24px,min(7vw,7dvh),72px)]'
-        }`}
-    >
-        {text}
-    </div>
-);
+/** The equation, scaled with the viewport (and, for grade 4, with its length). Never wraps; scrolls sideways as a last resort. */
+export const EquationBox: React.FC<{ text: string; isKinder: boolean; tint?: string }> = ({ text, isKinder, tint = 'bg-white' }) => {
+    const size = isKinder
+        ? 'text-[clamp(44px,min(9vw,8dvh),96px)]'
+        : text.length <= 12
+          ? 'text-[clamp(40px,min(11vw,8dvh),72px)]'
+          : text.length <= 18
+            ? 'text-[clamp(32px,min(8vw,7dvh),56px)]'
+            : 'text-[clamp(24px,min(7vw,7dvh),72px)]';
+    return (
+        <div
+            className={`max-w-full overflow-x-auto whitespace-nowrap rounded-3xl border-4 border-amber-900/20 px-4 py-[clamp(2px,0.8dvh,8px)] text-center font-black leading-tight text-amber-950 shadow-lg ${tint} ${size}`}
+        >
+            {text}
+        </div>
+    );
+};
 
 export const ANSWER_HEIGHT = 'h-[clamp(60px,10dvh,96px)]';
 export const ANSWER_FONT = 'text-[clamp(32px,6dvh,56px)]';
@@ -86,9 +91,10 @@ interface KeypadProps {
     onBackspace: () => void;
     /** Bottom-left cell (the quotient/remainder toggle); empty when omitted. */
     extra?: React.ReactNode;
+    deleteLabel: string;
 }
 
-export const Keypad: React.FC<KeypadProps> = ({ onDigit, onBackspace, extra }) => {
+export const Keypad: React.FC<KeypadProps> = ({ onDigit, onBackspace, extra, deleteLabel }) => {
     const digit = `${KEY_BASE} border-b-[5px] border-[#8f5a2b] bg-[#b97f4a] text-white`;
     return (
         <div className="grid w-full grid-cols-3 gap-[clamp(4px,1dvh,8px)]">
@@ -101,7 +107,7 @@ export const Keypad: React.FC<KeypadProps> = ({ onDigit, onBackspace, extra }) =
             <button onClick={() => onDigit(0)} className={digit}>
                 0
             </button>
-            <button onClick={onBackspace} aria-label="⌫" className={`${KEY_BASE} border-b-[5px] border-[#b9895a] bg-[#f0d9bf] text-amber-950`}>
+            <button onClick={onBackspace} aria-label={deleteLabel} className={`${KEY_BASE} border-b-[5px] border-[#b9895a] bg-[#f0d9bf] text-amber-950`}>
                 ⌫
             </button>
         </div>
