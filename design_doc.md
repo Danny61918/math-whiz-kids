@@ -20,3 +20,11 @@ Vite + React 19 + TypeScript + Tailwind CSS 4 + Zustand (persist) + Vitest。部
 - **Phase 3**：分數與小數；直式計算介面。
 - **Phase 4**：錯題本、適性出題、家長頁面、資料匯出。
 - **Phase 5**：PWA（離線）、TTS 語音。
+
+## 5. Fluency Engine (v2 Phase 3, kinder add/sub)
+- Per-fact tracking: 162 one-digit facts (81 add, 81 sub), Leitner boxes 0-5 (`src/utils/factProgress.ts`); a fact rises only on a fast (<= 4 s to the first digit), unhelped correct answer, at most once per day; a wrong answer drops two boxes.
+- Skill ladder of 13 strategy skills (doubles, make 10, near doubles, plus 8/9, ...) plus a Daily Review (unlocks at 10 attempted facts) and a 60-second Blitz. Sessions are 8 questions drawn 60% weak / 30% new / 10% review (`src/utils/selection.ts`).
+- Ten-frame aid fades with the box (visible, then behind a Help button, then hidden). A wrong answer shows the answer and frame at once and re-asks 3 questions later.
+- Number Chart (9x9 add and subtract grids) shows long-term progress; 25/50/75/100% milestones grant 1/1/2/3 tickets.
+- Kinder coins are fixed (10 x multiplier, 5 x when helped, +20 when a fact first reaches box 5); grade4 keeps speed tiers.
+- Store persist version 4 (`facts`, `chartClaims`, `blitzBest`, `blitzBestDay`).

@@ -28,3 +28,6 @@ Stack: Vite, React 19, TypeScript, Tailwind CSS 4, Zustand, Vitest.
 ## Deploy
 
 Pushes to `main` run `.github/workflows/deploy.yml`: install, test, build, then publish `dist/` to GitHub Pages.
+
+## Fluency engine (kinder)
+Kindergarten mode tracks every one-digit addition/subtraction fact, adapts question selection to weak facts, fades the ten-frame aid as facts become fluent, and shows progress on a Number Chart. See `docs/v2-phase3-fluency-spec.md`.
