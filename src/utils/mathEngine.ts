@@ -1,165 +1,290 @@
-import type { GameSettings } from '../store/useGameStore';
-
 export interface Question {
-    leftOperand: number;
-    rightOperand: number;
-    operator: '+' | '-' | '*' | '/';
-    correctAnswer: number;
-    correctRemainder?: number;
+    skillId: string;
+    operator: '+' | '-' | '×' | '÷';
+    left: number | null; // null = unknown slot
+    right: number | null;
+    result: number | null; // only shown for k_make10
+    answer: number;
+    remainder?: number; // division only
+    key: string;
 }
 
-function getInterestingInt(digits: number, options: { avoidZero?: boolean, avoidTrailingZero?: boolean, avoidOne?: boolean, favorHard?: boolean } = {}): number {
-    const { avoidZero = true, avoidTrailingZero = true, avoidOne = true, favorHard = true } = options;
+export type Rng = () => number;
 
+type Draft = Omit<Question, 'skillId' | 'key'>;
+
+interface SkillSpec {
+    make: (rng: Rng) => Draft;
+    accept: (d: Draft) => boolean;
+    fallback: (rng: Rng) => Draft;
+}
+
+const MAX_ATTEMPTS = 100;
+
+// ---------- number helpers ----------
+
+function randInt(rng: Rng, min: number, max: number): number {
+    return min + Math.floor(rng() * (max - min + 1));
+}
+
+function pick<T>(rng: Rng, items: T[]): T {
+    return items[Math.floor(rng() * items.length)];
+}
+
+function digitCount(n: number): number {
+    return String(n).length;
+}
+
+function hardDigitCount(n: number): number {
+    return (String(n).match(/[6-9]/g) ?? []).length;
+}
+
+/**
+ * A "nicer" random integer with the given digit count: no trailing zero and
+ * (best effort) at least half of its digits are hard ones (6-9).
+ * One-digit numbers are 2..9, weighted towards 6..9.
+ */
+function interestingInt(rng: Rng, digits: number): number {
     if (digits === 1) {
-        // Pool weighted towards harder digits (6, 7, 8, 9)
-        let pool = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-        if (avoidZero) pool = pool.filter(n => n !== 0);
-        if (avoidOne && pool.length > 1) pool = pool.filter(n => n !== 1);
-        
-        if (favorHard) {
-            // Duplicate 6, 7, 8, 9 to increase their probability
-            const hard = [6, 7, 8, 9];
-            pool = [...pool, ...hard, ...hard]; // Harder numbers are now more likely
-        }
-        
-        return pool[Math.floor(Math.random() * pool.length)];
+        return pick(rng, [2, 3, 4, 5, 6, 7, 8, 9, 6, 7, 8, 9]);
     }
-
-    const min = Math.pow(10, digits - 1);
-    const max = Math.pow(10, digits) - 1;
-
-    let res;
-    let attempts = 0;
-    do {
-        res = Math.floor(Math.random() * (max - min + 1)) + min;
-        
-        // If favorHard is on for multi-digits, we check if it has "hard" digits
-        if (favorHard && attempts < 20) {
-            const digitsStr = res.toString();
-            const hardDigitCount = (digitsStr.match(/[6789]/g) || []).length;
-            if (hardDigitCount < digits / 2) {
-                attempts++;
-                continue; // Try again to get more hard digits
-            }
-        }
-
-        if (avoidTrailingZero && res % 10 === 0 && attempts < 20) {
-            attempts++;
-            continue;
-        }
-        break;
-    } while (attempts < 50);
-
-    return res;
+    const min = 10 ** (digits - 1);
+    const max = 10 ** digits - 1;
+    let n = randInt(rng, min, max);
+    for (let i = 0; i < 20; i++) {
+        if (n % 10 !== 0 && hardDigitCount(n) >= digits / 2) return n;
+        n = randInt(rng, min, max);
+    }
+    return n % 10 === 0 ? n + randInt(rng, 1, 9) : n;
 }
 
-function requiresCarrying(a: number, b: number): boolean {
-    const s1 = a.toString().split('').reverse();
-    const s2 = b.toString().split('').reverse();
-    const len = Math.max(s1.length, s2.length);
-    for (let i = 0; i < len; i++) {
-        const d1 = parseInt(s1[i] || '0');
-        const d2 = parseInt(s2[i] || '0');
-        if (d1 + d2 >= 10) return true;
-    }
-    return false;
+/** Number with `digits` digits whose lowest `k` digits are each within lo..hi. */
+function numWithLowDigits(rng: Rng, digits: number, k: number, lo: number, hi: number): number {
+    let n = randInt(rng, 10 ** (digits - k - 1), 10 ** (digits - k) - 1);
+    for (let i = 0; i < k; i++) n = n * 10 + randInt(rng, lo, hi);
+    return n;
 }
 
-function requiresBorrowing(a: number, b: number): boolean {
-    const s1 = a.toString().split('').reverse();
-    const s2 = b.toString().split('').reverse();
-    // Subtraction a - b where a >= b
-    for (let i = 0; i < s2.length; i++) {
-        const d1 = parseInt(s1[i] || '0');
-        const d2 = parseInt(s2[i] || '0');
-        if (d1 < d2) return true;
+export function countCarries(a: number, b: number): number {
+    let x = a;
+    let y = b;
+    let carry = 0;
+    let count = 0;
+    while (x > 0 || y > 0 || carry > 0) {
+        const sum = (x % 10) + (y % 10) + carry;
+        carry = sum >= 10 ? 1 : 0;
+        count += carry;
+        x = Math.floor(x / 10);
+        y = Math.floor(y / 10);
     }
-    return false;
+    return count;
 }
 
-const questionHistory: string[] = [];
-
-export function generateQuestion(settings: GameSettings): Question {
-    const { operations, leftDigits, rightDigits } = settings;
-    const operator = operations[Math.floor(Math.random() * operations.length)];
-
-    let left = 0;
-    let right = 0;
-    let answer = 0;
-    let correctRemainder: number | undefined = undefined;
-
-    let attempts = 0;
-    let questionKey = '';
-    let isDuplicate = false;
-
-    do {
-        isDuplicate = false;
-        attempts = 0;
-
-    switch (operator) {
-        case '+':
-            do {
-                left = getInterestingInt(leftDigits);
-                right = getInterestingInt(rightDigits);
-                attempts++;
-            } while (attempts < 50 && leftDigits >= 2 && rightDigits >= 2 && !requiresCarrying(left, right));
-            answer = left + right;
-            break;
-        case '-':
-            do {
-                left = getInterestingInt(leftDigits);
-                right = getInterestingInt(rightDigits);
-                if (left < right) [left, right] = [right, left];
-                attempts++;
-            } while (attempts < 50 && (left === right || (leftDigits >= 2 && rightDigits >= 2 && !requiresBorrowing(left, right))));
-            // Fallback if they are equal after 50 attempts (rare)
-            if (left === right) left += 1;
-            answer = left - right;
-            break;
-        case '*':
-            left = getInterestingInt(leftDigits, { avoidOne: true, favorHard: true });
-            right = getInterestingInt(rightDigits, { avoidOne: true, favorHard: true });
-            answer = left * right;
-            break;
-        case '/':
-            // Ensure non-trivial divisor
-            right = getInterestingInt(rightDigits, { avoidOne: true, favorHard: true });
-            // Quotient should also be interesting
-            const quotient = getInterestingInt(Math.max(1, leftDigits - rightDigits + 1), { avoidOne: true, favorHard: true });
-            
-            // Generate remainder: 1 to right-1 (strictly avoiding 0 remainder for more challenge if possible, 
-            // unless right is 1 which we already avoid)
-            let r = 0;
-            if (right > 1) {
-                // 90% chance to have a non-zero remainder if possible
-                if (Math.random() < 0.9) {
-                    r = Math.floor(Math.random() * (right - 1)) + 1;
-                }
-            }
-            
-            left = quotient * right + r;
-            answer = quotient;
-            correctRemainder = r;
-            break;
+/** Number of borrows in a - b (requires a >= b). */
+export function countBorrows(a: number, b: number): number {
+    let x = a;
+    let y = b;
+    let borrow = 0;
+    let count = 0;
+    while (x > 0 || y > 0) {
+        const diff = (x % 10) - (y % 10) - borrow;
+        borrow = diff < 0 ? 1 : 0;
+        count += borrow;
+        x = Math.floor(x / 10);
+        y = Math.floor(y / 10);
     }
+    return count;
+}
 
-        questionKey = `${left}${operator}${right}`;
-        if (questionHistory.includes(questionKey)) {
-            isDuplicate = true;
-        } else {
-            questionHistory.push(questionKey);
-            if (questionHistory.length > 20) {
-                questionHistory.shift();
-            }
-        }
-    } while (isDuplicate);
+function questionKey(skillId: string, d: Draft): string {
+    const result = d.result === null ? '' : `=${d.result}`;
+    return `${skillId}:${d.left ?? '?'}${d.operator}${d.right ?? '?'}${result}`;
+}
 
+// ---------- draft builders ----------
+
+function add(left: number, right: number): Draft {
+    return { operator: '+', left, right, result: null, answer: left + right };
+}
+
+function sub(left: number, right: number): Draft {
+    return { operator: '-', left, right, result: null, answer: left - right };
+}
+
+function mul(left: number, right: number): Draft {
+    return { operator: '×', left, right, result: null, answer: left * right };
+}
+
+function div(dividend: number, divisor: number): Draft {
     return {
-        leftOperand: left,
-        rightOperand: right,
-        operator,
-        correctAnswer: answer,
-        correctRemainder,
+        operator: '÷',
+        left: dividend,
+        right: divisor,
+        result: null,
+        answer: Math.floor(dividend / divisor),
+        remainder: dividend % divisor,
     };
+}
+
+// ---------- skill specs ----------
+
+function kinderAdd(max: number): SkillSpec {
+    return {
+        make: (rng) => {
+            const a = randInt(rng, 1, max - 1);
+            return add(a, randInt(rng, 1, max - a));
+        },
+        accept: (d) => (d.left ?? 0) >= 1 && (d.right ?? 0) >= 1 && d.answer <= max,
+        fallback: () => add(1, 2),
+    };
+}
+
+/** Subtraction with a <= max and a positive result. `borrowRatio` biases towards borrow cases (a > 10). */
+function kinderSub(max: number, borrowRatio: number): SkillSpec {
+    return {
+        make: (rng) => {
+            if (rng() < borrowRatio) {
+                const a = randInt(rng, 11, max);
+                const minB = (a % 10) + 1;
+                if (minB <= 9) return sub(a, randInt(rng, minB, 9));
+            }
+            const a = randInt(rng, 2, max);
+            return sub(a, randInt(rng, 1, a - 1));
+        },
+        accept: (d) => (d.left ?? 0) <= max && (d.right ?? 0) >= 1 && d.answer >= 1,
+        fallback: () => sub(max, 1),
+    };
+}
+
+const makeTen: SkillSpec = {
+    make: (rng) => {
+        const a = randInt(rng, 1, 9);
+        return { operator: '+', left: a, right: null, result: 10, answer: 10 - a };
+    },
+    accept: (d) => d.left !== null && d.left >= 1 && d.left <= 9 && d.answer === 10 - d.left,
+    fallback: () => ({ operator: '+', left: 4, right: null, result: 10, answer: 6 }),
+};
+
+function gradeAdd(aDigits: number, bDigitChoices: number[], carries: number): SkillSpec {
+    return {
+        make: (rng) => add(interestingInt(rng, aDigits), interestingInt(rng, pick(rng, bDigitChoices))),
+        accept: (d) =>
+            digitCount(d.left ?? 0) === aDigits &&
+            bDigitChoices.includes(digitCount(d.right ?? 0)) &&
+            countCarries(d.left ?? 0, d.right ?? 0) >= carries,
+        fallback: (rng) =>
+            add(numWithLowDigits(rng, aDigits, carries, 5, 9), numWithLowDigits(rng, bDigitChoices[0], carries, 5, 9)),
+    };
+}
+
+function gradeSub(aDigitChoices: number[], bDigitChoices: number[], borrows: number): SkillSpec {
+    return {
+        make: (rng) =>
+            sub(interestingInt(rng, pick(rng, aDigitChoices)), interestingInt(rng, pick(rng, bDigitChoices))),
+        accept: (d) =>
+            aDigitChoices.includes(digitCount(d.left ?? 0)) &&
+            bDigitChoices.includes(digitCount(d.right ?? 0)) &&
+            d.answer > 0 &&
+            countBorrows(d.left ?? 0, d.right ?? 0) >= borrows,
+        // a: most digits, low digits 0..4; b: fewest digits, low digits 5..9 (so a > b and every low column borrows).
+        fallback: (rng) =>
+            sub(
+                numWithLowDigits(rng, Math.max(...aDigitChoices), borrows, 0, 4),
+                numWithLowDigits(rng, Math.min(...bDigitChoices), borrows, 5, 9),
+            ),
+    };
+}
+
+function gradeMul(aDigits: number, bDigits: number, fallbackDraft: Draft): SkillSpec {
+    return {
+        make: (rng) => mul(interestingInt(rng, aDigits), interestingInt(rng, bDigits)),
+        accept: (d) => digitCount(d.left ?? 0) === aDigits && digitCount(d.right ?? 0) === bDigits,
+        fallback: () => fallbackDraft,
+    };
+}
+
+function gradeDiv(dividendDigits: number, divisorDigits: number, fallbackDraft: Draft): SkillSpec {
+    const lo = 10 ** (dividendDigits - 1);
+    const hi = 10 ** dividendDigits - 1;
+    return {
+        make: (rng) => {
+            const divisor = interestingInt(rng, divisorDigits);
+            const remainder = rng() < 0.7 ? randInt(rng, 1, divisor - 1) : 0;
+            const qMin = Math.max(2, Math.ceil((lo - remainder) / divisor));
+            const qMax = Math.floor((hi - remainder) / divisor);
+            if (qMin > qMax) return div(0, divisor); // rejected by accept
+            return div(randInt(rng, qMin, qMax) * divisor + remainder, divisor);
+        },
+        accept: (d) => {
+            const divisor = d.right ?? 0;
+            return (
+                digitCount(d.left ?? 0) === dividendDigits &&
+                digitCount(divisor) === divisorDigits &&
+                divisor >= 2 &&
+                d.answer >= 2 &&
+                (d.remainder ?? divisor) < divisor
+            );
+        },
+        fallback: () => fallbackDraft,
+    };
+}
+
+const specs: Record<string, SkillSpec> = {
+    k_add_5: kinderAdd(5),
+    k_sub_5: kinderSub(5, 0),
+    k_add_10: kinderAdd(10),
+    k_sub_10: kinderSub(10, 0),
+    k_make10: makeTen,
+    k_add_20: kinderAdd(20),
+    k_sub_20: kinderSub(20, 0.6),
+    g_add_4: gradeAdd(4, [3, 4], 1),
+    g_sub_4: gradeSub([4], [3, 4], 1),
+    g_add_6: gradeAdd(5, [5, 6], 2),
+    g_sub_6: gradeSub([5, 6], [5, 6], 2),
+    g_mul_21: gradeMul(2, 1, mul(47, 6)),
+    g_mul_32: gradeMul(3, 2, mul(364, 27)),
+    g_mul_42: gradeMul(4, 2, mul(2847, 36)),
+    g_div_21: gradeDiv(2, 1, div(47, 5)),
+    g_div_32: gradeDiv(3, 2, div(365, 12)),
+    g_div_41: gradeDiv(4, 1, div(2347, 6)),
+};
+
+// ---------- public API ----------
+
+/**
+ * Generates one question. Pure apart from the injected rng. Unknown skill ids
+ * are a programming error and throw; constraint failures never do (fallback).
+ */
+export function generateQuestion(skillId: string, rng: Rng = Math.random, recentKeys: string[] = []): Question {
+    const spec = specs[skillId];
+    if (!spec) throw new Error(`Unknown skill: ${skillId}`);
+
+    let chosen: Draft | null = null;
+    let validDuplicate: Draft | null = null;
+    for (let i = 0; i < MAX_ATTEMPTS && !chosen; i++) {
+        const draft = spec.make(rng);
+        if (!spec.accept(draft)) continue;
+        if (recentKeys.includes(questionKey(skillId, draft))) {
+            validDuplicate ??= draft;
+        } else {
+            chosen = draft;
+        }
+    }
+    const draft = chosen ?? validDuplicate ?? spec.fallback(rng);
+    return { ...draft, skillId, key: questionKey(skillId, draft) };
+}
+
+export function generateSession(skillId: string, count: number, rng: Rng = Math.random): Question[] {
+    const questions: Question[] = [];
+    const keys: string[] = [];
+    for (let i = 0; i < count; i++) {
+        const q = generateQuestion(skillId, rng, keys);
+        questions.push(q);
+        keys.push(q.key);
+    }
+    return questions;
+}
+
+export function checkAnswer(q: Question, input: { answer: number; remainder?: number }): boolean {
+    return input.answer === q.answer && (input.remainder ?? 0) === (q.remainder ?? 0);
 }
