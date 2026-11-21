@@ -26,7 +26,8 @@ NEGATIVE_PROMPT = (
     "photo, 3d render, text, watermark, multiple characters, character sheet, scenery, ground, shadow, floor, road, "
     "sticker, white outline, die-cut, emblem, badge, circle backdrop, frame, border, glow, sparkles, dots, gradient background"
 )
-CANDS = (("a", 0), ("b", 1))
+LETTERS = os.environ.get("CAND_LETTERS", "ab")
+CANDS = tuple((l, "abcdefgh".index(l)) for l in LETTERS)
 CHUNK = 20
 
 plan = json.load(open(os.path.join(HERE, "card_batch_plan.json"), encoding="utf-8"))["cards"]
@@ -54,7 +55,8 @@ for idx in range(start, end):
             image = Image.open(raw_path)
         else:
             prompt = f"A cute {m['prompt']}{PROMPT_TAIL}"
-            gen = torch.Generator(device="cuda").manual_seed(9000 + idx * 3 + off)
+            seed = 9000 + idx * 3 + off if cand in "ab" else 20000 + idx * 10 + off
+            gen = torch.Generator(device="cuda").manual_seed(seed)
             image = pipe(prompt=prompt, negative_prompt=NEGATIVE_PROMPT, num_inference_steps=30,
                          guidance_scale=7.0, width=1024, height=1024, generator=gen).images[0]
             image.save(raw_path)

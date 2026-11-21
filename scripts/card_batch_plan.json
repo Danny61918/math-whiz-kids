@@ -40,7 +40,7 @@
    "name": "Ankylosaurus",
    "category": "dino",
    "rarity": 1,
-   "prompt": "friendly Ankylosaurus dinosaur"
+   "prompt": "friendly Ankylosaurus dinosaur, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "dino_pteranodon",
@@ -82,7 +82,7 @@
    "name": "Iguanodon",
    "category": "dino",
    "rarity": 1,
-   "prompt": "friendly Iguanodon dinosaur"
+   "prompt": "friendly Iguanodon dinosaur, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "dino_apatosaurus",
@@ -138,7 +138,7 @@
    "name": "Oviraptor",
    "category": "dino",
    "rarity": 1,
-   "prompt": "friendly Oviraptor dinosaur"
+   "prompt": "friendly Oviraptor dinosaur, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "dino_carnotaurus",
@@ -285,7 +285,7 @@
    "name": "Car",
    "category": "car",
    "rarity": 1,
-   "prompt": "little round family car"
+   "prompt": "small blue sedan car, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "car_taxi",
@@ -299,7 +299,7 @@
    "name": "Bus",
    "category": "car",
    "rarity": 1,
-   "prompt": "bus"
+   "prompt": "bus, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "car_school_bus",
@@ -327,7 +327,7 @@
    "name": "Excavator",
    "category": "car",
    "rarity": 1,
-   "prompt": "excavator"
+   "prompt": "excavator, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "car_bulldozer",
@@ -411,7 +411,7 @@
    "name": "Ice Cream Truck",
    "category": "car",
    "rarity": 1,
-   "prompt": "ice cream truck"
+   "prompt": "ice cream truck, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "car_jeep",
@@ -460,14 +460,14 @@
    "name": "Racing Car",
    "category": "car",
    "rarity": 2,
-   "prompt": "racing car"
+   "prompt": "red racing car with big spoiler, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "car_convertible",
    "name": "Convertible",
    "category": "car",
    "rarity": 2,
-   "prompt": "convertible"
+   "prompt": "open-top convertible sports car, side view, no roof, isolated single object, lots of empty white space around"
   },
   {
    "key": "car_electric_car",
@@ -516,14 +516,14 @@
    "name": "Limousine",
    "category": "car",
    "rarity": 3,
-   "prompt": "limousine"
+   "prompt": "long stretch limousine car, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "car_snowmobile",
    "name": "Snowmobile",
    "category": "car",
    "rarity": 3,
-   "prompt": "snowmobile"
+   "prompt": "snowmobile with front skis and rear track, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "car_atv",
@@ -551,7 +551,7 @@
    "name": "Formula 1 Car",
    "category": "car",
    "rarity": 4,
-   "prompt": "Formula 1 race car"
+   "prompt": "Formula 1 open-wheel race car, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "car_mining_dump_truck",
@@ -572,7 +572,7 @@
    "name": "Jet Plane",
    "category": "plane",
    "rarity": 1,
-   "prompt": "jet plane"
+   "prompt": "small jet airplane with swept wings, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "plane_helicopter",
@@ -586,7 +586,7 @@
    "name": "Propeller Plane",
    "category": "plane",
    "rarity": 1,
-   "prompt": "propeller plane"
+   "prompt": "propeller plane, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "plane_seaplane",
@@ -600,7 +600,7 @@
    "name": "Glider",
    "category": "plane",
    "rarity": 1,
-   "prompt": "glider"
+   "prompt": "sailplane glider with long thin wings, isolated single object, lots of empty white space around"
   },
   {
    "key": "plane_hot_air_balloon",
@@ -656,7 +656,7 @@
    "name": "Fighter Jet",
    "category": "plane",
    "rarity": 1,
-   "prompt": "fighter jet"
+   "prompt": "fighter jet with swept wings and twin tails, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "plane_parachute",
@@ -684,7 +684,7 @@
    "name": "Tilt-rotor Aircraft",
    "category": "plane",
    "rarity": 2,
-   "prompt": "tiltrotor aircraft with two big rotors"
+   "prompt": "tiltrotor aircraft with two big propellers on the wingtips, isolated single object, lots of empty white space around"
   },
   {
    "key": "plane_stunt_plane",
@@ -698,7 +698,7 @@
    "name": "Hang Glider",
    "category": "plane",
    "rarity": 2,
-   "prompt": "hang glider with triangle wing"
+   "prompt": "hang glider with a triangular kite wing, isolated single object, lots of empty white space around"
   },
   {
    "key": "plane_gyrocopter",
@@ -719,7 +719,7 @@
    "name": "Twin-engine Plane",
    "category": "plane",
    "rarity": 2,
-   "prompt": "twin-engine plane"
+   "prompt": "twin-engine plane, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "plane_ultralight",
@@ -733,14 +733,14 @@
    "name": "Concorde",
    "category": "plane",
    "rarity": 3,
-   "prompt": "concorde"
+   "prompt": "Concorde supersonic jet with pointed nose and delta wings, isolated single object, lots of empty white space around"
   },
   {
    "key": "plane_supersonic_jet",
    "name": "Supersonic Jet",
    "category": "plane",
    "rarity": 3,
-   "prompt": "supersonic jet"
+   "prompt": "supersonic jet, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "plane_wright_flyer",
@@ -761,14 +761,14 @@
    "name": "Airbus A380",
    "category": "plane",
    "rarity": 4,
-   "prompt": "huge double-deck Airbus A380 airliner"
+   "prompt": "huge double-deck Airbus A380 airliner, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "plane_boeing_747",
    "name": "Boeing 747",
    "category": "plane",
    "rarity": 4,
-   "prompt": "jumbo Boeing 747 airliner with hump nose"
+   "prompt": "Boeing 747 jumbo jet airplane, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_sailboat",
@@ -845,56 +845,56 @@
    "name": "Train",
    "category": "ship_train",
    "rarity": 1,
-   "prompt": "little passenger train"
+   "prompt": "little passenger train, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "ship_train_steam_train",
    "name": "Steam Train",
    "category": "ship_train",
    "rarity": 1,
-   "prompt": "steam train"
+   "prompt": "steam train, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "ship_train_high_speed_train",
    "name": "High-speed Train",
    "category": "ship_train",
    "rarity": 2,
-   "prompt": "high-speed train"
+   "prompt": "white bullet train, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_subway",
    "name": "Subway",
    "category": "ship_train",
    "rarity": 2,
-   "prompt": "subway metro train"
+   "prompt": "subway train car, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_tram",
    "name": "Tram",
    "category": "ship_train",
    "rarity": 2,
-   "prompt": "city tram streetcar"
+   "prompt": "pink city tram, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_monorail",
    "name": "Monorail",
    "category": "ship_train",
    "rarity": 2,
-   "prompt": "monorail train"
+   "prompt": "monorail train on a single rail, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_cable_car",
    "name": "Cable Car",
    "category": "ship_train",
    "rarity": 2,
-   "prompt": "mountain cable car gondola"
+   "prompt": "mountain cable car gondola hanging from a cable, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_freight_train",
    "name": "Freight Train",
    "category": "ship_train",
    "rarity": 2,
-   "prompt": "freight train"
+   "prompt": "freight train, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "ship_train_raft",
@@ -922,14 +922,14 @@
    "name": "Aircraft Carrier",
    "category": "ship_train",
    "rarity": 3,
-   "prompt": "aircraft carrier"
+   "prompt": "navy aircraft carrier ship with flat flight deck, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_icebreaker",
    "name": "Icebreaker",
    "category": "ship_train",
    "rarity": 3,
-   "prompt": "icebreaker"
+   "prompt": "icebreaker ship with red hull, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "ship_train_hovercraft",
@@ -943,7 +943,7 @@
    "name": "Maglev Train",
    "category": "ship_train",
    "rarity": 4,
-   "prompt": "sleek maglev bullet train"
+   "prompt": "sleek white maglev bullet train, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "space_rocket",
@@ -1006,21 +1006,21 @@
    "name": "Space Station",
    "category": "space",
    "rarity": 1,
-   "prompt": "space station with solar panels"
+   "prompt": "space station with solar panels, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "space_telescope",
    "name": "Telescope",
    "category": "space",
    "rarity": 1,
-   "prompt": "big stargazing telescope on a tripod"
+   "prompt": "telescope on a tripod pointing at the sky, isolated single object, lots of empty white space around"
   },
   {
    "key": "space_comet",
    "name": "Comet",
    "category": "space",
    "rarity": 1,
-   "prompt": "comet with a long tail"
+   "prompt": "comet with a glowing head and a long tail, isolated single object, lots of empty white space around"
   },
   {
    "key": "space_meteor",
@@ -1041,14 +1041,14 @@
    "name": "Jupiter",
    "category": "space",
    "rarity": 2,
-   "prompt": "planet Jupiter with stripes"
+   "prompt": "planet Jupiter with stripes, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "space_saturn",
    "name": "Saturn",
    "category": "space",
    "rarity": 2,
-   "prompt": "planet Saturn with rings"
+   "prompt": "planet Saturn with big rings around it, isolated single object, lots of empty white space around"
   },
   {
    "key": "space_venus",
@@ -1076,7 +1076,7 @@
    "name": "Lunar Module",
    "category": "space",
    "rarity": 2,
-   "prompt": "Apollo lunar module lander"
+   "prompt": "Apollo lunar module lander, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "space_space_capsule",
@@ -1195,14 +1195,14 @@
    "name": "Fire Hose",
    "category": "rescue",
    "rarity": 1,
-   "prompt": "coiled fire hose"
+   "prompt": "red fire hose reel with nozzle, isolated single object, lots of empty white space around"
   },
   {
    "key": "rescue_safety_helmet",
    "name": "Safety Helmet",
    "category": "rescue",
    "rarity": 1,
-   "prompt": "yellow safety helmet"
+   "prompt": "yellow safety helmet, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "rescue_life_ring",
@@ -1223,7 +1223,7 @@
    "name": "Stretcher",
    "category": "rescue",
    "rarity": 1,
-   "prompt": "rescue stretcher"
+   "prompt": "rescue stretcher bed with straps, isolated single object, lots of empty white space around"
   },
   {
    "key": "rescue_first_aid_kit",
@@ -1279,7 +1279,7 @@
    "name": "Rescue Boat",
    "category": "rescue",
    "rarity": 2,
-   "prompt": "rescue boat"
+   "prompt": "rescue boat, isolated single object, small in the middle with lots of empty white space around"
   },
   {
    "key": "rescue_coast_guard_boat",
@@ -1328,7 +1328,7 @@
    "name": "Warning Light",
    "category": "rescue",
    "rarity": 2,
-   "prompt": "flashing red warning light"
+   "prompt": "orange flashing warning beacon light, isolated single object, lots of empty white space around"
   },
   {
    "key": "rescue_rescue_rope",
@@ -1342,7 +1342,7 @@
    "name": "Siren",
    "category": "rescue",
    "rarity": 2,
-   "prompt": "emergency siren light"
+   "prompt": "red emergency siren light on a base, isolated single object, lots of empty white space around"
   },
   {
    "key": "rescue_rescue_truck",
@@ -1377,7 +1377,7 @@
    "name": "Snow Rescue Vehicle",
    "category": "rescue",
    "rarity": 3,
-   "prompt": "snow rescue vehicle with tracks"
+   "prompt": "snow rescue truck with tracks, side view, isolated single object, lots of empty white space around"
   },
   {
    "key": "rescue_heavy_rescue_crane",
