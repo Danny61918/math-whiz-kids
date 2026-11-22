@@ -1,8 +1,13 @@
 import type { FactKey } from '../data/facts';
 import { allFacts } from '../data/facts';
+import { allTableFacts } from '../data/tableFacts';
 import { factLevel, type FactStats } from './factProgress';
 
-export type ChartId = 'add' | 'sub';
+export type ChartId = 'add' | 'sub' | 'mul' | 'div';
+
+/** Charts of the kinder addition/subtraction facts and of the grade 4 times tables. */
+export const KINDER_CHARTS = ['add', 'sub'] as const;
+export const TABLE_CHARTS = ['mul', 'div'] as const;
 
 export const CHART_SIZE = 81;
 export const CHART_MILESTONES = [
@@ -23,11 +28,15 @@ export const claimId = (chart: ChartId, pct: number): string => `${chart}${pct}`
 export const milestoneThreshold = (pct: number): number => Math.ceil((CHART_SIZE * pct) / 100);
 
 export function chartMasteredCount(facts: Record<FactKey, FactStats>, chart: ChartId): number {
+    if (chart === 'mul' || chart === 'div') {
+        const tableOp = chart === 'mul' ? '×' : '÷';
+        return allTableFacts.filter((f) => f.op === tableOp && factLevel(facts[f.key]) === 'mastered').length;
+    }
     const op = chart === 'add' ? '+' : '-';
     return allFacts.filter((f) => f.op === op && factLevel(facts[f.key]) === 'mastered').length;
 }
 
-/** Number of mastered facts overall (both charts). */
+/** Number of mastered facts overall (the two kinder charts). */
 export function masteredTotal(facts: Record<FactKey, FactStats>): number {
     return chartMasteredCount(facts, 'add') + chartMasteredCount(facts, 'sub');
 }
@@ -35,7 +44,7 @@ export function masteredTotal(facts: Record<FactKey, FactStats>): number {
 /** Milestones reached but not yet claimed, in chart/percent order. */
 export function pendingMilestones(facts: Record<FactKey, FactStats>, claims: string[]): PendingMilestone[] {
     const out: PendingMilestone[] = [];
-    for (const chart of ['add', 'sub'] as const) {
+    for (const chart of ['add', 'sub', 'mul', 'div'] as const) {
         const count = chartMasteredCount(facts, chart);
         for (const m of CHART_MILESTONES) {
             const id = claimId(chart, m.pct);

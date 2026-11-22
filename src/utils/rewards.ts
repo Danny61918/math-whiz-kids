@@ -8,11 +8,11 @@ const KINDER_HELPED_COINS = 5;
 
 /**
  * Coins for one first-attempt correct answer.
- * Kinder: fixed (no speed pressure), half when the Help button was used.
- * Grade4: speed tiers (unchanged).
+ * Kinder and the grade 4 times-table track: fixed (no speed pressure), half when the Help button was used.
+ * Grade4 main track: speed tiers (unchanged).
  */
 export function questionCoins(skill: Skill, timeMs: number, helped = false): number {
-    if (skill.mode === 'kinder') {
+    if (skill.mode === 'kinder' || skill.track === 'table') {
         return Math.round((helped ? KINDER_HELPED_COINS : KINDER_BASE_COINS) * skill.multiplier);
     }
     const base = timeMs <= 5000 ? 30 : timeMs <= 10000 ? 20 : 10;

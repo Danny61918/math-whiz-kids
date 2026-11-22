@@ -69,7 +69,7 @@ export function realQuestionNumber(queue: { isRetry: boolean }[], index: number)
 export type AidMode = 'visible' | 'help' | 'none';
 
 /** Skills that never show the ten-frame (mixed practice). */
-const NO_AID_SKILLS = ['k_mixed', 'k_review'];
+const NO_AID_SKILLS = ['k_mixed', 'k_review', 'g_review'];
 
 /** Ten-frame visibility from the fact's box: 0-1 visible, 2-3 behind the Help button, 4-5 none. */
 export function aidModeFor(skillId: string, stats: FactStats | undefined): AidMode {

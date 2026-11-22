@@ -8,6 +8,8 @@ export interface Skill {
     nameKey: TranslationKey;
     order: number;
     multiplier: number;
+    /** Unlock chain / recommendation track. Absent = 'main'. */
+    track?: 'main' | 'table';
 }
 
 export const skills: Skill[] = [
@@ -45,10 +47,34 @@ export const specialSkills: Skill[] = [
     { id: REVIEW_SKILL_ID, mode: 'kinder', nameKey: 'skill_k_review', order: 0, multiplier: 1.2 },
 ];
 
+/** Grade 4 times-table ladder (its own sequential track). Never part of skillsForMode(). */
+export const tableSkills: Skill[] = [
+    { id: 'g_x25', mode: 'grade4', nameKey: 'skill_g_x25', order: 1, multiplier: 1.0, track: 'table' },
+    { id: 'g_x34', mode: 'grade4', nameKey: 'skill_g_x34', order: 2, multiplier: 1.1, track: 'table' },
+    { id: 'g_x6', mode: 'grade4', nameKey: 'skill_g_x6', order: 3, multiplier: 1.2, track: 'table' },
+    { id: 'g_x7', mode: 'grade4', nameKey: 'skill_g_x7', order: 4, multiplier: 1.3, track: 'table' },
+    { id: 'g_x8', mode: 'grade4', nameKey: 'skill_g_x8', order: 5, multiplier: 1.3, track: 'table' },
+    { id: 'g_x9', mode: 'grade4', nameKey: 'skill_g_x9', order: 6, multiplier: 1.4, track: 'table' },
+    { id: 'g_xmix', mode: 'grade4', nameKey: 'skill_g_xmix', order: 7, multiplier: 1.5, track: 'table' },
+    { id: 'g_d25', mode: 'grade4', nameKey: 'skill_g_d25', order: 8, multiplier: 1.2, track: 'table' },
+    { id: 'g_d34', mode: 'grade4', nameKey: 'skill_g_d34', order: 9, multiplier: 1.3, track: 'table' },
+    { id: 'g_d69', mode: 'grade4', nameKey: 'skill_g_d69', order: 10, multiplier: 1.5, track: 'table' },
+    { id: 'g_dmix', mode: 'grade4', nameKey: 'skill_g_dmix', order: 11, multiplier: 1.6, track: 'table' },
+];
+
+/** Grade 4 daily review of the attempted table facts (pinned on the map, outside the unlock chain). */
+export const TABLE_REVIEW_SKILL: Skill = { id: 'g_review', mode: 'grade4', nameKey: 'skill_g_review', order: 0, multiplier: 1.2, track: 'table' };
+
+export const specialTableSkills: Skill[] = [TABLE_REVIEW_SKILL];
+
+export function skillsForTrack(mode: UserMode, track: 'main' | 'table'): Skill[] {
+    return track === 'table' ? (mode === 'grade4' ? tableSkills : []) : skillsForMode(mode);
+}
+
 export function skillsForMode(mode: UserMode): Skill[] {
     return skills.filter((s) => s.mode === mode).sort((a, b) => a.order - b.order);
 }
 
 export function getSkill(id: string): Skill | undefined {
-    return skills.find((s) => s.id === id) ?? specialSkills.find((s) => s.id === id);
+    return skills.find((s) => s.id === id) ?? specialSkills.find((s) => s.id === id) ?? tableSkills.find((s) => s.id === id) ?? specialTableSkills.find((s) => s.id === id);
 }

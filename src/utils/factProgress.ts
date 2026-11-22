@@ -26,13 +26,13 @@ export interface FactResult {
 
 const EMPTY: FactStats = { box: 0, attempts: 0, correct: 0, lastSeenDay: null, lastUpDay: null, bestMs: null };
 
-export function updateFact(s: FactStats | undefined, r: FactResult, today: string): FactStats {
+export function updateFact(s: FactStats | undefined, r: FactResult, today: string, fastMs: number = FAST_MS): FactStats {
     const prev = s ?? EMPTY;
     let box = prev.box;
     let lastUpDay = prev.lastUpDay;
     if (r.correct) {
         // Boxes 0-1 rise on any unhelped correct answer; from box 2 up the answer must also be fast.
-        const fastEnough = box <= 1 || r.retrievalMs <= FAST_MS;
+        const fastEnough = box <= 1 || r.retrievalMs <= fastMs;
         if (!r.helped && fastEnough && prev.lastUpDay !== today && box < 5) {
             box = (box + 1) as FactStats['box'];
             lastUpDay = today;
@@ -69,4 +69,26 @@ export function factLevel(s?: FactStats): FactLevel {
     if (s.box >= 4) return 'mastered';
     if (s.box >= 2) return 'solid';
     return 'learning';
+}
+
+/** Highest box a diagnostic can seed: real mastery needs multi-day review. */
+export const DIAGNOSTIC_MAX_BOX = 2;
+
+/**
+ * Seeds a fact from the times-table check: correct and fast -> box max(current, 2); correct but slow ->
+ * max(current, 1); wrong -> box 0 with lastWrong. Never above box 2 (a higher existing box is kept on a
+ * correct answer). Counts as an attempt; leaves lastUpDay alone.
+ */
+export function seedDiagnosticFact(s: FactStats | undefined, r: Pick<FactResult, 'correct' | 'retrievalMs'>, today: string, fastMs: number = FAST_MS): FactStats {
+    const prev = s ?? EMPTY;
+    const box = r.correct ? (Math.max(prev.box, r.retrievalMs <= fastMs ? DIAGNOSTIC_MAX_BOX : 1) as FactStats['box']) : 0;
+    return {
+        ...prev,
+        box,
+        attempts: prev.attempts + 1,
+        correct: prev.correct + (r.correct ? 1 : 0),
+        lastSeenDay: today,
+        bestMs: r.correct ? (prev.bestMs === null ? r.retrievalMs : Math.min(prev.bestMs, r.retrievalMs)) : prev.bestMs,
+        lastWrong: !r.correct,
+    };
 }

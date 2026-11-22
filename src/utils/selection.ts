@@ -1,4 +1,5 @@
 import { poolFor, type Fact, type FactKey } from '../data/facts';
+import { tablePoolFor, type TableFact } from '../data/tableFacts';
 import { isAttempted, isDue, type FactStats } from './factProgress';
 import type { Question, Rng } from './mathEngine';
 
@@ -6,6 +7,9 @@ export type FactBucket = 'priority' | 'new' | 'review' | 'rest';
 
 const PRIORITY_SHARE = 0.6;
 const NEW_SHARE = 0.3;
+
+export const BLITZ_SKILL_ID = 'k_blitz';
+const BLITZ_MIN_ATTEMPTED = 10;
 
 /** Share of addition facts shown as `a + ? = c`, per skill. */
 const MISSING_SHARE: Record<string, number> = {
@@ -27,7 +31,7 @@ function shuffle<T>(items: T[], rng: Rng): T[] {
 }
 
 /** Shuffled, then stable-sorted by box so the weakest come first and ties stay random. */
-function weakestFirst(items: Fact[], facts: Facts, rng: Rng): Fact[] {
+function weakestFirst<T extends { key: string }>(items: T[], facts: Facts, rng: Rng): T[] {
     return shuffle(items, rng).sort((x, y) => (facts[x.key]?.box ?? 0) - (facts[y.key]?.box ?? 0));
 }
 
@@ -55,28 +59,31 @@ function kindFor(skillId: string, fact: Fact, rng: Rng): 'sum' | 'diff' | 'missi
     return rng() < (MISSING_SHARE[skillId] ?? 0) ? 'missing' : 'sum';
 }
 
+type Group = 0 | 1;
+const GROUPS: readonly Group[] = [0, 1];
+
 /**
- * Orders questions so that no more than two additions/subtractions come in a row
- * (when the mix allows it) and the same fact never appears twice in a row.
+ * Orders questions so that no more than two of the same group (kinder: additions/subtractions,
+ * tables: multiplications/divisions) come in a row (when the mix allows it) and the same fact
+ * never appears twice in a row.
  */
-function interleave(questions: Question[], rng: Rng): Question[] {
-    const opOf = (q: Question) => (q.kind === 'diff' ? '-' : '+');
-    const groups: Record<'+' | '-', Question[]> = {
-        '+': shuffle(questions.filter((q) => opOf(q) === '+'), rng),
-        '-': shuffle(questions.filter((q) => opOf(q) === '-'), rng),
+function interleave(questions: Question[], rng: Rng, groupOf: (q: Question) => Group): Question[] {
+    const groups: Record<Group, Question[]> = {
+        0: shuffle(questions.filter((q) => groupOf(q) === 0), rng),
+        1: shuffle(questions.filter((q) => groupOf(q) === 1), rng),
     };
     const memo = new Map<string, boolean>();
-    const feasible = (plus: number, minus: number, last: '+' | '-' | null, run: number): boolean => {
-        if (plus + minus === 0) return true;
-        const id = `${plus},${minus},${last},${run}`;
+    const feasible = (zero: number, one: number, last: Group | null, run: number): boolean => {
+        if (zero + one === 0) return true;
+        const id = `${zero},${one},${last},${run}`;
         const known = memo.get(id);
         if (known !== undefined) return known;
         let ok = false;
-        for (const t of ['+', '-'] as const) {
-            if ((t === '+' ? plus : minus) === 0) continue;
+        for (const t of GROUPS) {
+            if ((t === 0 ? zero : one) === 0) continue;
             const nextRun = t === last ? run + 1 : 1;
             if (nextRun > 2) continue;
-            if (feasible(plus - (t === '+' ? 1 : 0), minus - (t === '-' ? 1 : 0), t, nextRun)) {
+            if (feasible(zero - (t === 0 ? 1 : 0), one - (t === 1 ? 1 : 0), t, nextRun)) {
                 ok = true;
                 break;
             }
@@ -86,20 +93,20 @@ function interleave(questions: Question[], rng: Rng): Question[] {
     };
 
     const out: Question[] = [];
-    let last: '+' | '-' | null = null;
+    let last: Group | null = null;
     let run = 0;
-    while (groups['+'].length + groups['-'].length > 0) {
-        const types = (['+', '-'] as const).filter((t) => groups[t].length > 0 && !(t === last && run >= 2));
+    while (groups[0].length + groups[1].length > 0) {
+        const types = GROUPS.filter((t) => groups[t].length > 0 && !(t === last && run >= 2));
         const good = types.filter((t) =>
             feasible(
-                groups['+'].length - (t === '+' ? 1 : 0),
-                groups['-'].length - (t === '-' ? 1 : 0),
+                groups[0].length - (t === 0 ? 1 : 0),
+                groups[1].length - (t === 1 ? 1 : 0),
                 t,
                 t === last ? run + 1 : 1,
             ),
         );
-        const options = good.length > 0 ? good : types.length > 0 ? types : (['+', '-'] as const).filter((t) => groups[t].length > 0);
-        const weight = options.reduce((sum, t) => sum + groups[t].length, 0);
+        const options = good.length > 0 ? good : types.length > 0 ? types : GROUPS.filter((t) => groups[t].length > 0);
+        const weight = options.reduce<number>((sum, t) => sum + groups[t].length, 0);
         let roll = rng() * weight;
         let type = options[options.length - 1];
         for (const t of options) {
@@ -158,17 +165,12 @@ export function splitCount(count: number): Record<'priority' | 'new' | 'review',
 }
 
 /**
- * Builds a kinder practice session from the skill's fact pool: 60% weak/due facts,
- * 30% unseen, 10% due reviews (empty buckets hand their share to the others), then the
- * weakest remaining facts. Pure apart from the injected rng.
+ * The shared 60/30/10 picker: 60% weak/due facts, 30% unseen, 10% due reviews (empty buckets hand
+ * their share to the others), then the weakest remaining facts; repeats when the pool is smaller
+ * than the session. Pure apart from the injected rng.
  */
-export function buildKinderSession(skillId: string, facts: Facts, today: string, count: number, rng: Rng): Question[] {
-    const full = poolFor(skillId);
-    if (full.length === 0) throw new Error(`Unknown kinder skill: ${skillId}`);
-    let pool = skillId === 'k_review' ? full.filter((f) => isAttempted(facts[f.key])) : full;
-    if (pool.length === 0) pool = poolFor('k_add_10'); // review with no history: nothing sensible to review
-
-    const buckets: Record<FactBucket, Fact[]> = { priority: [], new: [], review: [], rest: [] };
+function pickFacts<T extends { key: string }>(pool: T[], facts: Facts, today: string, count: number, rng: Rng): T[] {
+    const buckets: Record<FactBucket, T[]> = { priority: [], new: [], review: [], rest: [] };
     for (const fact of pool) buckets[bucketOf(facts[fact.key], today)].push(fact);
     buckets.priority = weakestFirst(buckets.priority, facts, rng);
     buckets.new = shuffle(buckets.new, rng);
@@ -177,7 +179,7 @@ export function buildKinderSession(skillId: string, facts: Facts, today: string,
 
     const want = splitCount(count);
 
-    const picked: Fact[] = [];
+    const picked: T[] = [];
     const taken: Record<'priority' | 'new' | 'review', number> = { priority: 0, new: 0, review: 0 };
     const order = ['priority', 'new', 'review'] as const;
     for (const name of order) {
@@ -198,13 +200,84 @@ export function buildKinderSession(skillId: string, facts: Facts, today: string,
     // Pool smaller than the session: repeat facts (never twice in a row, see interleave).
     const unique = picked.length;
     for (let i = 0; picked.length < count && unique > 0; i++) picked.push(picked[i % unique]);
-
-    const questions = picked.map((fact) => questionFromFact(skillId, fact, kindFor(skillId, fact, rng)));
-    return interleave(questions, rng);
+    return picked;
 }
 
-export const BLITZ_SKILL_ID = 'k_blitz';
-const BLITZ_MIN_ATTEMPTED = 10;
+/**
+ * Builds a kinder practice session from the skill's fact pool: 60% weak/due facts,
+ * 30% unseen, 10% due reviews (empty buckets hand their share to the others), then the
+ * weakest remaining facts. Pure apart from the injected rng.
+ */
+export function buildKinderSession(skillId: string, facts: Facts, today: string, count: number, rng: Rng): Question[] {
+    const full = poolFor(skillId);
+    if (full.length === 0) throw new Error(`Unknown kinder skill: ${skillId}`);
+    let pool = skillId === 'k_review' ? full.filter((f) => isAttempted(facts[f.key])) : full;
+    if (pool.length === 0) pool = poolFor('k_add_10'); // review with no history: nothing sensible to review
+
+    const picked = pickFacts(pool, facts, today, count, rng);
+    const questions = picked.map((fact) => questionFromFact(skillId, fact, kindFor(skillId, fact, rng)));
+    return interleave(questions, rng, (q) => (q.kind === 'diff' ? 1 : 0));
+}
+
+// ---------- times tables (grade 4) ----------
+
+/** Share of facts shown in a missing-factor form (`a x ? = p`, `p / ? = q`), per table skill. */
+export const TABLE_MISSING_SHARE: Record<string, number> = {
+    g_xmix: 0.25,
+    g_dmix: 0.25,
+    g_d25: 0.25,
+    g_d34: 0.25,
+    g_d69: 0.25,
+    g_review: 0.25,
+};
+
+/** Division skills that only ever show the missing form as `d x ? = p` (links x and /). */
+const MISSING_AS_MUL = ['g_d25', 'g_d34', 'g_d69'];
+
+export type TableForm = 'direct' | 'missingMul' | 'missingDiv';
+
+export function questionFromTableFact(skillId: string, fact: TableFact, form: TableForm): Question {
+    const base = { skillId, factKey: fact.key };
+    if (fact.op === '×') {
+        // a missing form hides the second factor: a x ? = p
+        if (form !== 'direct') return { ...base, operator: '×', left: fact.a, right: null, result: fact.product, answer: fact.b, key: `${skillId}:${fact.key}:missing`, kind: 'missing' };
+        return { ...base, operator: '×', left: fact.a, right: fact.b, result: null, answer: fact.product, key: `${skillId}:${fact.key}:prod`, kind: 'prod' };
+    }
+    if (form === 'missingMul') {
+        // d x ? = p  (answer: the quotient)
+        return { ...base, operator: '×', left: fact.a, right: null, result: fact.product, answer: fact.b, key: `${skillId}:${fact.key}:missingMul`, kind: 'missing' };
+    }
+    if (form === 'missingDiv') {
+        // p / ? = q  (answer: the divisor)
+        return { ...base, operator: '÷', left: fact.product, right: null, result: fact.b, answer: fact.a, key: `${skillId}:${fact.key}:missingDiv`, kind: 'missing' };
+    }
+    return { ...base, operator: '÷', left: fact.product, right: fact.a, result: null, answer: fact.b, key: `${skillId}:${fact.key}:quot`, kind: 'quot' };
+}
+
+function tableFormFor(skillId: string, fact: TableFact, rng: Rng): TableForm {
+    if (rng() >= (TABLE_MISSING_SHARE[skillId] ?? 0)) return 'direct';
+    if (fact.op === '×') return 'missingMul';
+    if (MISSING_AS_MUL.includes(skillId)) return 'missingMul';
+    return rng() < 0.5 ? 'missingMul' : 'missingDiv';
+}
+
+export const TABLE_FALLBACK_SKILL = 'g_x25';
+
+/**
+ * Times-table session (grade 4): same 60/30/10 algorithm as the kinder session, over the table
+ * facts of `skillId`. `g_review` uses only attempted facts (the g_x25 facts when there is no history).
+ */
+export function buildFactSession(skillId: string, facts: Facts, today: string, count: number, rng: Rng): Question[] {
+    const full = tablePoolFor(skillId);
+    if (full.length === 0) throw new Error(`Unknown table skill: ${skillId}`);
+    let pool = skillId === 'g_review' ? full.filter((f) => isAttempted(facts[f.key])) : full;
+    if (pool.length === 0) pool = tablePoolFor(TABLE_FALLBACK_SKILL);
+
+    const picked = pickFacts(pool, facts, today, count, rng);
+    const questions = picked.map((fact) => questionFromTableFact(skillId, fact, tableFormFor(skillId, fact, rng)));
+    return interleave(questions, rng, (q) => (q.factKey?.includes('/') ? 1 : 0));
+}
+
 
 /** Quick-fire questions for the blitz: the user's attempted facts (or `k_add_10` while there are few). */
 export function buildBlitzQuestions(facts: Facts, rng: Rng, count: number): Question[] {
@@ -217,6 +290,21 @@ export function buildBlitzQuestions(facts: Facts, rng: Rng, count: number): Ques
         const fact = candidates[Math.floor(rng() * candidates.length)];
         previous = fact.key;
         out.push(questionFromFact(BLITZ_SKILL_ID, fact, fact.op === '-' ? 'diff' : 'sum'));
+    }
+    return out;
+}
+
+/** Quick-fire table questions for the grade 4 blitz: attempted table facts (>= 10) else the g_x25 facts. */
+export function buildTableBlitzQuestions(facts: Facts, rng: Rng, count: number): Question[] {
+    const attempted = tablePoolFor('g_review').filter((f) => isAttempted(facts[f.key]));
+    const pool = attempted.length >= BLITZ_MIN_ATTEMPTED ? attempted : tablePoolFor(TABLE_FALLBACK_SKILL);
+    const out: Question[] = [];
+    let previous = '';
+    for (let i = 0; i < count; i++) {
+        const candidates = pool.length > 1 ? pool.filter((f) => f.key !== previous) : pool;
+        const fact = candidates[Math.floor(rng() * candidates.length)];
+        previous = fact.key;
+        out.push(questionFromTableFact(BLITZ_SKILL_ID, fact, 'direct'));
     }
     return out;
 }

@@ -9,7 +9,7 @@ export interface Question {
     key: string;
     /** Kinder fact questions only: the underlying fact (the addition fact for `a + ? = c`). */
     factKey?: string;
-    kind?: 'sum' | 'diff' | 'missing';
+    kind?: 'sum' | 'diff' | 'missing' | 'prod' | 'quot';
 }
 
 export type Rng = () => number;
@@ -249,4 +249,4 @@ export function checkAnswer(q: Question, input: { answer: number; remainder?: nu
     return input.answer === q.answer && (input.remainder ?? 0) === (q.remainder ?? 0);
 }
 
-export { buildKinderSession, buildBlitzQuestions } from './selection';
+export { buildKinderSession, buildBlitzQuestions, buildFactSession, buildTableBlitzQuestions } from './selection';

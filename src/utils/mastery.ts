@@ -1,5 +1,6 @@
 import type { SkillStats } from '../store/useGameStore';
 import { poolFor, type FactKey } from '../data/facts';
+import { tablePoolFor } from '../data/tableFacts';
 import type { Skill } from '../data/skills';
 import { isAttempted, type FactStats } from './factProgress';
 import type { Stars } from './stars';
@@ -22,9 +23,9 @@ const MIN_ATTEMPTED_FACTS = 3;
 const MASTERED_SHARE = 0.8;
 const SKILL_MASTERED_BOX = 3;
 
-/** Kinder skill badge from the facts in its pool: new (< 3 attempted), mastered (>= floor(80%) at box 3+), else learning. */
+/** Kinder / times-table skill badge from the facts in its pool: new (< 3 attempted), mastered (>= floor(80%) at box 3+), else learning. */
 export function getSkillMastery(skillId: string, facts: Record<FactKey, FactStats>): Mastery {
-    const pool = poolFor(skillId);
+    const pool: { key: string }[] = tablePoolFor(skillId).length > 0 ? tablePoolFor(skillId) : poolFor(skillId);
     if (pool.length === 0) return 'new';
     const attempted = pool.filter((f) => isAttempted(facts[f.key])).length;
     if (attempted < MIN_ATTEMPTED_FACTS) return 'new';
@@ -43,7 +44,7 @@ export function recommendedSkillId(list: Skill[], stars: Record<string, Stars>, 
         const done = getSkillMastery(list[i].id, facts) === 'mastered' && (stars[list[i].id] ?? 0) >= 1;
         if (!done) return list[i].id;
     }
-    const mixed = list.findIndex((s) => s.id === 'k_mixed');
+    const mixed = list.findIndex((s) => s.id === 'k_mixed' || s.id === 'g_dmix');
     if (mixed >= 0 && isSkillUnlocked(list, stars, mixed)) return list[mixed].id;
     return list[0].id;
 }

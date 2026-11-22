@@ -5,7 +5,8 @@ import type { Language } from '../utils/i18n';
 import type { UserMode } from '../data/skills';
 import { migrateV1ToV2, migrateV2ToV3, migrateV3ToV4 } from './migration';
 import { parseFactKey, type FactKey } from '../data/facts';
-import { updateFact, type FactStats } from '../utils/factProgress';
+import { parseTableKey, tableFastMs } from '../data/tableFacts';
+import { seedDiagnosticFact, updateFact, type FactStats } from '../utils/factProgress';
 import { newlyMastered, pendingMilestones } from '../utils/chart';
 import { evaluateBlitz } from '../utils/blitz';
 import { FACT_MASTERY_BONUS } from '../utils/rewards';
@@ -98,6 +99,8 @@ interface GameState {
     addCoins: (amount: number) => void;
     recordAnswer: (skillId: string, correct: boolean, timeMs: number) => void;
     recordFact: (factKey: FactKey, correct: boolean, retrievalMs: number, helped: boolean, now?: Date) => FactRecordResult | null;
+    /** Times-table check: seeds the fact (never above box 2); no coins, stars or box-5 bonus. */
+    recordDiagnosticFact: (factKey: FactKey, correct: boolean, retrievalMs: number, now?: Date) => boolean;
     claimChartMilestones: () => number;
     recordBlitz: (score: number, now?: Date) => BlitzRecordResult | null;
     completeSession: (result: SessionResult) => SessionSummary | null;
@@ -198,17 +201,26 @@ export const useGameStore = create<GameState>()(
             },
 
             recordFact: (factKey, correct, retrievalMs, helped, now = new Date()) => {
-                if (!parseFactKey(factKey)) return null;
+                if (!parseFactKey(factKey) && !parseTableKey(factKey)) return null;
                 let outcome: FactRecordResult | null = null;
                 updateCurrentUser(set, (user) => {
                     const prev = user.facts[factKey];
-                    const next = updateFact(prev, { correct, retrievalMs, helped }, dayKey(now));
+                    const next = updateFact(prev, { correct, retrievalMs, helped }, dayKey(now), tableFastMs(factKey));
                     // paid5 is set by completeSession once the coins were really awarded.
                     const reachedTop = next.box === 5 && (prev?.box ?? 0) < 5 && !prev?.paid5;
                     outcome = { boxBefore: prev?.box ?? 0, boxAfter: next.box, bonusCoins: reachedTop ? FACT_MASTERY_BONUS : 0 };
                     return { ...user, facts: { ...user.facts, [factKey]: next } };
                 });
                 return outcome;
+            },
+
+            recordDiagnosticFact: (factKey, correct, retrievalMs, now = new Date()) => {
+                if (!parseTableKey(factKey)) return false;
+                updateCurrentUser(set, (user) => ({
+                    ...user,
+                    facts: { ...user.facts, [factKey]: seedDiagnosticFact(user.facts[factKey], { correct, retrievalMs }, dayKey(now), tableFastMs(factKey)) },
+                }));
+                return true;
             },
 
             claimChartMilestones: () => {
