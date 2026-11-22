@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { REVIEW_SKILL_ID, skillsForMode, specialSkills, type Skill } from '../data/skills';
+import { REVIEW_SKILL_ID, TABLE_REVIEW_SKILL, skillsForMode, skillsForTrack, specialSkills, type Skill } from '../data/skills';
 import { useCurrentUser } from '../store/useGameStore';
 import { getMastery, getSkillMastery, recommendedSkillId, type Mastery } from '../utils/mastery';
 import { nameParts } from '../utils/skillName';
@@ -9,10 +9,16 @@ import { TopBar } from './TopBar';
 import { isAttempted } from '../utils/factProgress';
 import { t, tp } from '../utils/i18n';
 import { isSkillUnlocked } from '../utils/stars';
+import { dueTableFactCount, hasTableHistory, isTableTrackSkill, recommendedGrade4SkillId, showTablesHint } from '../utils/tracks';
 import { dayKey, displayStreak } from '../utils/streak';
 
 /** The daily review appears once this many facts have been attempted. */
 const REVIEW_MIN_FACTS = 10;
+/** Locked table skills shown after the unlocked ones; the rest collapses into one "more to unlock" row. */
+const LOCKED_TABLE_PREVIEW = 2;
+
+/** Users who dismissed the first-run times-table check card (until the page is reloaded). */
+const dismissedDiagnosticCard = new Set<string>();
 
 const SKILL_ICONS: Record<string, string> = {
     k_plus12: '➕',
@@ -28,6 +34,8 @@ const SKILL_ICONS: Record<string, string> = {
 function skillIcon(skillId: string): string {
     const special = SKILL_ICONS[skillId];
     if (special) return special;
+    if (/^g_x/.test(skillId)) return '✖️';
+    if (/^g_d(25|34|69|mix)$/.test(skillId)) return '➗';
     if (skillId.includes('_add_')) return '➕';
     if (skillId.includes('_sub_')) return '➖';
     if (skillId.includes('_mul_')) return '✖️';
@@ -41,12 +49,14 @@ interface Props {
     onOpenPack: () => void;
     onChart: () => void;
     onBlitz: () => void;
+    onDiagnostic: () => void;
 }
 
-export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPack, onChart, onBlitz }) => {
+export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPack, onChart, onBlitz, onDiagnostic }) => {
     const user = useCurrentUser();
     const [shakingId, setShakingId] = useState<string | null>(null);
     const [hint, setHint] = useState(false);
+    const [cardDismissed, setCardDismissed] = useState(false);
     const [today] = useState(() => dayKey(new Date()));
     const timers = useRef<number[]>([]);
 
@@ -69,20 +79,22 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
     const lang = user.language;
     const isKinder = user.mode === 'kinder';
     const list = skillsForMode(user.mode);
-    const recommended = isKinder ? recommendedSkillId(list, user.stars, user.facts) : null;
+    const tableList = skillsForTrack(user.mode, 'table');
+    // Kinder: the ladder recommendation. Grade 4: the cross-track rule (table track first, see tracks.ts).
+    const recommended = isKinder ? recommendedSkillId(list, user.stars, user.facts) : recommendedGrade4SkillId(user.stars, user.facts);
     const attemptedFacts = Object.values(user.facts).filter(isAttempted).length;
     const review = isKinder && attemptedFacts >= REVIEW_MIN_FACTS ? specialSkills.find((s) => s.id === REVIEW_SKILL_ID) : undefined;
+    const tableReview = !isKinder && dueTableFactCount(user.facts, today) >= 1 ? TABLE_REVIEW_SKILL : undefined;
+    const showDiagnosticCard = !isKinder && !hasTableHistory(user.facts) && !cardDismissed && !dismissedDiagnosticCard.has(user.id);
 
-    // Grade 4 has no recommendation: continue with the first unlocked skill that has no stars yet.
-    const continueId =
-        recommended ?? (isKinder ? null : (list.find((s, i) => isSkillUnlocked(list, user.stars, i) && (user.stars[s.id] ?? 0) === 0)?.id ?? null));
-    const continueSkill = continueId ? list.find((s) => s.id === continueId) : undefined;
+    const continueId = recommended;
+    const continueSkill = continueId ? [...list, ...tableList].find((s) => s.id === continueId) : undefined;
     const continueName = continueSkill ? nameParts(t(continueSkill.nameKey, lang)).main : '';
 
     const renderCard = (skill: Skill, unlocked: boolean) => {
-        const isReview = skill.id === REVIEW_SKILL_ID;
+        const isReview = skill.id === REVIEW_SKILL_ID || skill.id === TABLE_REVIEW_SKILL.id;
         const stars = user.stars[skill.id] ?? 0;
-        const mastery: Mastery = isKinder ? getSkillMastery(skill.id, user.facts) : getMastery(user.skills[skill.id], undefined);
+        const mastery: Mastery = isKinder || isTableTrackSkill(skill.id) ? getSkillMastery(skill.id, user.facts) : getMastery(user.skills[skill.id], undefined);
         const name = t(skill.nameKey, lang);
         return (
             <SkillCard
@@ -97,10 +109,32 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                 stars={isReview ? null : stars}
                 mastery={mastery}
                 shaking={shakingId === skill.id}
+                hint={!isKinder && showTablesHint(skill.id, user.stars) ? t('tablesHint', lang) : undefined}
                 onClick={() => (unlocked ? onSelect(skill.id) : tapLocked(skill.id))}
             />
         );
     };
+
+    // Table track: every unlocked skill, the next LOCKED_TABLE_PREVIEW locked ones, then one "more to unlock" row.
+    const tableCards: React.ReactNode[] = [];
+    let lockedShown = 0;
+    let hiddenLocked = 0;
+    tableList.forEach((skill, i) => {
+        const unlocked = isSkillUnlocked(tableList, user.stars, i);
+        if (!unlocked && lockedShown >= LOCKED_TABLE_PREVIEW) {
+            hiddenLocked++;
+            return;
+        }
+        if (!unlocked) lockedShown++;
+        tableCards.push(renderCard(skill, unlocked));
+    });
+    if (hiddenLocked > 0) {
+        tableCards.push(
+            <div key="more" className="flex min-h-[48px] items-center justify-center rounded-[18px] border-[3px] border-dashed border-slate-500 bg-white/80 px-3 py-2 text-center text-base font-extrabold text-slate-800 sm:col-span-2">
+                🔒 {tp('moreToUnlock', lang, { n: hiddenLocked })}
+            </div>,
+        );
+    }
 
     const bigBtn = isKinder ? 'min-h-[88px]' : 'min-h-[64px]';
     const trioBtn = `flex ${bigBtn} flex-col items-center justify-center gap-0.5 rounded-[18px] px-1 py-2 text-center text-base font-black leading-tight text-white border-b-[5px] transition active:translate-y-1 active:border-b-0`;
@@ -136,33 +170,78 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
                             <span className="text-base font-bold">{continueName}</span>
                         </button>
                     )}
-                    <div className={`grid gap-2.5 ${isKinder ? 'grid-cols-3' : 'grid-cols-1'}`}>
+                    <div className="grid grid-cols-3 gap-2.5">
                         <button onClick={onAlbum} className={`${trioBtn} border-purple-800 bg-purple-600`}>
                             <span aria-hidden="true" className="text-3xl leading-none">🃏</span>
                             <span>{t('albumTitle', lang)}</span>
                         </button>
-                        {isKinder && (
-                            <button onClick={onBlitz} className={`${trioBtn} border-orange-900 bg-orange-700`}>
-                                <span aria-hidden="true" className="text-3xl leading-none">⚡</span>
-                                <span>{t('blitzTitle', lang)}</span>
-                                {user.blitzBest > 0 && <span className="text-sm font-bold">{tp('blitzBestLabel', lang, { n: user.blitzBest })}</span>}
-                            </button>
-                        )}
-                        {isKinder && (
-                            <button onClick={onChart} aria-label={t('chartButtonLabel', lang)} className={`${trioBtn} border-cyan-900 bg-cyan-700`}>
-                                <span aria-hidden="true" className="text-3xl leading-none">🧮</span>
-                                <span>{t('chartTitle', lang)}</span>
-                            </button>
-                        )}
+                        <button onClick={onBlitz} className={`${trioBtn} border-orange-900 bg-orange-700`}>
+                            <span aria-hidden="true" className="text-3xl leading-none">⚡</span>
+                            <span>{t('blitzTitle', lang)}</span>
+                            {user.blitzBest > 0 && <span className="text-sm font-bold">{tp('blitzBestLabel', lang, { n: user.blitzBest })}</span>}
+                        </button>
+                        <button onClick={onChart} aria-label={t(isKinder ? 'chartButtonLabel' : 'timesChartButtonLabel', lang)} className={`${trioBtn} border-cyan-900 bg-cyan-700`}>
+                            <span aria-hidden="true" className="text-3xl leading-none">{isKinder ? '🧮' : '✖️'}</span>
+                            <span>{t(isKinder ? 'chartTitle' : 'timesChartTitle', lang)}</span>
+                        </button>
                     </div>
                 </div>
 
                 <h1 className="sr-only">{t('chooseSkill', lang)}</h1>
 
-                <div className="grid gap-2.5 sm:grid-cols-2">
-                    {review && renderCard(review, true)}
-                    {list.map((skill, i) => renderCard(skill, isSkillUnlocked(list, user.stars, i)))}
-                </div>
+                {isKinder ? (
+                    <div className="grid gap-2.5 sm:grid-cols-2">
+                        {review && renderCard(review, true)}
+                        {list.map((skill, i) => renderCard(skill, isSkillUnlocked(list, user.stars, i)))}
+                    </div>
+                ) : (
+                    <>
+                        {showDiagnosticCard && (
+                            <div role="region" aria-label={t('diagCardTitle', lang)} className="rounded-[18px] border-[3px] border-sky-300 bg-white p-3 text-amber-950">
+                                <p className="text-lg font-black leading-tight">{t('diagCardTitle', lang)}</p>
+                                <p className="mt-0.5 text-base font-semibold leading-snug">{t('diagCardBody', lang)}</p>
+                                <div className="mt-2 flex gap-2">
+                                    <button onClick={onDiagnostic} className="min-h-[48px] flex-1 rounded-2xl border-b-[5px] border-sky-900 bg-sky-700 px-3 text-base font-black text-white transition active:translate-y-1 active:border-b-0">
+                                        {t('diagButton', lang)}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            dismissedDiagnosticCard.add(user.id);
+                                            setCardDismissed(true);
+                                        }}
+                                        className="min-h-[48px] rounded-2xl border-2 border-slate-300 bg-slate-100 px-4 text-base font-black text-amber-950"
+                                    >
+                                        {t('diagCardDismiss', lang)}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        <section aria-labelledby="table-track-title" className="flex flex-col gap-2.5">
+                            <div className="flex items-center justify-between gap-2">
+                                <h2 id="table-track-title" className="text-xl font-black leading-tight text-amber-950">
+                                    {t('tableTrackTitle', lang)}
+                                </h2>
+                                <button onClick={onDiagnostic} className="min-h-[48px] shrink-0 rounded-2xl border-b-[5px] border-sky-900 bg-sky-700 px-3 text-base font-black text-white transition active:translate-y-1 active:border-b-0">
+                                    🔍 {t('diagButton', lang)}
+                                </button>
+                            </div>
+                            <div className="grid gap-2.5 sm:grid-cols-2">
+                                {tableReview && renderCard(tableReview, true)}
+                                {tableCards}
+                            </div>
+                        </section>
+
+                        <section aria-labelledby="big-numbers-title" className="flex flex-col gap-2.5">
+                            <h2 id="big-numbers-title" className="text-xl font-black leading-tight text-amber-950">
+                                {t('bigNumbersTitle', lang)}
+                            </h2>
+                            <div className="grid gap-2.5 sm:grid-cols-2">
+                                {list.map((skill, i) => renderCard(skill, isSkillUnlocked(list, user.stars, i)))}
+                            </div>
+                        </section>
+                    </>
+                )}
             </div>
 
             {hint && (

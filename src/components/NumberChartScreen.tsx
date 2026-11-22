@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
-import { factsByKey, factKey, type FactKey } from '../data/facts';
+import { factKey, type FactKey } from '../data/facts';
+import { tableKey } from '../data/tableFacts';
 import { useCurrentUser, useGameStore } from '../store/useGameStore';
 import { CHART_MILESTONES, CHART_SIZE, chartMasteredCount, claimId, milestoneThreshold, pendingMilestones, type ChartId } from '../utils/chart';
 import { factLevel, type FactLevel, type FactStats } from '../utils/factProgress';
@@ -62,7 +63,15 @@ const FactDialog: React.FC<{
     useModal(ref, onClose);
     const { a, b } = selected;
     const level = factLevel(stats);
-    const equation = chart === 'add' ? `${a} + ${b} = ${level === 'unseen' ? '?' : a + b}` : `${a + b} - ${a} = ${level === 'unseen' ? '?' : b}`;
+    const answer = level === 'unseen' ? '?' : null;
+    const equation =
+        chart === 'add'
+            ? `${a} + ${b} = ${answer ?? a + b}`
+            : chart === 'sub'
+              ? `${a + b} - ${a} = ${answer ?? b}`
+              : chart === 'mul'
+                ? `${a} × ${b} = ${answer ?? a * b}`
+                : `${a * b} ÷ ${a} = ${answer ?? b}`;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
             <div
@@ -96,7 +105,7 @@ const FactDialog: React.FC<{
 export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const user = useCurrentUser();
     const claimChartMilestones = useGameStore((s) => s.claimChartMilestones);
-    const [chart, setChart] = useState<ChartId>('add');
+    const [chart, setChart] = useState<ChartId>(() => (user?.mode === 'grade4' ? 'mul' : 'add'));
     const [selected, setSelected] = useState<Selected | null>(null);
     // Tickets that this visit pays out (computed once on open, before the claim below).
     const [toast] = useState(() => {
@@ -112,8 +121,15 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
 
     if (!user) return null;
     const lang = user.language;
-    const op = chart === 'add' ? '+' : '-';
-    const keyOf = (a: number, b: number): FactKey => factKey(op, a, b);
+    const isTables = chart === 'mul' || chart === 'div';
+    const charts: [ChartId, ChartId] = user.mode === 'grade4' ? ['mul', 'div'] : ['add', 'sub'];
+    const keyOf = (a: number, b: number): FactKey =>
+        chart === 'add' ? factKey('+', a, b) : chart === 'sub' ? factKey('-', a, b) : chart === 'mul' ? tableKey('×', a, b) : tableKey('÷', a, b);
+    const cellText = (a: number, b: number): string =>
+        chart === 'add' ? `${a + b}` : chart === 'sub' ? `${b}` : chart === 'mul' ? `${a * b}` : `${a * b}`;
+    const cellLabel = (a: number, b: number): string =>
+        chart === 'add' ? `${a} + ${b}` : chart === 'sub' ? `${a + b} - ${a}` : chart === 'mul' ? `${a} × ${b}` : `${a * b} ÷ ${a}`;
+    const TAB_KEY: Record<ChartId, TranslationKey> = { add: 'chartTabAdd', sub: 'chartTabSub', mul: 'chartTabMul', div: 'chartTabDiv' };
     const mastered = chartMasteredCount(user.facts, chart);
     const tabClass = (id: ChartId) =>
         `min-h-[72px] flex-1 rounded-2xl border-b-[6px] text-xl font-black transition active:translate-y-1 active:border-b-2 ${
@@ -123,7 +139,7 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
     return (
         <div className="min-h-dvh overflow-x-hidden bg-gradient-to-b from-sky-300 via-sky-100 to-green-400 px-4 pb-8 pt-4 font-sans">
             <div className="mx-auto flex w-full max-w-[672px] flex-col gap-3">
-                <TopBar lang={lang} isKinder onBack={onBack} title={t('chartTitle', lang)} />
+                <TopBar lang={lang} isKinder onBack={onBack} title={t(isTables ? 'timesChartTitle' : 'chartTitle', lang)} />
 
                 {toast > 0 && (
                     <div role="status" data-testid="chart-toast" className="rounded-2xl bg-yellow-200 px-3 py-3 text-center text-xl font-black text-amber-950">
@@ -132,12 +148,11 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
                 )}
 
                 <div role="tablist" className="flex gap-3">
-                    <button role="tab" aria-selected={chart === 'add'} onClick={() => setChart('add')} className={tabClass('add')}>
-                        {t('chartTabAdd', lang)}
-                    </button>
-                    <button role="tab" aria-selected={chart === 'sub'} onClick={() => setChart('sub')} className={tabClass('sub')}>
-                        {t('chartTabSub', lang)}
-                    </button>
+                    {charts.map((id) => (
+                        <button key={id} role="tab" aria-selected={chart === id} onClick={() => setChart(id)} className={tabClass(id)}>
+                            {t(TAB_KEY[id], lang)}
+                        </button>
+                    ))}
                 </div>
 
                 <div className="rounded-[18px] bg-white p-3">
@@ -171,6 +186,12 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
                     </div>
                 </div>
 
+                {isTables && (
+                    <p className="rounded-2xl bg-white px-3 py-2 text-center text-base font-bold text-amber-950">
+                        {t(chart === 'div' ? 'tableChartHintDiv' : 'tableChartHintRow', lang)}
+                    </p>
+                )}
+
                 <ul className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-2xl bg-white px-3 py-2.5">
                     {LEGEND_LEVELS.map(({ level, key }) => (
                         <li key={level} className="flex items-center gap-2 text-base font-bold text-amber-950">
@@ -187,7 +208,7 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
 
                 <div
                     role="group"
-                    aria-label={t(chart === 'add' ? 'chartTabAdd' : 'chartTabSub', lang)}
+                    aria-label={t(TAB_KEY[chart], lang)}
                     className="-mx-3 grid grid-cols-[16px_repeat(9,minmax(0,1fr))] gap-px sm:mx-auto sm:w-full sm:max-w-[560px] sm:grid-cols-[28px_repeat(9,minmax(0,1fr))] sm:gap-1"
                 >
                     <div aria-hidden="true" />
@@ -204,18 +225,17 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
                             {NUMBERS.map((b) => {
                                 const stats = user.facts[keyOf(a, b)];
                                 const level = factLevel(stats);
-                                const fact = factsByKey[keyOf(a, b)];
                                 return (
                                     <button
                                         key={b}
                                         onClick={() => setSelected({ a, b })}
-                                        aria-label={`${chart === 'add' ? `${a} + ${b}` : `${a + b} - ${a}`}: ${t(LEVEL_LABEL[level], lang)}`}
+                                        aria-label={`${cellLabel(a, b)}: ${t(LEVEL_LABEL[level], lang)}`}
                                         data-level={level}
                                         className={`relative flex aspect-square w-full items-center justify-center rounded-lg border-2 text-lg font-black leading-none ${LEVEL_STYLE[level].box}`}
                                     >
-                                        {level === 'mastered' && fact ? (
+                                        {level === 'mastered' ? (
                                             <>
-                                                <span>{chart === 'add' ? fact.sum : fact.b}</span>
+                                                <span>{cellText(a, b)}</span>
                                                 <span className="absolute -right-1 -top-1.5">
                                                     <CornerStar size={14} />
                                                 </span>

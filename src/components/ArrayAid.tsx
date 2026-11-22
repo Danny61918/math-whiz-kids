@@ -26,7 +26,7 @@ export const ArrayAid: React.FC<{ question: Question; lang: Language }> = ({ que
     const { w, h } = useViewport();
     const fact = question.factKey ? parseTableKey(question.factKey) : null;
     if (!fact) return null;
-    const availH = clamp(h * 0.2, 70, 170);
+    const availH = clamp(h * 0.14, 56, 170);
     const availW = Math.min(w - 48, 320);
     const layout = arrayLayout(fact.a, fact.b, availW, availH);
     const { rows, cols } = layout;

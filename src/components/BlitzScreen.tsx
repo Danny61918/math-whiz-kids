@@ -3,7 +3,7 @@ import { useCurrentUser, useGameStore, type BlitzRecordResult } from '../store/u
 import { audioService } from '../services/audioService';
 import { BLITZ_SECONDS } from '../utils/blitz';
 import { t, tp } from '../utils/i18n';
-import { buildBlitzQuestions } from '../utils/mathEngine';
+import { buildBlitzQuestions, buildTableBlitzQuestions } from '../utils/mathEngine';
 import { Confetti } from './Confetti';
 import { ANSWER_FONT, ANSWER_HEIGHT, EquationBox, Keypad, PracticeShell, PracticeTopRow, SubmitButton, TopChip } from './PracticeParts';
 
@@ -20,7 +20,11 @@ const fmt = (n: number | null): string => (n === null ? '?' : String(n));
 const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, onAgain }) => {
     const user = useCurrentUser();
     const recordBlitz = useGameStore((s) => s.recordBlitz);
-    const [questions] = useState(() => buildBlitzQuestions(user?.facts ?? {}, Math.random, QUESTION_POOL_SIZE));
+    const [questions] = useState(() =>
+        user?.mode === 'grade4'
+            ? buildTableBlitzQuestions(user.facts, Math.random, QUESTION_POOL_SIZE)
+            : buildBlitzQuestions(user?.facts ?? {}, Math.random, QUESTION_POOL_SIZE),
+    );
     const [phase, setPhase] = useState<Phase>('ready');
     const [index, setIndex] = useState(0);
     const [answer, setAnswer] = useState('');

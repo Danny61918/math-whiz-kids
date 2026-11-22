@@ -22,11 +22,13 @@ interface Props {
     stars: number | null;
     mastery: Mastery;
     shaking?: boolean;
+    /** Small soft-nudge chip (never blocks the card). */
+    hint?: string;
     onClick: () => void;
 }
 
 /** One skill in the map list: icon, name, stars and a status pill on an opaque card. */
-export const SkillCard: React.FC<Props> = ({ skillId, name, icon, lang, unlocked, recommended = false, pinned = false, stars, mastery, shaking = false, onClick }) => {
+export const SkillCard: React.FC<Props> = ({ skillId, name, icon, lang, unlocked, recommended = false, pinned = false, stars, mastery, shaking = false, hint, onClick }) => {
     const { main, example } = nameParts(name);
     const surface = !unlocked
         ? 'border-slate-300 bg-slate-100 text-slate-700'
@@ -44,6 +46,7 @@ export const SkillCard: React.FC<Props> = ({ skillId, name, icon, lang, unlocked
                 unlocked && stars !== null ? tp('starsOf', lang, { n: stars }) : '',
                 unlocked ? (stars !== null ? t(pill.key, lang) : '') : t('locked', lang),
                 recommended ? t('startHere', lang) : '',
+                hint && unlocked ? hint : '',
             ]
                 .filter(Boolean)
                 .join(', ')}
@@ -69,6 +72,9 @@ export const SkillCard: React.FC<Props> = ({ skillId, name, icon, lang, unlocked
                     )}
                 </span>
                 {example && <span className="block text-sm font-semibold leading-tight text-stone-700">{example}</span>}
+                {hint && unlocked && (
+                    <span className="mt-1 inline-block rounded-lg bg-sky-100 px-2 py-0.5 text-sm font-extrabold leading-tight text-sky-950">💡 {hint}</span>
+                )}
                 <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
                     {unlocked && stars !== null && <StarRating value={stars} size={28} label={tp('starsOf', lang, { n: stars })} />}
                     {!unlocked && (

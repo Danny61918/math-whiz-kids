@@ -5,10 +5,11 @@ import { GamePlayScreen } from './components/GamePlayScreen';
 import { AlbumScreen } from './components/AlbumScreen';
 import { BlitzScreen } from './components/BlitzScreen';
 import { NumberChartScreen } from './components/NumberChartScreen';
+import { DiagnosticScreen } from './components/DiagnosticScreen';
 import { PackOpenModal } from './components/PackOpenModal';
 import { useCurrentUser, useLanguage } from './store/useGameStore';
 
-type Screen = 'setup' | 'map' | 'game' | 'album' | 'chart' | 'blitz';
+type Screen = 'setup' | 'map' | 'game' | 'album' | 'chart' | 'blitz' | 'diagnostic';
 
 function App() {
   const [screen, setScreen] = useState<Screen>('setup');
@@ -33,6 +34,7 @@ function App() {
           onAlbum={() => setScreen('album')}
           onChart={() => setScreen('chart')}
           onBlitz={() => setScreen('blitz')}
+          onDiagnostic={() => setScreen('diagnostic')}
           onOpenPack={() => setPackOpen(true)}
           onSelect={(id) => {
             setSkillId(id);
@@ -50,6 +52,15 @@ function App() {
         />
       )}
       {current === 'chart' && <NumberChartScreen onBack={() => setScreen('map')} />}
+      {current === 'diagnostic' && (
+        <DiagnosticScreen
+          onBack={() => setScreen('map')}
+          onStart={(id) => {
+            setSkillId(id);
+            setScreen('game');
+          }}
+        />
+      )}
       {current === 'blitz' && <BlitzScreen onBack={() => setScreen('map')} />}
       {current === 'album' && <AlbumScreen onBack={() => setScreen('map')} />}
       {packOpen && user && <PackOpenModal onClose={() => setPackOpen(false)} />}
