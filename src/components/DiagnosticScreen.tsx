@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useCurrentUser, useGameStore } from '../store/useGameStore';
 import { audioService } from '../services/audioService';
-import { buildDiagnosticQuestions, DIAGNOSTIC_COUNT, summariseDiagnostic, type DiagnosticAnswer, type GroupStatus } from '../utils/diagnostic';
+import { buildDiagnosticQuestions, summariseDiagnostic, type DiagnosticAnswer, type GroupStatus } from '../utils/diagnostic';
 import { t, tp, type TranslationKey } from '../utils/i18n';
 import { checkAnswer } from '../utils/mathEngine';
-import { recommendedGrade4SkillId } from '../utils/tracks';
+import { recommendedGrade4SkillId, tableReviewAvailable } from '../utils/tracks';
+import { dayKey } from '../utils/streak';
 import { ANSWER_FONT, ANSWER_HEIGHT_COMPACT, EquationBox, Keypad, PracticeShell, PracticeTopRow, SubmitButton, TopChip } from './PracticeParts';
 
 const MAX_DIGITS = 2;
@@ -58,7 +59,7 @@ export const DiagnosticScreen: React.FC<{ onBack: () => void; onStart: (skillId:
         const next = [...answers, { question: current, correct, retrievalMs }];
         setAnswers(next);
         setAnswer('');
-        if (index + 1 >= DIAGNOSTIC_COUNT) {
+        if (index + 1 >= questions.length) {
             audioService.playWin();
             setPhase('result');
         } else {
@@ -105,7 +106,9 @@ export const DiagnosticScreen: React.FC<{ onBack: () => void; onStart: (skillId:
     if (phase === 'result') {
         const summary = summariseDiagnostic(answers);
         const focusList = summary.focus.map((g) => tp('diagGroupLabel', lang, { n: g })).join(lang === 'en' ? ', ' : '、');
-        const target = recommendedGrade4SkillId(user.stars, user.facts);
+        // Follow the result: the review of the checked facts (wrong ones first) when it is eligible.
+        const today = dayKey(new Date());
+        const target = tableReviewAvailable(user.facts, today) ? 'g_review' : recommendedGrade4SkillId(user.stars, user.facts, today);
         return (
             <div className={cardShell}>
                 <div className={card} data-testid="diagnostic-result">
@@ -161,7 +164,7 @@ export const DiagnosticScreen: React.FC<{ onBack: () => void; onStart: (skillId:
 
     const top = (
         <PracticeTopRow onBack={onBack} backLabel={t('exit', lang)} backText={t('exit', lang)}>
-            <TopChip role="status">{tp('questionProgress', lang, { n: index + 1, total: DIAGNOSTIC_COUNT })}</TopChip>
+            <TopChip role="status">{tp('questionProgress', lang, { n: index + 1, total: questions.length })}</TopChip>
         </PracticeTopRow>
     );
 

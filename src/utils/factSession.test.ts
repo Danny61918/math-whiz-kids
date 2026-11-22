@@ -82,11 +82,14 @@ describe('buildFactSession', () => {
         expect(qs.filter((q) => facts[key(q)]?.box === 3)).toHaveLength(1);
     });
 
-    it('repeats facts (not back to back) when the pool is smaller than the session', () => {
-        const qs = buildFactSession('g_review', { '2x3': stat(0), '3x2': stat(0), '5x5': stat(0) }, TODAY, 10, mulberry32(3));
-        expect(qs).toHaveLength(10);
-        expect(new Set(qs.map((q) => q.factKey)).size).toBe(3);
-        for (let i = 1; i < qs.length; i++) expect(qs[i].factKey).not.toBe(qs[i - 1].factKey);
+    it('g_review with fewer than 4 attempted facts is topped up from g_x25 (no 10x repetition)', () => {
+        const attempted = { '2x3': stat(0), '3x2': stat(0), '5x5': stat(0) };
+        for (let seed = 1; seed <= 20; seed++) {
+            const qs = buildFactSession('g_review', attempted, TODAY, 10, mulberry32(seed));
+            expect(qs).toHaveLength(10);
+            expect(new Set(qs.map((q) => q.factKey)).size).toBe(10);
+            for (const k of Object.keys(attempted)) expect(qs.some((q) => q.factKey === k)).toBe(true);
+        }
     });
 
     it('g_xmix uses only x facts with about 25% missing-factor questions', () => {

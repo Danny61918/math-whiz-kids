@@ -9,7 +9,7 @@ import { TopBar } from './TopBar';
 import { isAttempted } from '../utils/factProgress';
 import { t, tp } from '../utils/i18n';
 import { isSkillUnlocked } from '../utils/stars';
-import { dueTableFactCount, hasTableHistory, isTableTrackSkill, recommendedGrade4SkillId, showTablesHint } from '../utils/tracks';
+import { hasTableHistory, isTableTrackSkill, recommendedGrade4SkillId, showTablesHint, tableReviewAvailable } from '../utils/tracks';
 import { dayKey, displayStreak } from '../utils/streak';
 
 /** The daily review appears once this many facts have been attempted. */
@@ -81,14 +81,14 @@ export const MapScreen: React.FC<Props> = ({ onSelect, onBack, onAlbum, onOpenPa
     const list = skillsForMode(user.mode);
     const tableList = skillsForTrack(user.mode, 'table');
     // Kinder: the ladder recommendation. Grade 4: the cross-track rule (table track first, see tracks.ts).
-    const recommended = isKinder ? recommendedSkillId(list, user.stars, user.facts) : recommendedGrade4SkillId(user.stars, user.facts);
+    const recommended = isKinder ? recommendedSkillId(list, user.stars, user.facts) : recommendedGrade4SkillId(user.stars, user.facts, today);
     const attemptedFacts = Object.values(user.facts).filter(isAttempted).length;
     const review = isKinder && attemptedFacts >= REVIEW_MIN_FACTS ? specialSkills.find((s) => s.id === REVIEW_SKILL_ID) : undefined;
-    const tableReview = !isKinder && dueTableFactCount(user.facts, today) >= 1 ? TABLE_REVIEW_SKILL : undefined;
+    const tableReview = !isKinder && tableReviewAvailable(user.facts, today) ? TABLE_REVIEW_SKILL : undefined;
     const showDiagnosticCard = !isKinder && !hasTableHistory(user.facts) && !cardDismissed && !dismissedDiagnosticCard.has(user.id);
 
     const continueId = recommended;
-    const continueSkill = continueId ? [...list, ...tableList].find((s) => s.id === continueId) : undefined;
+    const continueSkill = continueId ? [...list, ...tableList, TABLE_REVIEW_SKILL].find((s) => s.id === continueId) : undefined;
     const continueName = continueSkill ? nameParts(t(continueSkill.nameKey, lang)).main : '';
 
     const renderCard = (skill: Skill, unlocked: boolean) => {

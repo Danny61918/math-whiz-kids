@@ -126,7 +126,7 @@ export const NumberChartScreen: React.FC<{ onBack: () => void }> = ({ onBack }) 
     const keyOf = (a: number, b: number): FactKey =>
         chart === 'add' ? factKey('+', a, b) : chart === 'sub' ? factKey('-', a, b) : chart === 'mul' ? tableKey('×', a, b) : tableKey('÷', a, b);
     const cellText = (a: number, b: number): string =>
-        chart === 'add' ? `${a + b}` : chart === 'sub' ? `${b}` : chart === 'mul' ? `${a * b}` : `${a * b}`;
+        chart === 'add' ? `${a + b}` : chart === 'sub' ? `${b}` : `${a * b}`;
     const cellLabel = (a: number, b: number): string =>
         chart === 'add' ? `${a} + ${b}` : chart === 'sub' ? `${a + b} - ${a}` : chart === 'mul' ? `${a} × ${b}` : `${a * b} ÷ ${a}`;
     const TAB_KEY: Record<ChartId, TranslationKey> = { add: 'chartTabAdd', sub: 'chartTabSub', mul: 'chartTabMul', div: 'chartTabDiv' };

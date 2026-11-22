@@ -25,7 +25,8 @@ const SKILL_MASTERED_BOX = 3;
 
 /** Kinder / times-table skill badge from the facts in its pool: new (< 3 attempted), mastered (>= floor(80%) at box 3+), else learning. */
 export function getSkillMastery(skillId: string, facts: Record<FactKey, FactStats>): Mastery {
-    const pool: { key: string }[] = tablePoolFor(skillId).length > 0 ? tablePoolFor(skillId) : poolFor(skillId);
+    const tablePool = tablePoolFor(skillId);
+    const pool: { key: string }[] = tablePool.length > 0 ? tablePool : poolFor(skillId);
     if (pool.length === 0) return 'new';
     const attempted = pool.filter((f) => isAttempted(facts[f.key])).length;
     if (attempted < MIN_ATTEMPTED_FACTS) return 'new';

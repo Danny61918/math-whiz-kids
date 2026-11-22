@@ -262,6 +262,8 @@ function tableFormFor(skillId: string, fact: TableFact, rng: Rng): TableForm {
 }
 
 export const TABLE_FALLBACK_SKILL = 'g_x25';
+/** g_review is topped up from the fallback pool when fewer table facts than this were attempted. */
+export const REVIEW_MIN_POOL = 4;
 
 /**
  * Times-table session (grade 4): same 60/30/10 algorithm as the kinder session, over the table
@@ -271,7 +273,11 @@ export function buildFactSession(skillId: string, facts: Facts, today: string, c
     const full = tablePoolFor(skillId);
     if (full.length === 0) throw new Error(`Unknown table skill: ${skillId}`);
     let pool = skillId === 'g_review' ? full.filter((f) => isAttempted(facts[f.key])) : full;
-    if (pool.length === 0) pool = tablePoolFor(TABLE_FALLBACK_SKILL);
+    if (skillId === 'g_review' && pool.length < REVIEW_MIN_POOL) {
+        // Too little history: top up with the g_x25 facts so a session never repeats one fact over and over.
+        const have = new Set(pool.map((f) => f.key));
+        pool = [...pool, ...tablePoolFor(TABLE_FALLBACK_SKILL).filter((f) => !have.has(f.key))];
+    }
 
     const picked = pickFacts(pool, facts, today, count, rng);
     const questions = picked.map((fact) => questionFromTableFact(skillId, fact, tableFormFor(skillId, fact, rng)));

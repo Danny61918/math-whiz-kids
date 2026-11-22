@@ -1,14 +1,9 @@
 import { tableSkills, skills, type Skill } from '../data/skills';
-import { allTableFacts, TABLE_LADDER_IDS } from '../data/tableFacts';
+import { allTableFacts } from '../data/tableFacts';
 import type { FactKey } from '../data/facts';
-import { isAttempted, isDue, factLevel, type FactStats } from './factProgress';
-import { recommendedSkillId } from './mastery';
+import { isAttempted, isDue, type FactStats } from './factProgress';
+import { getSkillMastery, recommendedSkillId } from './mastery';
 import { isSkillUnlocked, type Stars } from './stars';
-
-export { TABLE_LADDER_IDS };
-
-/** The ×2/5, ×3/4 and ×6 skills: once starred the child may continue with the big-number track. */
-export const TABLE_GATE_SKILL_IDS = ['g_x25', 'g_x34', 'g_x6'] as const;
 
 /** A times-table skill (ladder or review)? */
 export const isTableTrackSkill = (skillId: string): boolean => skillId === 'g_review' || tableSkills.some((s) => s.id === skillId);
@@ -28,24 +23,36 @@ export function dueTableFactCount(facts: Facts, today: string): number {
 /** True when the child has attempted at least one table fact. */
 export const hasTableHistory = (facts: Facts): boolean => attemptedTableFacts(facts).length > 0;
 
-/** The table track passes its gate when ×2..×6 skills are starred or every attempted table fact is mastered. */
+/** Daily review needs this many attempted table facts (mirrors the kinder review) ... */
+export const REVIEW_MIN_ATTEMPTED = 10;
+/** ... and the Continue button prefers it once this many are due. */
+export const REVIEW_CONTINUE_DUE = 5;
+
+/** The daily review is offered: at least 10 attempted table facts and at least one due. */
+export function tableReviewAvailable(facts: Facts, today: string): boolean {
+    return attemptedTableFacts(facts).length >= REVIEW_MIN_ATTEMPTED && dueTableFactCount(facts, today) >= 1;
+}
+
+/** Table skills that must be mastered AND starred before Continue moves on to the big-number track. */
+export const TABLE_GATE_SKILL_IDS = ['g_x25', 'g_x34', 'g_x6', 'g_x7'] as const;
+
+/** True when every gate skill is mastered (>= 80% of its pool at box 3+) and starred (a star = a finished session). */
 export function tableGatePassed(stars: Record<string, Stars>, facts: Facts): boolean {
-    if (TABLE_GATE_SKILL_IDS.every((id) => (stars[id] ?? 0) >= 1)) return true;
-    const attempted = attemptedTableFacts(facts);
-    return attempted.length > 0 && attempted.every((f) => factLevel(facts[f.key]) === 'mastered');
+    return TABLE_GATE_SKILL_IDS.every((id) => getSkillMastery(id, facts) === 'mastered' && (stars[id] ?? 0) >= 1);
 }
 
 /**
- * The grade 4 "Continue" node across both tracks (deterministic):
- * 1. gate not passed -> the table ladder's recommended skill (first unlocked skill that is not
- *    mastered+starred);
- * 2. gate passed -> the first unlocked main skill without a star; when every main skill is starred,
- *    the table ladder's recommended skill.
+ * The grade 4 "Continue" node across both tracks (deterministic, first match wins):
+ * 1. >= 5 table facts due and >= 10 attempted -> `g_review`;
+ * 2. any of g_x25, g_x34, g_x6, g_x7 not (mastered and starred) -> the table ladder's recommendation;
+ * 3. the first unlocked main skill without a star;
+ * 4. every main skill starred -> the table ladder's recommendation.
  */
-export function recommendedGrade4SkillId(stars: Record<string, Stars>, facts: Facts): string {
+export function recommendedGrade4SkillId(stars: Record<string, Stars>, facts: Facts, today: string): string {
+    if (attemptedTableFacts(facts).length >= REVIEW_MIN_ATTEMPTED && dueTableFactCount(facts, today) >= REVIEW_CONTINUE_DUE) return 'g_review';
     const tableRec = recommendedSkillId(tableSkills, stars, facts) ?? tableSkills[0].id;
     if (!tableGatePassed(stars, facts)) return tableRec;
-    const main = skills.filter((s) => s.mode === 'grade4').sort((a, b) => a.order - b.order);
+    const main = skills.filter((s) => s.mode === 'grade4').sort((x, y) => x.order - y.order);
     const next = main.find((s, i) => isSkillUnlocked(main, stars, i) && (stars[s.id] ?? 0) === 0);
     return next?.id ?? tableRec;
 }

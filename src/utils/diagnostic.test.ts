@@ -34,6 +34,18 @@ describe('buildDiagnosticQuestions', () => {
     });
 });
 
+describe('buildDiagnosticQuestions robustness', () => {
+    it('always builds exactly 27 unique questions, 3 per group, 3 divisions, over 6000 seeds', () => {
+        for (let seed = 1; seed <= 6000; seed++) {
+            const qs = buildDiagnosticQuestions(mulberry32(seed * 7919));
+            if (qs.length !== 27) throw new Error(`seed ${seed}: ${qs.length} questions`);
+            for (let g = 1; g <= 9; g++) if (qs.filter((q) => q.group === g).length !== 3) throw new Error(`seed ${seed}: group ${g}`);
+            if (qs.filter((q) => (q.factKey ?? '').includes('/')).length !== 3) throw new Error(`seed ${seed}: divisions`);
+            if (new Set(qs.map((q) => q.factKey)).size !== 27) throw new Error(`seed ${seed}: duplicate`);
+        }
+    });
+});
+
 describe('summariseDiagnostic', () => {
     const qs = buildDiagnosticQuestions(mulberry32(9));
     const answers = (f: (q: (typeof qs)[number]) => { correct: boolean; retrievalMs: number }): DiagnosticAnswer[] =>

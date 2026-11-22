@@ -5,7 +5,7 @@ import type { FactStats } from './factProgress';
 import { getSkillMastery, recommendedSkillId } from './mastery';
 import { questionCoins } from './rewards';
 import { aidModeFor } from './session';
-import { dueTableFactCount, isTableTrackSkill, recommendedGrade4SkillId, showTablesHint, tableGatePassed } from './tracks';
+import { dueTableFactCount, isTableTrackSkill, recommendedGrade4SkillId, showTablesHint, tableGatePassed, tableReviewAvailable } from './tracks';
 import { isSkillUnlocked, type Stars } from './stars';
 
 const TODAY = '2026-05-10';
@@ -81,34 +81,57 @@ describe('recommendedSkillId over the table ladder', () => {
 });
 
 describe('recommendedGrade4SkillId (across tracks)', () => {
+    const gateFacts = () => ({ ...factsFor('g_x25', 4), ...factsFor('g_x34', 4), ...factsFor('g_x6', 4), ...factsFor('g_x7', 4) });
+    const gateStars = { g_x25: 1, g_x34: 1, g_x6: 1, g_x7: 1 } as Record<string, Stars>;
+    // all gate facts seen today: nothing is due
+    const fresh = (f: Record<string, FactStats>) => Object.fromEntries(Object.entries(f).map(([k, v]) => [k, { ...v, lastSeenDay: TODAY }]));
+
     it('fresh user: the table track first', () => {
-        expect(recommendedGrade4SkillId({}, {})).toBe('g_x25');
+        expect(recommendedGrade4SkillId({}, {}, TODAY)).toBe('g_x25');
     });
-    it('partial: stays on the table ladder until g_x25, g_x34 and g_x6 are starred', () => {
-        expect(recommendedGrade4SkillId({ g_x25: 1, g_x34: 1 }, {})).toBe('g_x25');
-        expect(recommendedGrade4SkillId({ g_x25: 3, g_x34: 3 }, { ...factsFor('g_x25', 5), ...factsFor('g_x34', 5), '7x8': fact(1) })).toBe('g_x6');
+    it('a star alone is not enough: g_x25 starred but not mastered stays on the table ladder', () => {
+        expect(recommendedGrade4SkillId({ g_x25: 1, g_x34: 1, g_x6: 1, g_x7: 1 }, {}, TODAY)).toBe('g_x25');
     });
-    it('gate passed by stars: continues with the first unlocked unstarred main skill', () => {
-        const stars = { g_x25: 1, g_x34: 1, g_x6: 1 } as Record<string, Stars>;
-        expect(tableGatePassed(stars, {})).toBe(true);
-        expect(recommendedGrade4SkillId(stars, {})).toBe('g_add_4');
-        expect(recommendedGrade4SkillId({ ...stars, g_add_4: 2 }, {})).toBe('g_sub_4');
+    it('a few mastered facts do not open the main track', () => {
+        const facts = fresh(factsFor('g_x25', 4, 3));
+        expect(tableGatePassed({ g_x25: 1 }, facts)).toBe(false);
+        expect(recommendedGrade4SkillId({ g_x25: 1 }, facts, TODAY)).toBe('g_x25');
     });
-    it('gate passed because every attempted table fact is mastered (and at least one attempted)', () => {
-        expect(tableGatePassed({}, {})).toBe(false);
-        const facts = factsFor('g_x25', 4, 5);
-        expect(tableGatePassed({}, facts)).toBe(true);
-        expect(recommendedGrade4SkillId({}, facts)).toBe('g_add_4');
-        expect(tableGatePassed({}, { ...facts, '7x8': fact(1) })).toBe(false);
+    it('gate passed (mastered and starred): the first unlocked unstarred main skill', () => {
+        const facts = fresh(gateFacts());
+        expect(tableGatePassed(gateStars, facts)).toBe(true);
+        expect(recommendedGrade4SkillId(gateStars, facts, TODAY)).toBe('g_add_4');
+        expect(recommendedGrade4SkillId({ ...gateStars, g_add_4: 2 }, facts, TODAY)).toBe('g_sub_4');
+    });
+    it('mastered but one gate skill unstarred: still the table ladder', () => {
+        const facts = fresh(gateFacts());
+        expect(recommendedGrade4SkillId({ g_x25: 1, g_x34: 1, g_x6: 1 }, facts, TODAY)).toBe('g_x7');
+    });
+    it('review due (>= 5 due and >= 10 attempted) wins over everything, even with the gate passed', () => {
+        const facts = gateFacts(); // seen 2026-05-01, box 4 interval 7 days: due on TODAY
+        expect(dueTableFactCount(facts, TODAY)).toBeGreaterThanOrEqual(5);
+        expect(recommendedGrade4SkillId(gateStars, facts, TODAY)).toBe('g_review');
+        expect(recommendedGrade4SkillId({}, facts, TODAY)).toBe('g_review');
+        // fewer than 10 attempted: no review recommendation
+        expect(recommendedGrade4SkillId({}, factsFor('g_x25', 0, 6), TODAY)).toBe('g_x25');
     });
     it('everything on the main track starred: back to the table ladder recommendation', () => {
-        const stars: Record<string, Stars> = { g_x25: 1, g_x34: 1, g_x6: 1 };
+        const stars: Record<string, Stars> = { ...gateStars };
         for (const s of skillsForMode('grade4')) stars[s.id] = 1;
-        expect(recommendedGrade4SkillId(stars, {})).toBe('g_x25');
+        expect(recommendedGrade4SkillId(stars, fresh(gateFacts()), TODAY)).toBe('g_x8');
     });
     it('is deterministic', () => {
         const stars = { g_x25: 1 } as Record<string, Stars>;
-        expect(recommendedGrade4SkillId(stars, {})).toBe(recommendedGrade4SkillId(stars, {}));
+        expect(recommendedGrade4SkillId(stars, {}, TODAY)).toBe(recommendedGrade4SkillId(stars, {}, TODAY));
+    });
+});
+
+describe('tableReviewAvailable', () => {
+    it('needs >= 10 attempted table facts and >= 1 due', () => {
+        expect(tableReviewAvailable(factsFor('g_x25', 1, 9), TODAY)).toBe(false);
+        expect(tableReviewAvailable(factsFor('g_x25', 1, 10), TODAY)).toBe(true);
+        const seenToday = Object.fromEntries(Object.entries(factsFor('g_x25', 3, 12)).map(([k, v]) => [k, { ...v, lastSeenDay: TODAY }]));
+        expect(tableReviewAvailable(seenToday, TODAY)).toBe(false);
     });
 });
 

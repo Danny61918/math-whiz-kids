@@ -15,6 +15,18 @@ describe('fastMs parameter and diagnostic seeding', () => {
         expect(wrong.box).toBe(0);
         expect(wrong.lastWrong).toBe(true);
     });
+    it('a wrong answer costs 2 boxes on an attempted fact (box 0 for unseen) and keeps lastWrong', () => {
+        const high = { ...base, box: 4 as const };
+        expect(seedDiagnosticFact(high, { correct: false, retrievalMs: 900 }, '2026-05-10', 4000)).toMatchObject({ box: 2, lastWrong: true });
+        expect(seedDiagnosticFact(undefined, { correct: false, retrievalMs: 900 }, '2026-05-10', 4000)).toMatchObject({ box: 0, lastWrong: true });
+    });
+    it('sets lastUpDay when the seed raises the box, so practice the same day cannot raise it again', () => {
+        const seeded = seedDiagnosticFact(undefined, { correct: true, retrievalMs: 900 }, '2026-05-10', 4000);
+        expect(seeded.lastUpDay).toBe('2026-05-10');
+        expect(updateFact(seeded, { correct: true, retrievalMs: 900 }, '2026-05-10').box).toBe(2);
+        const kept = seedDiagnosticFact({ ...base, box: 3 }, { correct: true, retrievalMs: 900 }, '2026-05-10', 4000);
+        expect(kept.lastUpDay).toBeNull();
+    });
     it('never seeds above box 2 and never lowers a higher box on a correct answer', () => {
         const high = { ...base, box: 4 as const };
         expect(seedDiagnosticFact(high, { correct: true, retrievalMs: 500 }, '2026-05-10', 4000).box).toBe(4);

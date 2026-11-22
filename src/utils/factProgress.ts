@@ -76,18 +76,22 @@ export const DIAGNOSTIC_MAX_BOX = 2;
 
 /**
  * Seeds a fact from the times-table check: correct and fast -> box max(current, 2); correct but slow ->
- * max(current, 1); wrong -> box 0 with lastWrong. Never above box 2 (a higher existing box is kept on a
- * correct answer). Counts as an attempt; leaves lastUpDay alone.
+ * max(current, 1); wrong -> max(0, box - 2) (the practice penalty; box 0 for unseen facts) with lastWrong.
+ * Never above box 2 (a higher existing box is kept on a correct answer). Counts as an attempt. When the
+ * seed raises a box, lastUpDay = today so a same-day correct answer in practice cannot raise it again.
  */
 export function seedDiagnosticFact(s: FactStats | undefined, r: Pick<FactResult, 'correct' | 'retrievalMs'>, today: string, fastMs: number = FAST_MS): FactStats {
     const prev = s ?? EMPTY;
-    const box = r.correct ? (Math.max(prev.box, r.retrievalMs <= fastMs ? DIAGNOSTIC_MAX_BOX : 1) as FactStats['box']) : 0;
+    const box = r.correct
+        ? (Math.max(prev.box, r.retrievalMs <= fastMs ? DIAGNOSTIC_MAX_BOX : 1) as FactStats['box'])
+        : (Math.max(0, prev.box - 2) as FactStats['box']);
     return {
         ...prev,
         box,
         attempts: prev.attempts + 1,
         correct: prev.correct + (r.correct ? 1 : 0),
         lastSeenDay: today,
+        lastUpDay: box > prev.box ? today : prev.lastUpDay,
         bestMs: r.correct ? (prev.bestMs === null ? r.retrievalMs : Math.min(prev.bestMs, r.retrievalMs)) : prev.bestMs,
         lastWrong: !r.correct,
     };

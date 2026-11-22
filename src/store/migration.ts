@@ -2,6 +2,7 @@ import type { Language, SkillStats, UserProfile } from './useGameStore';
 import type { Stars } from '../utils/stars';
 import { dayKey, isValidDayKey } from '../utils/streak';
 import { parseFactKey } from '../data/facts';
+import { parseTableKey } from '../data/tableFacts';
 import type { FactStats } from '../utils/factProgress';
 
 type V4Keys = 'facts' | 'chartClaims' | 'blitzBest' | 'blitzBestDay';
@@ -157,7 +158,7 @@ function cleanFacts(raw: unknown, today: string): Record<string, FactStats> {
     const out: Record<string, FactStats> = {};
     if (!isRecord(raw)) return out;
     for (const [key, value] of Object.entries(raw)) {
-        if (!parseFactKey(key) || !isRecord(value)) continue;
+        if ((!parseFactKey(key) && !parseTableKey(key)) || !isRecord(value)) continue;
         const box = Math.min(5, nonNegInt(value.box)) as FactStats['box'];
         const bestMs = typeof value.bestMs === 'number' && Number.isFinite(value.bestMs) && value.bestMs > 0 ? value.bestMs : null;
         const stats: FactStats = {

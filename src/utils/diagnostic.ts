@@ -51,6 +51,16 @@ export function buildDiagnosticQuestions(rng: Rng): DiagnosticQuestion[] {
             usedPairs.add(pairId(f));
             picked.push(f);
         }
+        // Greedy pair de-duplication can starve a late group: relax it (a different fact in the other order
+        // still makes a different question), then, as a last resort, allow any unused fact of the group.
+        const usedKeys = new Set(out.map((q) => q.factKey));
+        for (const pool of [[...preferred, ...rest], hasG]) {
+            for (const f of pool) {
+                if (picked.length >= PER_GROUP) break;
+                if (usedKeys.has(f.key) || picked.some((p) => p.key === f.key)) continue;
+                picked.push(f);
+            }
+        }
         for (const f of picked) out.push({ ...questionFromTableFact(DIAGNOSTIC_SKILL_ID, f, 'direct'), group: g });
     }
     return shuffle(out, rng);
