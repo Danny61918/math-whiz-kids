@@ -1,4 +1,5 @@
 import { allTableFacts, tableFastMs, type TableFact } from '../data/tableFacts';
+import { fullEquation } from './equation';
 import { questionFromTableFact } from './selection';
 import type { Question, Rng } from './mathEngine';
 
@@ -83,12 +84,7 @@ export interface DiagnosticSummary {
     slowFacts: SlowFact[];
 }
 
-export function equationOf(q: Question): string {
-    const left = q.left ?? '?';
-    const right = q.right ?? '?';
-    const result = q.result ?? q.answer;
-    return q.right === null || q.left === null ? `${left} ${q.operator} ${right} = ${result}` : `${left} ${q.operator} ${right} = ${q.answer}`;
-}
+export const equationOf = fullEquation;
 
 export function summariseDiagnostic(answers: DiagnosticAnswer[]): DiagnosticSummary {
     const slowFacts: SlowFact[] = [];

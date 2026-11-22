@@ -1,17 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { getSkill, skillsForMode } from '../data/skills';
+import { getSkill, skillsForMode, skillsForTrack } from '../data/skills';
+import { parseTableKey } from '../data/tableFacts';
 import { useCurrentUser, useGameStore, type SessionSummary } from '../store/useGameStore';
 import { audioService } from '../services/audioService';
 import { t, tp, type TranslationKey } from '../utils/i18n';
-import { buildKinderSession, checkAnswer, generateSession, type Question } from '../utils/mathEngine';
+import { buildFactSession, buildKinderSession, checkAnswer, generateSession, type Question } from '../utils/mathEngine';
+import { fullEquation } from '../utils/equation';
+import { isTableTrackSkill } from '../utils/tracks';
 import { questionCoins } from '../utils/rewards';
 import { QUESTION_COUNT, aidModeFor, insertRetry, realQuestionNumber, resolveSubmit, type AidMode } from '../utils/session';
 import { dayKey } from '../utils/streak';
 import { ResultScreen } from './ResultScreen';
 import { ANSWER_FONT, ANSWER_HEIGHT, EquationBox, Keypad, MessageSlot, PracticeShell, PracticeTopRow, SubmitButton, ToggleKey, TopChip } from './PracticeParts';
+import { ArrayAid } from './ArrayAid';
 import { TenFrame } from './TenFrame';
 
 const MAX_DIGITS = { kinder: 2, grade4: 8 } as const;
+const TABLE_MAX_DIGITS = 2;
 
 interface QueueItem {
     question: Question;
@@ -52,6 +57,9 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const mode = user?.mode ?? 'grade4';
     const lang = user?.language ?? 'zh-TW';
     const isKinder = mode === 'kinder';
+    const isTable = !isKinder && isTableTrackSkill(skillId);
+    /** Fact sessions (kinder and times tables): retries, gentle feedback, per-fact tracking. */
+    const isFact = isKinder || isTable;
     const skill = getSkill(skillId);
     const totalQuestions = QUESTION_COUNT[mode];
 
@@ -60,6 +68,14 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
 
     // Generated once on mount; a wrong kinder answer is re-asked 3 questions later.
     const [queue, setQueue] = useState<QueueItem[]>(() => {
+        if (isTable) {
+            const facts = user?.facts ?? {};
+            return buildFactSession(skillId, facts, dayKey(new Date()), totalQuestions, Math.random).map((question) => ({
+                question,
+                isRetry: false,
+                aid: aidModeFor(skillId, question.factKey ? facts[question.factKey] : undefined),
+            }));
+        }
         if (!isKinder) {
             return generateSession(skillId, totalQuestions).map((question) => ({ question, isRetry: false, aid: 'none' as const }));
         }
@@ -97,8 +113,8 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
 
     const currentItem = queue[index];
     const current = currentItem?.question;
-    const isDivision = current?.operator === '÷';
-    const maxDigits = MAX_DIGITS[mode];
+    const isDivision = current?.operator === '÷' && !isTable; // table divisions have a single answer box
+    const maxDigits = isTable ? TABLE_MAX_DIGITS : MAX_DIGITS[mode];
 
     const appendDigit = (digit: number) => {
         if (feedback !== 'none') return;
@@ -129,7 +145,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         const helped = aidShown && !item.isRetry;
         let bonusCoins = 0;
         let nextBonusFacts = bonusFacts;
-        if (isKinder && !item.isRetry && current.factKey) {
+        if (isFact && !item.isRetry && current.factKey) {
             const retrievalMs = (firstDigitAtRef.current ?? Date.now()) - startTimeRef.current;
             bonusCoins = recordFact(current.factKey, ok, retrievalMs, helped)?.bonusCoins ?? 0;
             if (bonusCoins > 0) nextBonusFacts = [...bonusFacts, current.factKey];
@@ -137,7 +153,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         const outcome = resolveSubmit({
             isRetry: item.isRetry,
             ok,
-            isKinder,
+            isKinder: isFact,
             index,
             queueLength: queue.length,
             earned: earnedCoins,
@@ -160,7 +176,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         setBonusFacts(nextBonusFacts);
         setFeedback(ok ? 'correct' : 'incorrect');
         if (ok) audioService.playCorrect();
-        else if (isKinder) audioService.playGentleIncorrect();
+        else if (isFact) audioService.playGentleIncorrect();
         else audioService.playIncorrect();
 
         // Award immediately on the final question so leaving during the feedback delay cannot lose coins.
@@ -184,7 +200,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                     setFinished({ coins: finalCoins, perfect: nextCorrect === totalQuestions, correct: nextCorrect, summary });
                 }
             },
-            ok ? 1000 : isKinder ? 2500 : 2000,
+            ok ? 1000 : isFact ? 2500 : 2000,
         );
     };
 
@@ -209,7 +225,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     if (!user || !current) return null;
 
     if (finished) {
-        const list = skillsForMode(user.mode);
+        const list = isTable ? skillsForTrack('grade4', 'table') : skillsForMode(user.mode);
         const position = list.findIndex((sk) => sk.id === skillId);
         const next = position >= 0 ? list[position + 1] : undefined;
         return (
@@ -228,11 +244,11 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         );
     }
 
-    const wrongForKinder = feedback === 'incorrect' && isKinder;
+    const wrongForKinder = feedback === 'incorrect' && isFact; // gentle (amber) wrong-answer style
     const background =
         feedback === 'correct'
             ? 'from-green-300 to-green-500'
-            : feedback === 'incorrect' && !isKinder
+            : feedback === 'incorrect' && !isFact
               ? 'from-red-200 to-red-400'
               : wrongForKinder
                 ? 'from-amber-200 to-amber-300'
@@ -242,7 +258,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
         const border =
             feedback === 'correct'
                 ? 'border-green-400 text-green-300'
-                : feedback === 'incorrect' && !isKinder
+                : feedback === 'incorrect' && !isFact
                   ? 'border-red-500 text-red-300'
                   : wrongForKinder
                     ? 'border-amber-400 text-amber-200'
@@ -256,8 +272,13 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
     const showCorrection = feedback === 'incorrect';
     const hasFrame = isKinder && current.factKey !== undefined;
     const showFrame = hasFrame && (currentItem.aid === 'visible' || (currentItem.aid === 'help' && aidShown) || feedback === 'incorrect');
-    const showHelp = hasFrame && currentItem.aid === 'help' && !aidShown && feedback === 'none';
-    const correctionLabel = t(isKinder ? 'theAnswerIs' : 'correctAnswerWas', lang);
+    // Table facts: the array aid fades like the ten-frame; after a wrong answer it shows for x facts.
+    const tableFact = isTable && current.factKey ? parseTableKey(current.factKey) : null;
+    const showArray =
+        tableFact !== null &&
+        (currentItem.aid === 'visible' || (currentItem.aid === 'help' && aidShown) || (feedback === 'incorrect' && tableFact.op === '×'));
+    const showHelp = (hasFrame || tableFact !== null) && currentItem.aid === 'help' && !aidShown && feedback === 'none';
+    const correctionLabel = t(isFact ? 'theAnswerIs' : 'correctAnswerWas', lang);
     const labelClass = 'mb-0.5 text-sm font-bold leading-none text-amber-100';
     const chip = 'rounded-2xl bg-white px-4 py-0.5 text-amber-950 shadow';
 
@@ -277,6 +298,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
             <EquationBox text={formatQuestion(current)} isKinder={isKinder} tint={wrongForKinder ? 'bg-amber-50' : 'bg-white'} />
 
             {showFrame && <TenFrame question={current} lang={lang} />}
+            {showArray && <ArrayAid question={current} lang={lang} />}
             {showHelp && (
                 <button
                     onClick={() => setAidShown(true)}
@@ -288,7 +310,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
 
             {isDivision ? (
                 <div className="flex w-full flex-col items-center gap-1">
-                    {showCorrection && !isKinder && <div className="text-base font-black leading-none text-red-950">{correctionLabel}</div>}
+                    {showCorrection && !isFact && <div className="text-base font-black leading-none text-red-950">{correctionLabel}</div>}
                     <div className="flex w-full items-center justify-center gap-2">
                         <div onClick={() => feedback === 'none' && setActiveBox('q')} className={`${boxClass('q')} min-w-0 flex-1`}>
                             <span className="mb-0.5 text-sm font-bold uppercase tracking-wider text-slate-200">{t('quotient', lang)}</span>
@@ -306,7 +328,11 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
             ) : (
                 <div className={`${boxClass('q')} w-full max-w-xs`}>
                     {showCorrection && <span className={labelClass}>{correctionLabel}</span>}
-                    {showCorrection ? fmt(current.answer) : answer}
+                    {showCorrection ? (
+                        isTable ? <span className="text-[clamp(26px,4.6dvh,44px)]">{fullEquation(current)}</span> : fmt(current.answer)
+                    ) : (
+                        answer
+                    )}
                 </div>
             )}
 
@@ -325,8 +351,8 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                 {feedback === 'incorrect' && (
                     <div className={chip}>
                         <div className="text-xl font-black">{t('incorrect', lang)}</div>
-                        {isKinder && !currentItem.isRetry && <div className="text-base font-bold">{t('tryAgainLater', lang)}</div>}
-                        {!isKinder && (
+                        {isFact && !currentItem.isRetry && <div className="text-base font-bold">{t('tryAgainLater', lang)}</div>}
+                        {!isFact && (
                             <div className="text-base font-bold">
                                 {t('yourAnswer', lang)} {fmt(Number(answer))}
                                 {isDivision && remainder !== '' ? ` ... ${fmt(Number(remainder))}` : ''}
