@@ -73,6 +73,8 @@ export const EquationBox: React.FC<{ text: string; isKinder: boolean; tint?: str
 };
 
 export const ANSWER_HEIGHT = 'h-[clamp(60px,10dvh,96px)]';
+/** Grade 4 table sessions (array aid + full-equation correction) need a shorter stack to fit phones. */
+export const ANSWER_HEIGHT_COMPACT = 'h-[clamp(52px,8.5dvh,96px)]';
 export const ANSWER_FONT = 'text-[clamp(32px,6dvh,56px)]';
 
 /** Reserved space for combo / feedback text so the layout never jumps between states. */
@@ -83,8 +85,9 @@ export const MessageSlot: React.FC<{ children?: React.ReactNode }> = ({ children
 );
 
 const KEY_H = 'h-[clamp(56px,9dvh,80px)]';
+const KEY_H_COMPACT = 'h-[clamp(48px,7.6dvh,80px)]';
 const KEY_FONT = 'text-[clamp(28px,4.8dvh,40px)]';
-const KEY_BASE = `${KEY_H} ${KEY_FONT} rounded-2xl font-black shadow-md transition active:translate-y-1 active:border-b-0`;
+const keyBase = (compact: boolean) => `${compact ? KEY_H_COMPACT : KEY_H} ${KEY_FONT} rounded-2xl font-black shadow-md transition active:translate-y-1 active:border-b-0`;
 
 interface KeypadProps {
     onDigit: (n: number) => void;
@@ -92,9 +95,12 @@ interface KeypadProps {
     /** Bottom-left cell (the quotient/remainder toggle); empty when omitted. */
     extra?: React.ReactNode;
     deleteLabel: string;
+    /** Shorter keys (never below 48 px) for the grade 4 table screens. */
+    compact?: boolean;
 }
 
-export const Keypad: React.FC<KeypadProps> = ({ onDigit, onBackspace, extra, deleteLabel }) => {
+export const Keypad: React.FC<KeypadProps> = ({ onDigit, onBackspace, extra, deleteLabel, compact = false }) => {
+    const KEY_BASE = keyBase(compact);
     const digit = `${KEY_BASE} border-b-[5px] border-[#8f5a2b] bg-[#b97f4a] text-white`;
     return (
         <div className="grid w-full grid-cols-3 gap-[clamp(4px,1dvh,8px)]">
@@ -126,11 +132,11 @@ export const ToggleKey: React.FC<{ onClick: () => void; active: boolean; childre
     </button>
 );
 
-export const SubmitButton: React.FC<{ onClick: () => void; disabled: boolean; label: string }> = ({ onClick, disabled, label }) => (
+export const SubmitButton: React.FC<{ onClick: () => void; disabled: boolean; label: string; compact?: boolean }> = ({ onClick, disabled, label, compact = false }) => (
     <button
         onClick={onClick}
         disabled={disabled}
-        className="h-[clamp(56px,8dvh,72px)] w-full rounded-2xl border-b-[6px] border-green-900 bg-green-700 text-[clamp(24px,4dvh,32px)] font-black text-white transition active:translate-y-1 active:border-b-0 disabled:border-slate-400 disabled:bg-slate-300 disabled:text-slate-700"
+        className={`${compact ? 'h-[clamp(48px,7dvh,72px)]' : 'h-[clamp(56px,8dvh,72px)]'} w-full rounded-2xl border-b-[6px] border-green-900 bg-green-700 text-[clamp(24px,4dvh,32px)] font-black text-white transition active:translate-y-1 active:border-b-0 disabled:border-slate-400 disabled:bg-slate-300 disabled:text-slate-700`}
     >
         {label}
     </button>

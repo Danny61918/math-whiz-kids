@@ -22,18 +22,20 @@ const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n
  * x: the factors; /: the dividend laid out as a grid. Decorative with a text alternative; for the
  * large facts whose dots would get too small it falls back to "N groups of M" chips.
  */
-export const ArrayAid: React.FC<{ question: Question; lang: Language }> = ({ question, lang }) => {
+export const ArrayAid: React.FC<{ question: Question; lang: Language; /** The answer was given (wrong): the text alternative may state the numbers. */ revealed?: boolean }> = ({ question, lang, revealed = false }) => {
     const { w, h } = useViewport();
     const fact = question.factKey ? parseTableKey(question.factKey) : null;
     if (!fact) return null;
-    const availH = clamp(h * 0.14, 56, 170);
+    const availH = clamp(h * 0.12, 48, 150);
     const availW = Math.min(w - 48, 320);
-    const layout = arrayLayout(fact.a, fact.b, availW, availH);
+    const layout = arrayLayout(fact.op, fact.a, fact.b, availW, availH);
     const { rows, cols } = layout;
-    const alt =
-        fact.op === '×'
-            ? tp('arrayAltMul', lang, { a: rows, b: cols, p: fact.product })
-            : tp('arrayAltDiv', lang, { p: fact.product, d: fact.a, q: fact.b });
+    // Until the question is answered the text must not give the answer away.
+    const alt = !revealed
+        ? tp('arrayAltHidden', lang, { n: rows })
+        : fact.op === '×'
+          ? tp('arrayAltMul', lang, { a: rows, b: cols, p: fact.product })
+          : tp('arrayAltDiv', lang, { p: fact.product, d: fact.a, q: fact.b });
 
     if (layout.compact) {
         return (

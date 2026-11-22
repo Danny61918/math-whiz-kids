@@ -5,7 +5,7 @@ import { buildDiagnosticQuestions, DIAGNOSTIC_COUNT, summariseDiagnostic, type D
 import { t, tp, type TranslationKey } from '../utils/i18n';
 import { checkAnswer } from '../utils/mathEngine';
 import { recommendedGrade4SkillId } from '../utils/tracks';
-import { ANSWER_FONT, ANSWER_HEIGHT, EquationBox, Keypad, PracticeShell, PracticeTopRow, SubmitButton, TopChip } from './PracticeParts';
+import { ANSWER_FONT, ANSWER_HEIGHT_COMPACT, EquationBox, Keypad, PracticeShell, PracticeTopRow, SubmitButton, TopChip } from './PracticeParts';
 
 const MAX_DIGITS = 2;
 
@@ -168,7 +168,7 @@ export const DiagnosticScreen: React.FC<{ onBack: () => void; onStart: (skillId:
     const upper = (
         <>
             <EquationBox text={current ? `${current.left} ${current.operator} ${current.right} = ?` : ''} isKinder={false} />
-            <div className={`${ANSWER_HEIGHT} ${ANSWER_FONT} flex w-full max-w-xs flex-col items-center justify-center rounded-2xl border-[5px] border-[#e6ccb2] bg-[#2c3e50] font-bold leading-none text-white shadow-inner`}>
+            <div className={`${ANSWER_HEIGHT_COMPACT} ${ANSWER_FONT} flex w-full max-w-xs flex-col items-center justify-center rounded-2xl border-[5px] border-[#e6ccb2] bg-[#2c3e50] font-bold leading-none text-white shadow-inner`}>
                 {answer}
             </div>
         </>
@@ -176,8 +176,8 @@ export const DiagnosticScreen: React.FC<{ onBack: () => void; onStart: (skillId:
 
     const lower = (
         <>
-            <Keypad deleteLabel={t('deleteKey', lang)} onDigit={appendDigit} onBackspace={backspace} />
-            <SubmitButton onClick={submit} disabled={answer === ''} label={`${t('submit', lang)} ✅`} />
+            <Keypad deleteLabel={t('deleteKey', lang)} onDigit={appendDigit} onBackspace={backspace} compact />
+            <SubmitButton onClick={submit} disabled={answer === ''} label={`${t('submit', lang)} ✅`} compact />
         </>
     );
 

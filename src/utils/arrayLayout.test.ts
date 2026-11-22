@@ -6,14 +6,20 @@ import { questionFromTableFact } from './selection';
 
 describe('arrayLayout', () => {
     it('uses the smaller factor as rows', () => {
-        expect(arrayShape(7, 3)).toEqual({ rows: 3, cols: 7 });
-        expect(arrayShape(4, 9)).toEqual({ rows: 4, cols: 9 });
+        expect(arrayShape('×', 7, 3)).toEqual({ rows: 3, cols: 7 });
+        expect(arrayShape('×', 4, 9)).toEqual({ rows: 4, cols: 9 });
+    });
+    it('division: rows = divisor, columns = quotient', () => {
+        expect(arrayShape('÷', 7, 3)).toEqual({ rows: 7, cols: 3 });
+        expect(arrayShape('÷', 2, 9)).toEqual({ rows: 2, cols: 9 });
     });
     it('keeps dots >= 12 px for small facts and switches to groups for 9 x 9 on a short phone', () => {
-        expect(arrayLayout(3, 4, 312, 128).compact).toBe(false);
-        expect(arrayLayout(9, 9, 312, 128).compact).toBe(true);
-        expect(arrayLayout(9, 9, 312, 170).compact).toBe(false);
-        expect(arrayLayout(9, 9, 312, 170).dot).toBeGreaterThanOrEqual(12);
+        expect(arrayLayout('×', 3, 4, 312, 77).compact).toBe(false);
+        expect(arrayLayout('×', 5, 9, 312, 77).compact).toBe(false);
+        expect(arrayLayout('×', 6, 9, 312, 77).compact).toBe(true);
+        expect(arrayLayout('×', 9, 9, 312, 77).compact).toBe(true);
+        expect(arrayLayout('×', 9, 9, 312, 150).compact).toBe(false);
+        expect(arrayLayout('×', 9, 9, 312, 150).dot).toBeGreaterThanOrEqual(12);
     });
 });
 

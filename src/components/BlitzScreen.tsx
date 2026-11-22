@@ -5,7 +5,7 @@ import { BLITZ_SECONDS } from '../utils/blitz';
 import { t, tp } from '../utils/i18n';
 import { buildBlitzQuestions, buildTableBlitzQuestions } from '../utils/mathEngine';
 import { Confetti } from './Confetti';
-import { ANSWER_FONT, ANSWER_HEIGHT, EquationBox, Keypad, PracticeShell, PracticeTopRow, SubmitButton, TopChip } from './PracticeParts';
+import { ANSWER_FONT, ANSWER_HEIGHT, ANSWER_HEIGHT_COMPACT, EquationBox, Keypad, PracticeShell, PracticeTopRow, SubmitButton, TopChip } from './PracticeParts';
 
 const QUESTION_POOL_SIZE = 200;
 const TICK_MS = 200;
@@ -195,7 +195,7 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
     const upper = (
         <>
             <EquationBox text={current ? `${fmt(current.left)} ${current.operator} ${fmt(current.right)} = ${fmt(current.result)}` : ''} isKinder />
-            <div className={`${ANSWER_HEIGHT} ${ANSWER_FONT} flex w-full max-w-xs flex-col items-center justify-center rounded-2xl border-[5px] bg-[#2c3e50] font-bold leading-none shadow-inner ${boxBorder}`}>
+            <div className={`${user.mode === 'grade4' ? ANSWER_HEIGHT_COMPACT : ANSWER_HEIGHT} ${ANSWER_FONT} flex w-full max-w-xs flex-col items-center justify-center rounded-2xl border-[5px] bg-[#2c3e50] font-bold leading-none shadow-inner ${boxBorder}`}>
                 {wrong && current && <span className="mb-0.5 text-sm font-bold leading-none text-amber-100">{t('theAnswerIs', lang)}</span>}
                 {wrong && current ? current.answer : answer}
             </div>
@@ -204,8 +204,8 @@ const Round: React.FC<{ onBack: () => void; onAgain: () => void }> = ({ onBack, 
 
     const lower = (
         <>
-            <Keypad deleteLabel={t('deleteKey', lang)} onDigit={appendDigit} onBackspace={backspace} />
-            <SubmitButton onClick={submit} disabled={answer === '' || feedback !== 'none'} label={`${t('submit', lang)} ✅`} />
+            <Keypad deleteLabel={t('deleteKey', lang)} onDigit={appendDigit} onBackspace={backspace} compact={user.mode === 'grade4'} />
+            <SubmitButton onClick={submit} disabled={answer === '' || feedback !== 'none'} label={`${t('submit', lang)} ✅`} compact={user.mode === 'grade4'} />
         </>
     );
 

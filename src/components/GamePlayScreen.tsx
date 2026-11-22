@@ -11,7 +11,7 @@ import { questionCoins } from '../utils/rewards';
 import { QUESTION_COUNT, aidModeFor, insertRetry, realQuestionNumber, resolveSubmit, type AidMode } from '../utils/session';
 import { dayKey } from '../utils/streak';
 import { ResultScreen } from './ResultScreen';
-import { ANSWER_FONT, ANSWER_HEIGHT, EquationBox, Keypad, MessageSlot, PracticeShell, PracticeTopRow, SubmitButton, ToggleKey, TopChip } from './PracticeParts';
+import { ANSWER_FONT, ANSWER_HEIGHT, ANSWER_HEIGHT_COMPACT, EquationBox, Keypad, MessageSlot, PracticeShell, PracticeTopRow, SubmitButton, ToggleKey, TopChip } from './PracticeParts';
 import { ArrayAid } from './ArrayAid';
 import { TenFrame } from './TenFrame';
 
@@ -265,7 +265,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                     : activeBox === box || !isDivision
                       ? 'border-[#e6ccb2] text-white'
                       : 'border-[#8b5a2b] text-[#e5e5e5]';
-        return `${ANSWER_HEIGHT} ${ANSWER_FONT} bg-[#2c3e50] rounded-2xl border-[5px] flex flex-col items-center justify-center leading-none font-bold shadow-inner ${border}`;
+        return `${isTable ? ANSWER_HEIGHT_COMPACT : ANSWER_HEIGHT} ${ANSWER_FONT} bg-[#2c3e50] rounded-2xl border-[5px] flex flex-col items-center justify-center leading-none font-bold shadow-inner ${border}`;
     };
 
     // A wrong answer immediately shows the correct answer (and, for kinder, the ten-frame).
@@ -298,7 +298,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
             <EquationBox text={formatQuestion(current)} isKinder={isKinder} tint={wrongForKinder ? 'bg-amber-50' : 'bg-white'} />
 
             {showFrame && <TenFrame question={current} lang={lang} />}
-            {showArray && <ArrayAid question={current} lang={lang} />}
+            {showArray && <ArrayAid question={current} lang={lang} revealed={feedback === 'incorrect'} />}
             {showHelp && (
                 <button
                     onClick={() => setAidShown(true)}
@@ -351,7 +351,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                 {feedback === 'incorrect' && (
                     <div className={chip}>
                         <div className="text-xl font-black">{t('incorrect', lang)}</div>
-                        {isFact && !currentItem.isRetry && <div className="text-base font-bold">{t('tryAgainLater', lang)}</div>}
+                        {isFact && !isTable && !currentItem.isRetry && <div className="text-base font-bold">{t('tryAgainLater', lang)}</div>}
                         {!isFact && (
                             <div className="text-base font-bold">
                                 {t('yourAnswer', lang)} {fmt(Number(answer))}
@@ -370,6 +370,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                 deleteLabel={t('deleteKey', lang)}
                 onDigit={appendDigit}
                 onBackspace={backspace}
+                compact={isTable}
                 extra={
                     isDivision ? (
                         <ToggleKey onClick={toggleBox} active={activeBox === 'q'}>
@@ -378,7 +379,7 @@ export const GamePlayScreen: React.FC<Props> = ({ skillId, onBack, onNext, onOpe
                     ) : undefined
                 }
             />
-            <SubmitButton onClick={submit} disabled={answer === '' || feedback !== 'none'} label={`${t('submit', lang)} ✅`} />
+            <SubmitButton onClick={submit} disabled={answer === '' || feedback !== 'none'} label={`${t('submit', lang)} ✅`} compact={isTable} />
         </>
     );
 
